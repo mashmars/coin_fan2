@@ -26,7 +26,7 @@
 <title>用户管理</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户中心 <span class="c-gray en">&gt;</span> 资产管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户中心 <span class="c-gray en">&gt;</span> 实名管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
 	
 	<div class="text-c" >
@@ -60,9 +60,7 @@
 	</div>
 	
 	<div class="cl pd-5 bg-1 bk-gray mt-20"> 
-		<span class="l">	
 		
-		</span>	
 		<span class="r">共有数据：<strong>{$count}</strong> 条</span> 	
 		
 	</div>
@@ -73,27 +71,40 @@
 			<tr class="text-c">
 				<th width="25"><input type="checkbox" name="" value=""></th>
 				<th width="80">ID</th>
-				<th width="100">用户名</th>								
 				<th width="100">手机号</th>								
-				<th width="100">可用币</th>								
-				<th width="100">冻结币</th>								
-				<th width="100">算力</th>
-				<th width="100">钱包地址</th>								
-				
+				<th width="100">姓名</th>								
+				<th width="100">身份证号</th>								
+				<th width="100">正面</th>								
+				<th width="100">反面</th>								
+				<th width="100">手持</th>								
+				<th width="100">时间</th>								
+				<th width="100">状态</th>								
+				<th width="170">操作</th>
 			</tr>
 		</thead>
 		<tbody id='tbody'>
 		<volist name='res' id='vo'>
 			<tr class="text-c">
 				<td><input type="checkbox" value="{$vo.id}" name=""></td>
-				<td>{$vo.id}</td>							
-				<td>{$vo.username}</td>				
-				<td>{$vo.phone}</td>	
-				<td>{$vo.lth}</td>	
-				<td>{$vo.lthd}</td>	
-				<td>{$vo.lthz}</td>
-				<td>{$vo.lthb}</td>	
-				
+				<td>{$vo.id}</td>
+				<td>{$vo.phone}</td>				
+				<td>{$vo.realname}</td>				
+				<td>{$vo.idcard}</td>				
+				<td><a href="{$Think.const.UP_USER}{$vo.zheng}" target='_blank'><img src="{$Think.const.UP_USER}{$vo.zheng}" width='50%' /></a></td>				
+				<td><a href="{$Think.const.UP_USER}{$vo.fan}" target='_blank'><img src="{$Think.const.UP_USER}{$vo.fan}" width='50%' /></a></td>				
+				<td><a href="{$Think.const.UP_USER}{$vo.shou}" target='_blank'><img src="{$Think.const.UP_USER}{$vo.shou}" width='50%' /></a></td>				
+				<td>{$vo.createdate|date='Y-m-d',###}</td>	
+				<td><if condition="$vo.status eq 1">
+				<span class="label label-success radius">审核通过</span>
+				<else />
+				<span class="label label-danger radius">未审核</span>
+				</if></td>					
+				<td class="td-manage">
+				<if condition="$vo.status eq 0">				
+				<a style="text-decoration:none" class="btn btn-secondary-outline radius size-MINI" onclick="shenhe('{$vo.id}')"   title="审核通过">审核通过</a>  
+				<a style="text-decoration:none" class="btn btn-danger-outline radius size-MINI" onClick="del(this,'{$vo.id}')" href="javascript:;" title="删除">删除</a>
+				</if>
+				</td>
 			</tr>
 		</volist>
 		</tbody>
@@ -129,18 +140,8 @@
 <link href="{$Think.const.PUB_LIB}a/css/city-picker.css" rel="stylesheet" type="text/css" />
 <script>
 
-</script>
-
-<script type="text/javascript">
-
-/*用户-添加*/
-function member_add(title,url,w,h){
-	layer_show(title,url,w,h);
-}
-/*用户-查看*/
-function member_show(title,url,id,w,h){
-	layer_show(title,url,w,h);
-}
+	
+//查询
 $(function(){
 	$('#field').change(function(){
 		var type = $(this).find('option:selected').attr('data-type');
@@ -160,7 +161,7 @@ $(function(){
 		var field = $('#field').find('option:selected').val();
 		var type = $('#field').find('option:selected').attr('data-type');
 		if(field == 'all'){
-			var url = "{:U('user/member_coin')}";
+			var url = "{:U('user/member_list')}";
 			window.location.href = url;
 			return false;
 		}
@@ -191,8 +192,109 @@ $(function(){
 			}
 		}
 	})
+	
+	//选择后导出
+	$('#export').click(function(){
+		var ids = new Array();
+		$('#tbody tr input').each(function(){
+			if($(this).prop('checked')){
+				var val = $(this).val();
+				ids.push(val);
+			}
+		})
+		if(ids.length ==0){
+			layer.msg('请选择会员');return false;
+		}
+		$('#ids').val(ids);
+		$('#form-export').submit();
+	})
+	
+	//按条件导出
+	$('#export1').click(function(){
+		var url = "{:U('user/export_')}";
+		$('#form-search').prop('action',url);
+		
+		var field = $('#field').find('option:selected').val();
+		var type = $('#field').find('option:selected').attr('data-type');
+		if(type == 'input'){
+			var param = $('#keyword').val();
+			if(param == ''){
+				layer.msg('请输入查询关键字',{icon:5,time:2000});return false;
+			}else{
+				$('input[name=field]').val(field);
+				$('input[name=type]').val(type);
+				$('input[name=keyword]').val(param);
+				$('input[name=datemin]').val('');
+				$('input[name=datemax]').val('');
+			}
+		}else if(type == 'date'){
+			var param1 = $('#datemin').val();
+			var param2 = $('#datemax').val();
+			if(param1 == '' && param2 == ''){
+				layer.msg('开始日期和结束日期不能同时为空',{icon:5,time:2000});return false;
+			}else{
+				$('input[name=field]').val(field);
+				$('input[name=type]').val(type);
+				$('input[name=keyword]').val('');
+				$('input[name=datemin]').val(param1);
+				$('input[name=datemax]').val(param2);
+			}
+		}
+		
+		$('#form-search').submit();
+	})
 })
 
+</script>
+
+<script type="text/javascript">
+
+/*用户-添加*/
+function member_add(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+/*用户-查看*/
+function member_show(title,url,id,w,h){
+	layer_show(title,url,w,h);
+}
+function shenhe(id){
+	layer.confirm('是否确认审核通过',function(){
+		$.ajax({
+			url:"{:U('user/ajax_member_certification_shenhe')}",
+			data:{id:id},
+			type:"post",
+			dataType:"json",
+			success:function(data){
+				if(data.info =='success'){
+					layer.msg(data.msg,{time:2000,icon:6},function(){
+						window.location.reload();
+					})
+				}else{
+					layer.msg(data.msg,{time:2000,icon:5})
+				}
+			}
+		})
+	})
+}
+function del(obj,id){
+	layer.confirm('是否确认删除,一经删除，无法恢复',function(){
+		$.ajax({
+			url:"{:U('user/ajax_member_certification_del')}",
+			data:{id:id},
+			type:"post",
+			dataType:"json",
+			success:function(data){
+				if(data.info =='success'){
+					layer.msg(data.msg,{time:2000,icon:6},function(){
+						$(obj).parents('tr').remove();
+					})
+				}else{
+					layer.msg(data.msg,{time:2000,icon:5})
+				}
+			}
+		})
+	})
+}
 </script> 
 </body>
 </html>

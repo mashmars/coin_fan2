@@ -67,8 +67,6 @@ class UserController extends BaseController
         //当前时间
         $data['createdate'] = $data['createdate'] ? strtotime($data['createdate']) : time();
         $data['username'] = $data['phone'];
-        //区设置
-        $zone = $data['zone'];
 
         //去掉
         unset($data['refer']);
@@ -80,8 +78,6 @@ class UserController extends BaseController
         $rs[] = $mo->table('user')->add($data);
         //插入资产表
         $rs[] = $mo->table('user_coin')->add(array('userid'=>$rs[0]));
-        //开始分区
-        $rs[] = $this->user_zone($rs[0],$data['pid'],$data['pid'],$zone);
 
         if(check_arr($rs)){
             $mo->commit();
@@ -352,5 +348,82 @@ class UserController extends BaseController
         return $data;
     }
 
-	
+	/**
+     * 实名认证管理
+     */
+    public function member_certification()
+    {
+
+        if(IS_POST){
+            $data = I('post.');
+            $field = $data['field'];
+            $value = $data['keyword'];
+            $userid = M('user')->where(array($field=>$value))->getField('userid');
+            $res = M('user_certification')->where(array('userid'=>$userid))->select();
+            $this->assign('res',$res);
+            $this->assign('field',$field);
+            $this->assign('keyword',$value);
+            $this->display();
+            exit;
+        }else{
+            $p = I('param.p', 1);
+            $list = 10;
+            $res = M('user_certification')->alias('a')->join('left join user b on a.userid=b.id')->field('a.*,b.phone')->page($p . ',' . $list)->order('a.status asc,a.id desc')->select();
+            $count = M('user')->count();
+            $page = new \Think\Page($count, $list);
+            $show = $page->show();
+            $this->assign('res', $res);
+            $this->assign('page', $show);
+            $this->assign('count', $count);
+            $this->display();
+        }
+    }
+
+    /**
+     * 审核
+     */
+    public function ajax_member_certification_shenhe()
+    {
+        $id = I('post.id');
+        $info = M('user_certification')->where(array('id'=>$id))->find();
+        if(!$info){
+            echo ajax_return(0,'请求有误');exit;
+        }
+        if($info['status'] ==1){
+            echo ajax_return(0,'此认证已通过审核，无需重复审核');exit;
+        }
+        $res = M('user_certification')->where(array('id'=>$id))->setField('status',1);
+
+        if($res){
+            echo ajax_return(1,'审核成功');
+            M('user')->where(array('id'=>$info['userid']))->save(array('is_cert'=>1,'realname'=>$info['realname'],'idcard'=>$info['idcard']));
+        }else{
+            echo ajax_return(0,'审核失败');exit;
+        }
+    }
+    /**
+     * 删除 同时删除相关图片
+     */
+    public function ajax_member_certification_del()
+    {
+        $id = I('post.id');
+        $info = M('user_certification')->where(array('id'=>$id))->find();
+        if(!$info){
+            echo ajax_return(0,'请求有误');exit;
+        }
+        if($info['status'] ==1){
+            echo ajax_return(0,'此认证已通过审核，不能删除');exit;
+        }
+        $res = M('user_certification')->delete($id);
+        if($res){
+            echo ajax_return(1,'删除成功');
+            unlink('.' . UP_USER . $info['zheng']);
+            unlink('.' . UP_USER . $info['fan']);
+            unlink('.' . UP_USER . $info['shou']);
+        }else{
+            echo ajax_return(0,'删除失败');exit;
+        }
+    }
+
+
 }

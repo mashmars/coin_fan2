@@ -22,9 +22,7 @@ class CommonController extends Controller {
         //获取用户资产
         $usercoin = M('user_coin')->where(array('userid'=>$userid))->find();
         $this->assign('usercoin',$usercoin);
-        //获取分红
-        $shouyi = M('sys_fh_log')->where(array('userid'=>$userid))->sum('num');
-        $this->assign('shouyi',$shouyi);
+
         //获取网站基本配置
         $config = M('config')->where('id=1')->find();
         $this->assign('config',$config);

@@ -26,44 +26,23 @@
 <title>用户管理</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户中心 <span class="c-gray en">&gt;</span> 资产管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户中心 <span class="c-gray en">&gt;</span> 用户管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
 	
-	<div class="text-c" >
-		<form action=''  method='post' id='form-search'>
-		<input type='hidden' name='field' />
-		<input type='hidden' name='type' />
-		<input type='hidden' name='keyword' />
-		<input type='hidden' name='datemin' />
-		<input type='hidden' name='datemax' />
-		<label>筛选查询：</label>
-		<span class="select-box inline">			
-			<select name="" id='field' class="select">
-				<!-- <option value="txdz" data-type='input' <if condition="$field eq 'txdz'">selected</if> >地址</option> -->
-				<option value="all" data-type='' <if condition="$field eq ''">selected</if>>全部会员</option>
-				<option value="phone" data-type='input' <if condition="$field eq 'phone'">selected</if>>手机号</option>
-				
-			</select>
-		</span>
-		<span class="btn-upload form-group" id='date' <if condition="$type neq 'date'">style='display:none'</if>>
-			日期范围：
-			<input type="text" onfocus="WdatePicker({ maxDate:'#F{ $dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" value='{$start}' id="datemin" class="input-text Wdate" style="width:120px;">
-			-
-			<input type="text" onfocus="WdatePicker({ minDate:'#F{ $dp.$D(\'datemin\')}'})" value='{$end}' id="datemax" class="input-text Wdate" style="width:120px;">
-		</span>
-		<span class="btn-upload form-group" id='input' <if condition="$type eq 'date'">style='display:none'</if>>
-			<input type="text" class="input-text" style="width:250px" placeholder="输入关键字" id="keyword" value='{$keyword}'>
-		</span>
-		<button type="button" class="btn btn-success radius" id="serach" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
-		<!--<button type="button" class="btn btn-success radius" id="export1" name=""><i class="Hui-iconfont">&#xe644;</i> 按条件导出</button>-->
-		</form>
-	</div>
 	
-	<div class="cl pd-5 bg-1 bk-gray mt-20"> 
-		<span class="l">	
-		
-		</span>	
-		<span class="r">共有数据：<strong>{$count}</strong> 条</span> 	
+	<div class="text-c" style='margin-top:20px;'>		
+		<form class="Huiform" id="myform" enctype="multipart/form-data" action="{:U('device/import')}" method='post'>
+			
+			<span  style="width:120px">导入:</span>
+			<span class="btn-upload form-group">
+			<input class="input-text upload-url" type="text" name="uploadfile-2" id="uploadfile-2" readonly style="width:200px">
+			<a href="javascript:void();" class="btn btn-primary upload-btn"><i class="Hui-iconfont">&#xe642;</i> 选择文件</a>
+			<input type="file" multiple name='info' class="input-file">
+			</span>
+			<input type='button' onclick="dd(this)" class="btn btn-success radius" value='上传excel并导入'>
+			
+			<input type='button' onclick="verify(this)" class="btn btn-primary radius" value='验证消费记录'>
+		</form>
 		
 	</div>
 	
@@ -73,27 +52,39 @@
 			<tr class="text-c">
 				<th width="25"><input type="checkbox" name="" value=""></th>
 				<th width="80">ID</th>
-				<th width="100">用户名</th>								
-				<th width="100">手机号</th>								
-				<th width="100">可用币</th>								
-				<th width="100">冻结币</th>								
-				<th width="100">算力</th>
-				<th width="100">钱包地址</th>								
-				
+				<th width="100">设备sn</th>								
+				<th width="100">交易号</th>								
+				<th width="100">交期日期</th>								
+				<th width="100">金额</th>								
+				<th width="100">手续费</th>								
+				<th width="100">状态</th>								
+				<th width="100">时间</th>								
+				<th width="170">操作</th>
 			</tr>
 		</thead>
 		<tbody id='tbody'>
 		<volist name='res' id='vo'>
 			<tr class="text-c">
 				<td><input type="checkbox" value="{$vo.id}" name=""></td>
-				<td>{$vo.id}</td>							
-				<td>{$vo.username}</td>				
-				<td>{$vo.phone}</td>	
-				<td>{$vo.lth}</td>	
-				<td>{$vo.lthd}</td>	
-				<td>{$vo.lthz}</td>
-				<td>{$vo.lthb}</td>	
+				<td>{$vo.id}</td>
+				<td>{$vo.device_sn}</td>				
+				<td>{$vo.order_sn}</td>				
+				<td>{$vo.day}</td>				
+				<td>{$vo.money}</td>				
+				<td>{$vo.fee}</td>				
+				<td>
+				<if condition="$vo.status eq 1">
+				<span class="label label-success radius">已验证</span>
+				<elseif condition="$vo.status eq 2" />
+				<span class="label label-primary radius">无效SN</span>
+				<else />
+				<span class="label label-danger radius">未验证</span>
+				</if>
+				</td>				
+				<td>{$vo.createdate|date='Y-m-d',###}</td>				
+				<td class="td-manage">				
 				
+				</td>
 			</tr>
 		</volist>
 		</tbody>
@@ -129,18 +120,8 @@
 <link href="{$Think.const.PUB_LIB}a/css/city-picker.css" rel="stylesheet" type="text/css" />
 <script>
 
-</script>
-
-<script type="text/javascript">
-
-/*用户-添加*/
-function member_add(title,url,w,h){
-	layer_show(title,url,w,h);
-}
-/*用户-查看*/
-function member_show(title,url,id,w,h){
-	layer_show(title,url,w,h);
-}
+	
+//查询
 $(function(){
 	$('#field').change(function(){
 		var type = $(this).find('option:selected').attr('data-type');
@@ -160,7 +141,7 @@ $(function(){
 		var field = $('#field').find('option:selected').val();
 		var type = $('#field').find('option:selected').attr('data-type');
 		if(field == 'all'){
-			var url = "{:U('user/member_coin')}";
+			var url = "{:U('user/member_list')}";
 			window.location.href = url;
 			return false;
 		}
@@ -191,8 +172,91 @@ $(function(){
 			}
 		}
 	})
+	
+	//选择后导出
+	$('#export').click(function(){
+		var ids = new Array();
+		$('#tbody tr input').each(function(){
+			if($(this).prop('checked')){
+				var val = $(this).val();
+				ids.push(val);
+			}
+		})
+		if(ids.length ==0){
+			layer.msg('请选择会员');return false;
+		}
+		$('#ids').val(ids);
+		$('#form-export').submit();
+	})
+	
+	//按条件导出
+	$('#export1').click(function(){
+		var url = "{:U('user/export_')}";
+		$('#form-search').prop('action',url);
+		
+		var field = $('#field').find('option:selected').val();
+		var type = $('#field').find('option:selected').attr('data-type');
+		if(type == 'input'){
+			var param = $('#keyword').val();
+			if(param == ''){
+				layer.msg('请输入查询关键字',{icon:5,time:2000});return false;
+			}else{
+				$('input[name=field]').val(field);
+				$('input[name=type]').val(type);
+				$('input[name=keyword]').val(param);
+				$('input[name=datemin]').val('');
+				$('input[name=datemax]').val('');
+			}
+		}else if(type == 'date'){
+			var param1 = $('#datemin').val();
+			var param2 = $('#datemax').val();
+			if(param1 == '' && param2 == ''){
+				layer.msg('开始日期和结束日期不能同时为空',{icon:5,time:2000});return false;
+			}else{
+				$('input[name=field]').val(field);
+				$('input[name=type]').val(type);
+				$('input[name=keyword]').val('');
+				$('input[name=datemin]').val(param1);
+				$('input[name=datemax]').val(param2);
+			}
+		}
+		
+		$('#form-search').submit();
+	})
 })
 
+</script>
+
+<script type="text/javascript">
+
+/*用户-添加*/
+function member_add(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+/*用户-查看*/
+function member_show(title,url,id,w,h){
+	layer_show(title,url,w,h);
+}
+
+function dd(obj){
+	layer.msg('导入中',{time:100000});
+	$(obj).prop('disabled',true);
+	$('#myform').submit();
+	
+}
+function verify(obj){
+	//$(obj).prop('disabled',true);
+	$.post("{:U('device/ajax_verify_xiaofei')}",'',function(data){
+		if(data.info == 'success'){
+			layer.msg(data.msg,{time:2000,icon:1},function(){
+				window.location.reload();
+			});
+		}else{
+			layer.msg(data.msg,{time:2000,icon:5});
+			$(obj).prop('disabled',false);
+		}
+	},'json');
+}
 </script> 
 </body>
 </html>

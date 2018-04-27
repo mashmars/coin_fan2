@@ -16,6 +16,7 @@ if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 
 
 
+
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 define('APP_DEBUG',true);
 
@@ -34,8 +35,9 @@ define('PUB_LIB', PUB_ROOT . 'lib/');
 
 //定义上传目录
 define('UP_ROOT' , '/Upload/');
-define('UP_PRO' , UP_ROOT. 'goods/');
+define('UP_USER' , UP_ROOT. 'user/');
 define('UP_SYSTEM' , UP_ROOT. 'system/');
+define('UP_INFO' , UP_ROOT. 'info/');
 
 
 

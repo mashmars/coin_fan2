@@ -29,9 +29,10 @@ define('PUB_STATIC', PUB_ROOT . 'static/');
 define('PUB_LIB', PUB_ROOT . 'lib/');
 
 
+
 //定义上传目录
 define('UP_ROOT' , '/Upload/');
-
+define('UP_USER' , UP_ROOT. 'user/');
 define('UP_SYSTEM' , UP_ROOT. 'system/');
 define('UP_INFO' , UP_ROOT. 'info/');
 // 引入ThinkPHP入口文件

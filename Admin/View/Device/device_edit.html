@@ -28,34 +28,44 @@
 <body>
 <article class="page-container">
 <form class="form form-horizontal" method="post" action="" id='form' enctype="multipart/form-data">
+	
 	<input type="hidden" class="input-text" value="{$info.id}" placeholder="" id="id" name="id">
 	<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>数量下限:</label>
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>设备名称:</label>
 		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" class="input-text" value="{$info.minnum}" placeholder="" id="minnum" name="minnum">
+			<input type="text" class="input-text" value="{$info.name}" placeholder="" id="name" name="name">
 		</div>
 	</div>
 	<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>数量上限:</label>
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>允许绑定的最大数:</label>
 		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" class="input-text" value="{$info.maxnum}" placeholder="" id="maxnum" name="maxnum">
+			<input type="text" class="input-text" value="{$info.max}" placeholder="" id="max" name="max">
 		</div>
 	</div>
 	<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>比例:</label>
-		<div class="formControls col-xs-8 col-sm-3">
-			<input type="text" class="input-text" value="{$info.bl}" placeholder="" id="bl" name="bl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>原力币:</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="{$info.yuanlibi}" placeholder="绑定后给邀请人返的数量" id="yuanlibi" name="yuanlibi">
 		</div>
-		<label class="form-label col-xs-4 col-sm-6" style="text-align:left">0.13%需要直接输入0.0013</label>
 	</div>
-	
-	
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>算力:</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="{$info.suanli}" placeholder="激活后给自己返的算力" id="suanli" name="suanli">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>最低手续费:</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="{$info.charge}" placeholder="激活需要消费的手续费,0为验证通过自动激活" id="charge" name="charge">
+		</div>
+	</div>
 	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>状态:</label>
 		<div class="formControls col-xs-8 col-sm-9 skin-minimal">
 			<div class="radio-box">
 				<input name="status" type="radio" id="sex-1" value='1' <if condition="$info.status eq 1">checked</if>>
-				<label for="sex-1">可用</label>
+				<label for="sex-1">启用</label>
 			</div>
 			<div class="radio-box">
 				<input type="radio" id="sex-2" value='0' name="status" <if condition="$info.status eq 0">checked</if>>
@@ -91,28 +101,17 @@ $(function(){
 	});
 	$('#submit').click(function(){ //var index = parent.layer.getFrameIndex(window.name); //parent.layer.close(index);return false;
 									//window.parent.location.reload();//刷新父级的时候会自动关闭弹层	
-		var minnum = $('#minnum').val();
-		var maxnum = $('#maxnum').val();
-		var bl = $('#bl').val();
-		if(minnum == '' || isNaN(minnum) || minnum <=0){
-			layer.msg('数量下限设置不正确!',{time:2000,icon:5});
+		
+		var name = $('#name').val();
+		
+		if(name == ''){
+			layer.msg('请输入设备名称!',{time:2000,icon:5});
 			return false;
 		}
-		if(maxnum == '' || isNaN(maxnum) || maxnum <=0){
-			layer.msg('数量上限设置不正确!',{time:2000,icon:5});
-			return false;
-		}
-		if(parseInt(maxnum) <= parseInt(minnum)){
-			layer.msg('数量上限必须大于下限!',{time:2000,icon:5});
-			return false;
-		}
-		if(bl == '' || isNaN(bl) || bl <=0){
-			layer.msg('比例设置不正确!',{time:2000,icon:5});
-			return false;
-		}
+		
 		//$('#form').submit();
 		$.ajax({
-			url:"{:U('system/ajax_sys_jtfh_edit')}", 
+			url:"{:U('device/ajax_device_edit')}", 
 			data:$('#form').serialize(),
 			type:"post",
 			dataType:"json",

@@ -29,40 +29,31 @@
 <article class="page-container">
 <form class="form form-horizontal" method="post" action="" id='form' enctype="multipart/form-data">
 	
-	<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>数量下限:</label>
-		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" class="input-text" value="" placeholder="" id="minnum" name="minnum">
-		</div>
-	</div>
-	<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>数量上限:</label>
-		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" class="input-text" value="" placeholder="" id="maxnum" name="maxnum">
-		</div>
-	</div>
-	<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>比例:</label>
-		<div class="formControls col-xs-8 col-sm-3">
-			<input type="text" class="input-text" value="" placeholder="" id="bl" name="bl">
-		</div>
-		<label class="form-label col-xs-4 col-sm-6" style="text-align:left">0.13%需要直接输入0.0013</label>
-	</div>
-	
 	
 	<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>状态:</label>
-		<div class="formControls col-xs-8 col-sm-9 skin-minimal">
-			<div class="radio-box">
-				<input name="status" type="radio" id="sex-1" value='1' checked>
-				<label for="sex-1">可用</label>
-			</div>
-			<div class="radio-box">
-				<input type="radio" id="sex-2" value='0' name="status">
-				<label for="sex-2">禁用</label>
-			</div>
+		<label class="form-label col-xs-4 col-sm-3">选择设备:</label>
+		<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+			<select class="select valid" size="1" name="device_id" id='device_id'>
+				<option value="" selected="">请选择</option>
+				<volist name='device' id='vo'>
+				<option value="{$vo.id}">{$vo.name}</option>
+				</volist>
+			</select>
+			</span> </div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>SN:</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="sn" name="sn">
 		</div>
 	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>密码:</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="没有可留空" id="mima" name="mima">
+		</div>
+	</div>
+	
 	
 	
 	<div class="row cl">
@@ -91,28 +82,17 @@ $(function(){
 	});
 	$('#submit').click(function(){ //var index = parent.layer.getFrameIndex(window.name); //parent.layer.close(index);return false;
 									//window.parent.location.reload();//刷新父级的时候会自动关闭弹层	
-		var minnum = $('#minnum').val();
-		var maxnum = $('#maxnum').val();
-		var bl = $('#bl').val();
-		if(minnum == '' || isNaN(minnum) || minnum <=0){
-			layer.msg('数量下限设置不正确!',{time:2000,icon:5});
+		
+		var name = $('#device_id').val();
+		
+		if(name == ''){
+			layer.msg('请选择设备!',{time:2000,icon:5});
 			return false;
 		}
-		if(maxnum == '' || isNaN(maxnum) || maxnum <=0){
-			layer.msg('数量上限设置不正确!',{time:2000,icon:5});
-			return false;
-		}
-		if(parseInt(maxnum) <= parseInt(minnum)){
-			layer.msg('数量上限必须大于下限!',{time:2000,icon:5});
-			return false;
-		}
-		if(bl == '' || isNaN(bl) || bl <=0){
-			layer.msg('比例设置不正确!',{time:2000,icon:5});
-			return false;
-		}
+		
 		//$('#form').submit();
 		$.ajax({
-			url:"{:U('system/ajax_sys_dtfh_add')}", 
+			url:"{:U('device/ajax_sn_add')}", 
 			data:$('#form').serialize(),
 			type:"post",
 			dataType:"json",

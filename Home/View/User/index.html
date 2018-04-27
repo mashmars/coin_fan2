@@ -22,10 +22,7 @@
 							<h4>你好，{$userinfo['realname'] ? $userinfo['realname'] : 'MC' }！</h4>
 							<p>{$Think.session.phone}</p>
 						</div>
-						<div class="flex-1">
-							<p>一区业绩:{$yeji['yiqu']*1}</p>
-							<p>二区业绩:{$yeji['erqu']*1}</p>
-						</div>
+						
 					</div>
 					<div class="tc flex-box user-total">
 						<div class="flex-1">
@@ -46,6 +43,12 @@
 			<div class="user-contain">
 				<ul>
 					<li>
+						<a href="{:U('user/device')}">
+							<i class="device"></i>我的设备
+							<span class="go"></span>
+						</a>
+					</li>
+					<li>
 						<a href="{:U('user/profile')}">
 							<i class="modify"></i>修改资料
 							<span class="go"></span>
@@ -63,7 +66,24 @@
 							<span class="go"></span>
 						</a>
 					</li>
-					
+					<li>
+						<a href="{:U('user/certification')}">
+							<i class="binding"></i>实名认证
+							<span class="go"></span>
+						</a>
+					</li>
+					<li>
+						<a href="{:U('user/invite')}">
+							<i class="friend"></i>邀请好友
+							<span class="go"></span>
+						</a>
+					</li>
+					<li>
+						<a href="{:U('user/myinvite')}">
+							<i class="friend"></i>邀请记录
+							<span class="go"></span>
+						</a>
+					</li>
 				</ul>
 			</div>
 			<p class="tc"><button class="lhbg exit-logon">退出登录</button></p>

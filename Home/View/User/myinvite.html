@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, user-scalable=no"/>
-	<title>转入记录</title>
+	<title>邀请记录</title>
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<link rel="stylesheet" href="{$Think.const.PUB_CSS}common.css">
@@ -16,7 +16,7 @@
 		<header>
 	<h3 class="tc lhbg">
 		<i class="go"></i>
-		转入记录
+		邀请记录
 	</h3>
 </header>
 </header>
@@ -32,9 +32,9 @@
 					<volist name='res' id='vo'>
 						<li class="flex-box">
 							<div class="flex-1 flex-box">
-								<img src="{$Think.const.PUB_IMG}ht.png" alt="">
+								<img src="{$Think.const.PUB_IMG}amount.png" alt="">
 								<div class="flex-1">
-									<h4>充币</h4>
+									<h4><if condition="$vo.type eq 1">原力币<else />算力</if></h4>
 									<p><span>{$vo.createdate|date='m月d日',###}</span><span>{$vo.createdate|date='H:i',###}</span></p>
 								</div>
 							</div>
@@ -80,7 +80,7 @@
 			/**下拉刷新 （自定义实现此方法） myScroll.refresh(); 数据加载完成后，调用界面更新方法*/
 			function pullDownAction () {
 				setTimeout(function () { 
-					var url = "{:U('finance/ajax_myzrdetail')}";
+					var url = "{:U('user/ajax_myinvite')}";
 					$.ajax({
 							url:url,
 							type:'post',
@@ -104,7 +104,7 @@
 			 * myScroll.refresh();      // 数据加载完成后，调用界面更新方法
 			 */
 			function pullUpAction () {
-				var url = "{:U('finance/ajax_myzrdetail')}";
+				var url = "{:U('user/ajax_myinvite')}";
 				setTimeout(function () {
 					$.ajax({
 						url:url,
@@ -120,10 +120,14 @@
 								return false;
 							}
 							$.each(result,function(k,v){
-								var src = "{$Think.const.PUB_IMG}";
+								if(v.type == 1){
+									var type = '原力币';
+								}else if(v.type == 2){
+									var type = '算力';
+								}
 								if(v.id){
-									list += '<li class="flex-box"><div class="flex-1 flex-box"><img src="{$Think.const.PUB_IMG}ht.png" alt="">';
-									list += '<div class="flex-1"><h4>充币</h4><p><span>'+v.date+'</span><span>'+v.time+'</span></p></div></div>';
+									list += '<li class="flex-box"><div class="flex-1 flex-box"><img src="{$Think.const.PUB_IMG}amount.png" alt="">';
+									list += '<div class="flex-1"><h4>'+v.type+'</h4><p><span>'+v.date+'</span><span>'+v.time+'</span></p></div></div>';
 									list += '<span>+'+v.num+'</span></li>';
 								}
 							})

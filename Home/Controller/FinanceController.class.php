@@ -19,17 +19,7 @@ class FinanceController extends CommonController {
 	public function wallet()
     {
         $userid = session('userid');
-        //本月收益
-        $start =mktime(0,0,0,date('m'),1,date('Y'));
-        $end =mktime(23,59,59,date('m'),date('t'),date('Y'));
-        $month_shouyi = M('sys_fh_log')->where(array('userid'=>$userid,'createdate'=>array('between',array($start,$end))))->sum('num');
-        //昨天收益
-        //php获取昨日起始时间戳和结束时间戳
-        $start1 =mktime(0,0,0,date('m'),date('d')-1,date('Y'));
-        $end1 =mktime(0,0,0,date('m'),date('d'),date('Y'))-1;
-        $yestoday_shouyi = M('sys_fh_log')->where(array('userid'=>$userid,'createdate'=>array('between',array($start1,$end1))))->sum('num');
-        $this->assign('month_shouyi',$month_shouyi);
-        $this->assign('yestoday_shouyi',$yestoday_shouyi);
+
         $this->display();
     }
     /**
@@ -233,30 +223,115 @@ class FinanceController extends CommonController {
         echo json_encode($res);
     }
 
-    public function income()
+
+    /**
+     * 会员转账
+     */
+    public function transfer()
+    {
+        $this->display();
+    }
+    public function ajax_transfer()
+    {
+        $userid = session('userid');
+
+        $realname = I('post.realname');
+        $phone = I('post.phone');
+        $money = I('post.money');
+        $password = I('post.password');
+
+        if($realname == '' || $phone == ''){
+            echo ajax_return(0,'手机号或真实姓名不能为空');exit;
+        }
+        if($money <=0 || !is_numeric($money)){
+            echo ajax_return(0,'金额不正确');exit;
+        }
+
+        $from = M('user')->where(array('id'=>$userid))->find();
+        if(!$from['is_cert']){
+            echo ajax_return(0,'请先实名认证');exit;
+        }
+        $info = M('user')->where(array('phone'=>$phone,'realname'=>$realname))->find();
+        if(!$info){
+            echo ajax_return(0,'输入的对方信息不正确');exit;
+        }
+
+        if($from['paypassword'] != md5($password)){
+            echo ajax_return(0,'支付密码不正确');exit;
+        }
+
+        $user_coin = M('user_coin')->where(array('userid'=>$userid))->lock(true)->find();
+
+        if($user_coin['lth'] < $money){
+            echo ajax_return(0,'余额不足');exit;
+        }
+        if($info['id'] == $userid){
+            echo ajax_return(0,'不能给自己转账');exit;
+        }
+        //可以转
+        $mo = M();
+        $mo->startTrans();
+        $rs = array();
+
+        $rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setDec('lth',$money);
+        $rs[] = $mo->table('user_coin')->where(array('userid'=>$info['id']))->setInc('lth',$money);
+        $rs[] = $mo->table('mytransfer')->add(array('userid'=>$userid,'peerid'=>$info['id'],'num'=>$money,'realname'=>$realname,'phone'=>$phone,'createdate'=>time()));
+
+        if(check_arr($rs)){
+            $mo->commit();
+            echo ajax_return(1,'转账成功');
+        }else{
+            $mo->rollback();
+            echo ajax_return(0,'转账失败');
+        }
+    }
+
+    /**
+     * 会员转账记录
+     */
+    public function transferlog()
     {
         $userid = session('userid');
         $p = I('param.p',1);
         $list = 5;
-        $res = M('sys_fh_log')->where(array('userid'=>$userid))->order('id desc')->page($p.','.$list)->select();
+        $map['userid'] = $userid;
+        $map['peerid'] = $userid;
+        $map['_logic'] = 'or';
+        $res = M('mytransfer')->where($map)->order('id desc')->page($p.','.$list)->select();
+        foreach($res as &$v){
+            if($v['userid'] == $userid){
+                $v['type'] = 'zc';
+            }
+            if($v['peerid'] == $userid){
+                $v['type'] = 'zr';
+            }
+        }
         $this->assign('res',$res);
         $this->display();
     }
     /**
-     * 收益记录
+     * 会员转账记录
      */
-    public function ajax_income()
+    public function ajax_transferlog()
     {
         $userid = session('userid');
         $p = I('param.p',1);
         $list = 5;
-        $res = M('sys_fh_log')->where(array('userid'=>$userid))->order('id desc')->page($p.','.$list)->select();
+        $map['userid'] = $userid;
+        $map['peerid'] = $userid;
+        $map['_logic'] = 'or';
+        $res = M('mytransfer')->where($map)->order('id desc')->page($p.','.$list)->select();
         foreach($res as &$v){
             $v['date'] = date('m月d日');
             $v['time'] = date('H:i');
+            if($v['userid'] == $userid){
+                $v['type'] = 'zc';
+            }
+            if($v['peerid'] == $userid){
+                $v['type'] = 'zr';
+            }
         }
         echo json_encode($res);
     }
-
 
 }

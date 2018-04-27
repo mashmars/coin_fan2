@@ -109,170 +109,36 @@ class QueueController extends Controller
     }
 	
 	/**
-	 *分红
-	 */
-	public function start_fh()
-	{
-		$sys_jtfh = M('sys_jtfh')->where(array('status=1'))->select(); //所有静态分红
-		$sys_dtfh = M('sys_dtfh')->where(array('status=1'))->select(); //所有动态分红
-		//所有币数
-		$user_coin = M('user_coin')->where(array('lth'=>array('gt',0)))->select();
-        //核对每天只能分红一次
-        $start = strtotime(date('Y-m-d'));
-        $end = $start + 24*3600-1;
-		//个人分红上限 5000  或者是 个人持币对应区间的下限*50% 那个小按哪个为准
-		$limit = 5000; //		
-		
-		$count = count($user_coin); //本次分红总人数 包括没有达到静态分红的最小值的情况
-		$jt_deal=0;//已处理的静态人数
-		$dt_deal=0;//已处理的动态人数
-		
-		foreach($user_coin as $coin)
-		{
-			$yfh = 0; //已分红的币数
-			$gr_limit=0; //个人限制  个人分红上限 5000  或者是 个人持币对应区间的下限*50% 那个小按哪个为准
-			$limit1=0; //个人持币对应区间的下限*50%
-			if($coin['lth']  == 0){
-			    continue;
-            }
-            //保证每天只能分红一次
-            $is_fh = M('sys_fh_log')->where(array('userid'=>$coin['userid'],'createdate'=>array('between',array($start,$end))))->getField('type',true);
-            //var_dump($coin['userid'] . '---');var_dump($is_fh);continue;
-			
-			$jt_num =0;//本次分红的币数
-			$dt_num =0;//本次分红的币数
-			$jtfh=array(); //满足条件的
-			$dtfh = array();
-			foreach($sys_jtfh as $v){
-				if($coin['lth'] >= $v['minnum'] && $coin['lth'] <= $v['maxnum']){
-					$jtfh = $v;
-					break;
-				}
-			}
-			
-			if($jtfh){ //开始静态分红
-                if(in_array(1,$is_fh)){
-                    continue;
-                }
-				$jt_num = $jtfh['bl'] * $coin['lth'] ; //考虑保留几位小数 TODO
-                $jt_num = sprintf("%.2f",substr(sprintf("%.4f", $jt_num), 0, -2)); //本次分红数量
-				$limit1 = $jtfh['minnum']*0.5;
-				$gr_limit = ($limit > $limit1) ? $limit1 : $limit;
-				//实际的分红数
-				$jt_num = ($jt_num + $yfh) > $gr_limit ? ($gr_limit - $yfh) : $jt_num;
-                $m = M();
-				$m->startTrans();
-				$rs = array();
-				$rs[] = $m->table('user_coin')->where(array('id'=>$coin['id']))->setInc('lth',$jt_num);
-				$rs[] = $m->table('sys_fh_log')->add(array(
-					'userid'=>$coin['userid'],
-					'type'=>1,
-					'current'=>$coin['lth'],
-					'fh_id'=>$jtfh['id'],
-					'bl'=>$jtfh['bl'],
-					'num'=>$jt_num,
-					'createdate'=>time()
-				));
-				if(check_arr($rs)){
-					$m->commit();
-					$jt_deal++;
-					$yfh += $jt_num;
-				}else{
-					$m->rollback();
-				}			
-			}
-			
-			//动态分红开始
-            //保证每天只能分红一次
-            if(in_array(2,$is_fh)){
+     * 每天算力挖矿
+     * 算力/难度=每日挖出来的可用原力币数量
+       算力=消费手续费+各种设备增加的算力
+       难度=预设数量*预设天数*人数
+     * 每半个小时执行 数量为=》 算力/难度/48
+     */
+	public function miner()
+    {
+        $config = M('config')->where('id=1')->find();
+        $nandu = $config['total'] * $config['days'] * $config['users'];
+        //当前算力大于0的会员
+        $user_coin = M('user_coin')->where(array('lthz'=>array('gt',0)))->select();
+        $mo = M();
+        foreach($user_coin as $coin){
+            $num = $coin['lthz']/$nandu;
+            $num = round($num/48,8);
+            if($num <= 0){
                 continue;
             }
-			//获取动态分红的小区业绩
-			$yj = $this->get_xiaji($coin['userid']);
-			if(!$yj){ //没有业绩或只有一条线
-			    continue;
+            $mo->startTrans();
+            $rs = array();
+            $rs[] = $mo->table('user_coin')->where(array('userid'=>$coin['userid']))->setInc('lth',$num);
+            $rs[] = $mo->table('sys_fl_log')->add(array('userid'=>$coin['userid'],'nandu'=>$nandu,'suanli'=>$coin['lthz'],'num'=>$num,'createdate'=>time())) ;
+            if(check_arr($rs)){
+                $mo->commit();
+            }else{
+                $mo->rollback();
             }
-			foreach($sys_dtfh as $vv){
-				if($coin['lth'] >= $vv['minnum'] && $coin['lth'] <= $vv['maxnum']){
-					$dtfh = $vv;
-					break;
-				}
-			}
-			if($dtfh){ //开始动态分红 保留两位小数				
-				$dt_num = $dtfh['bl'] * $yj ; //本次分红的数量 动态是按小区业绩走的 考虑保留几位小数 TODO
-                $dt_num = sprintf("%.2f",substr(sprintf("%.4f", $dt_num), 0, -2));
-				$limit1 = $dtfh['minnum']*0.5;
-				$gr_limit = ($limit > $limit1) ? $limit1 : $limit;				
-				//实际的分红数
-				$dt_num = ($dt_num + $yfh) > $gr_limit ? ($gr_limit - $yfh) : $dt_num;
-				if($dt_num <=0){
-					continue;
-				}
-                $m = M();
-                $m->startTrans();
-                $rs = array();
-                $rs[] = $m->table('user_coin')->where(array('id'=>$coin['id']))->setInc('lth',$dt_num);
-                $rs[] = $m->table('sys_fh_log')->add(array(
-                    'userid'=>$coin['userid'],
-                    'type'=>2,
-                    'current'=>$coin['lth'],
-                    'fh_id'=>$dtfh['id'],
-                    'bl'=>$dtfh['bl'],
-                    'num'=>$dt_num,
-                    'createdate'=>time()
-                ));
-                if(check_arr($rs)){
-                    $m->commit();
-                    $dt_deal++;
-                    
-                }else{
-                    $m->rollback();
-                }
-            }
-		}
-        //插入分红校验表 证明本次分红完成
-        M('sys_fh_verify')->add(array(
-            'count'         => $count,
-            'deal_dt'       => $dt_deal,
-            'deal_jt'       => $jt_deal,
-            'createdate'    => strtotime(date('Y-m-d'))
-        ));
-		echo 'successful';
+        }
+        echo 'successful';
     }
-	
-	//获取两条线
-	public function get_xiaji($userid)
-	{
-		$users = M('user_zone')->where(array('pid'=>$userid))->getField('userid',true);
-		if(count($users) <= 1){
-			return false;
-		}
-		//第一个区
-		$users_a = $this->get_small_zone($users[0]);
-		//第二个区
-		$users_b = $this->get_small_zone($users[1]);
-		$qu_1_total = M('user_coin')->where(array('userid'=>array('in',$users_a)))->sum('lth');
-		$qu_2_total = M('user_coin')->where(array('userid'=>array('in',$users_b)))->sum('lth');
-		$xiaoqu = $qu_1_total > $qu_2_total ? $qu_1_total : $qu_2_total;//小区总持币数
-		return $xiaoqu;
-	}
-	//获取小区用户
-	public function get_small_zone($userid,$new=true)
-	{
-		static $users = array();
-		if($new){
-			$users = array();//必须释放
-		}
-		array_push($users,$userid);
-		$user_xiaji = M('user_zone')->where(array('pid'=>$userid))->getField('userid',true);
-		if($user_xiaji){
-			foreach($user_xiaji as $user){
-				$this->get_small_zone($user,false);
-			}				
-		}
-		return $users;
-	}
-		
-	
 	
 }

@@ -10,48 +10,10 @@ class UserController extends CommonController {
 
     public function index(){
 		$userid = session('userid');
-		$yeji = $this->get_xiaji($userid);
-		$this->assign('yeji',$yeji);
+
 		$this->display();
 	}
 	
-	//获取两条线 和queue一样
-	public function get_xiaji($userid)
-	{
-		$users = M('user_zone')->where(array('pid'=>$userid))->field('zone,userid')->select();
-		foreach($users as $user){
-			if($user['zone'] == 1){
-				//第一个区
-				$users_a = $this->get_small_zone($user['userid']);
-			}elseif($user['zone'] == 2){
-				//第二个区
-				$users_b = $this->get_small_zone($user['userid']);
-			}
-		}
-		if($users_a){
-			$qu_1_total = M('user_coin')->where(array('userid'=>array('in',$users_a)))->sum('lth');
-		}
-		if($users_b){
-			$qu_2_total = M('user_coin')->where(array('userid'=>array('in',$users_b)))->sum('lth');
-		}
-		return array('yiqu'=>$qu_1_total,'erqu'=>$qu_2_total);
-	}
-	//获取小区用户
-	public function get_small_zone($userid,$new=true)
-	{
-		static $users = array();
-		if($new){
-			$users = array();//必须释放
-		}
-		array_push($users,$userid);
-		$user_xiaji = M('user_zone')->where(array('pid'=>$userid))->getField('userid',true);
-		if($user_xiaji){
-			foreach($user_xiaji as $user){
-				$this->get_small_zone($user,false);
-			}				
-		}
-		return $users;
-	}
 
     /**
      * 个人资料
@@ -199,6 +161,204 @@ class UserController extends CommonController {
             echo ajax_return(0,'修改失败');
         }
     }
+
+
+    /**
+     * 我的设备
+     */
+    public function device()
+    {
+        $userid = session('userid');
+        $mydevice = M('user_device')->alias('a')->join('left join device b on a.device_id=b.id')->field('a.*,b.name')->where(array('userid'=>$userid))->select();
+        $this->assign('mydevice',$mydevice);
+
+        $device = M('device')->select();
+        $res = array();
+        foreach($device as $v){ //{id:'1',value:'POS机'}
+            $res[] = array('id'=>$v['id'],'value'=>$v['name']);
+        }
+        $this->assign('res',json_encode($res));
+        $this->display();
+    }
+    /**
+     * 获取设备信息
+     */
+    public function ajax_get_device()
+    {
+        $id = I('post.id');
+        $device = M('device')->where(array('id'=>$id))->find();
+        if(!$device){
+            echo ajax_return(0,'请求有误');exit;
+        }
+        if(!$device['status']){
+            echo ajax_return(0,'暂未开放');exit;
+        }
+        echo ajax_return(1,'yes');exit;
+    }
+    /**
+     * 添加设备页面
+     */
+    public function adddevice()
+    {
+        $id = I('param.id');
+        $device = M('device')->where(array('id'=>$id))->find();
+        $this->assign('device',$device);
+        $this->display();
+    }
+    public function ajax_add_device()
+    {
+        $userid = session('userid');
+        $id = I('post.id');
+        $sn = I('post.sn');
+        $mima = I('post.mima');
+        $device = M('device')->where(array('id'=>$id))->find();
+        if(!$device){
+            echo ajax_return(0,'请求有误');exit;
+        }
+        if(!$device['status']){
+            echo ajax_return(0,'暂未开放,不能绑定');exit;
+        }
+        $device_sn = M('device_sn')->where(array('device_id'=>$id,'sn'=>$sn,'mima'=>$mima))->find();
+        if(!$device_sn){
+            echo ajax_return(0,'SN码或密码不正确');exit;
+        }
+        if(!$device_sn['status']){
+            echo ajax_return(0,'此sn码已绑定');exit;
+        }
+        //判断最大数量
+        $count = M('user_device')->where(array('userid'=>$userid,'device_id'=>$device['id']))->count();
+        if($count>=$device['max']){
+            echo ajax_return(0,'您已超过该设备绑定添加的最大限制');exit;
+        }
+        //可以绑定
+        $jihuo = 0;
+        if($device['charge']){
+            $jihuo = 0; //未激活
+        }else{
+            $jihuo =1; //激活
+        }
+
+        $pid = M('user')->where(array('id'=>$userid))->getField('pid');
+        $mo = M();
+        $mo->startTrans();
+        $rs = array();
+        $rs[] = $mo->table('user_device')->add(array('userid'=>$userid,'device_id'=>$device['id'],'sn'=>$sn,'mima'=>$mima,'createdate'=>time(),'status'=>$jihuo));
+        if($pid){
+            if($device['yuanlibi']){
+                //给推荐人返原力币
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$pid,'device_id'=>$rs[0],'type'=>1,'num'=>$device['yuanlibi'],'status'=>$jihuo,'createdate'=>time()));
+                if($jihuo){
+                    $field = 'lth';
+                }else{
+                    $field = 'lthd';
+                }
+                $rs[] = $mo->table('user_coin')->where(array('userid'=>$pid))->setInc($field,$device['yuanlibi']);
+            }
+        }
+        if($jihuo){
+            if($device['suanli']){
+                //给自己返算力 一般需要激活才返
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$userid,'device_id'=>$rs[0],'type'=>2,'num'=>$device['suanli'],'status'=>$jihuo,'createdate'=>time()));
+                $rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc('lthz',$device['suanli']);
+            }
+        }
+        $rs[] = M('device_sn')->where(array('id'=>$device_sn['id']))->setField('status',0);
+        if(check_arr($rs)){
+            $mo->commit();
+            echo ajax_return(1,'新增设备成功');
+        }else{
+            $mo->rollback();
+            echo ajax_return(0,'新增设备失败');
+        }
+
+    }
+    /**
+     * 邀请好友
+     */
+    public function invite()
+    {
+        $phone = session('phone');
+        $this->assign('phone',$phone);
+        $this->display();
+    }
+    /**
+     * 实名认证
+     */
+    public function certification()
+    {
+        $userid = session('userid');
+        $info = M('user_certification')->where(array('userid'=>$userid))->find();
+
+        if($info && $info['status']){
+            $is_cert = true;
+            $notice = '恭喜您已通过实名认证';
+        }elseif($info){
+            $is_cert = true;
+            $notice = '您已提交实名认证，请耐心等待后台审核';
+        }
+        $this->assign('is_cert',$is_cert);
+        $this->assign('notice',$notice);
+        $this->display();
+    }
+    public function ajax_certification()
+    {
+        $userid = session('userid');
+        //先判断是否已经提交或审核通过
+        $info = M('user_certification')->where(array('userid'=>$userid))->find();
+        if($info && $info['status']){
+            echo ajax_return(0,'您已通过实名认证，无需再次提交');exit;
+        }elseif($info){
+            echo ajax_return(0,'您已提交实名认证，请耐心等待后台审核');exit;
+        }
+        $realname = I('post.realname');
+        $idcard = I('post.idcard');
+        $zhengmian = upload_file(UP_USER,$_FILES['file1']);
+        $fanmian = upload_file(UP_USER,$_FILES['file2']);
+        $shouchi = upload_file(UP_USER,$_FILES['file3']);
+        $id = M('user_certification')->add(array('userid'=>$userid,'zheng'=>$zhengmian,'fan'=>$fanmian,'shou'=>$shouchi,
+                'realname'=>$realname,'idcard'=>$idcard,'createdate'=>time()
+            ));
+        if($id){
+            echo ajax_return(1,'提交成功，请耐心等待后台审核');
+        }else{
+            echo ajax_return(0,'提交失败');
+        }
+    }
+
+
+    /**
+     * 邀请记录
+     */
+    public function myinvite()
+    {
+        $userid = session('userid');
+        $p = I('param.p',1);
+        $list = 5;
+        $res = M('myinvite')->where(array('userid'=>$userid))->order('id desc')->page($p.','.$list)->select();
+        $this->assign('res',$res);
+        $this->display();
+    }
+    /**
+     * 转出记录
+     */
+    public function ajax_myinvite()
+    {
+        $userid = session('userid');
+        $p = I('param.p',1);
+        $list = 5;
+        $res = M('myinvite')->where(array('userid'=>$userid))->order('id desc')->page($p.','.$list)->select();
+        foreach($res as &$v){
+            $v['date'] = date('m月d日');
+            $v['time'] = date('H:i');
+        }
+        echo json_encode($res);
+    }
+
+
+
+
+
+
 
 	/**
      * 退出登录

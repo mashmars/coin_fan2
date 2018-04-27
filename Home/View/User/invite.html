@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, user-scalable=no"/>
+	<title>邀请好友</title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<link rel="stylesheet" href="{$Think.const.PUB_CSS}common.css">
+	<link rel="stylesheet" href="{$Think.const.PUB_CSS}use.css">
+	</head>
+	<body>
+		<header>
+	<h3 class="tc lhbg">
+		<i class="go"></i>
+		修改资料
+	</h3>
+</header>
+		<div class="main invitingFriends">
+			<h3 class="tc">扫描识别二维码注册原力币</h3>
+			<div class="tc inviting-con">
+				<p>邀请人号码：{$phone|substr_replace=###,'****',3,7}{$phone|substr=###,7}</p>
+				<p><div id="qrcode"></div></p>
+				<h4 onclick="down()"><i class="dw" ></i>保存二维码到本地</h4>
+			</div>
+			
+			<a id="tttt"></a>
+			<p class="inviting-tips"><em>推广注册：</em>使用推荐码注册后，推荐人后台即显示推荐获增的原力币，在被推荐人未成为有效用户是该页面显示的值为不可用或者冻结状态。再被推荐成为有效后该页面显示的值为不可用或者冻结状态。再被推荐成为有效后。
+			</p>
+		</div>
+	</body>
+	<script src="{$Think.const.PUB_JS}set.js"></script>
+	<script src="{$Think.const.PUB_JS}jquery-1.8.2.min.js"></script>
+	<script src="{$Think.const.PUB_LIB}layer/layer.js"></script>
+	<script src="{$Think.const.PUB_JS}global.js"></script>
+	<script src="{$Think.const.PUB_LIB}qrcode.min.js"></script>
+	<script>
+	$(function(){
+		var url = "/index.php/login/register/mobile/{$phone}.html" ;
+		new QRCode(document.getElementById('qrcode'), url);
+	})
+	
+	/**
+	 * 根据图片生成画布
+	 */
+	function convertImageToCanvas(image) {
+		var canvas = document.createElement("canvas");
+		canvas.width = image.width;
+		canvas.height = image.height;
+		canvas.getContext("2d").drawImage(image, 0, 0);
+		return canvas;
+	}
+	/**
+	 * 下载图片
+	 */
+	function down() {
+		//var sampleImage = $('#qrcode img'),
+		var sampleImage = document.getElementsByTagName("img");
+		var canvas = convertImageToCanvas(sampleImage[0]);
+		
+		url = canvas.toDataURL("image/png");//PNG格式
+		//以下代码为下载此图片功能
+		var triggerDownload = $("#tttt").attr("href", url).attr("download", "myinvite.png");
+		triggerDownload[0].click();
+	//    triggerDownload.remove();
+	}
+	</script>
+</html>

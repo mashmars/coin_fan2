@@ -139,6 +139,8 @@ class LoginController extends Controller
     }
 
 	public function register(){
+        $mobile = I('mobile');
+        $this->assign('mobile',$mobile);
 		$this->display();
 	}
 	//发送注册短信验证
@@ -185,7 +187,6 @@ class LoginController extends Controller
         $password = I('post.password');
         $paypassword = I('post.paypassword');
         $refer = I('post.refer');
-        $zone = I('post.zone');
 
         /**
          * 注册流程，
@@ -193,7 +194,6 @@ class LoginController extends Controller
          * 2，判断短信验证码是否存在
          * 3，判断手机号是否存在 以及上级手机号是否存在
          * 4，注册成功 同时建立资产表
-         * 5, 注册成功 分区表（一直按下级的A区分配绑定）
          */
         //1
         if(!$phone){
@@ -211,9 +211,7 @@ class LoginController extends Controller
         if($password == $paypassword){
             echo ajax_return(0,'登录密码和支付密码不能一样');exit;
         }
-        if($zone != 1 && $zone !=2){
-            echo ajax_return(0,'请求有误');exit;
-        }
+
         //2
         if($sms != session($phone . 'reg')){
             echo ajax_return(0,'短信验证码不正确');exit;
@@ -241,8 +239,6 @@ class LoginController extends Controller
         $rs[] = $mo->table('user')->add(array('phone'=>$phone,'username'=>$phone,'password'=>md5($password),'paypassword'=>md5($paypassword),'pid'=>$pid,'realname'=>$realname,'createdate'=>time()));
         //插入资产表
         $rs[] = $mo->table('user_coin')->add(array('userid'=>$rs[0]));
-        //开始分区
-        $rs[] = $this->user_zone($rs[0],$pid,$pid,$zone);
 
         if(check_arr($rs)){
             $mo->commit();
