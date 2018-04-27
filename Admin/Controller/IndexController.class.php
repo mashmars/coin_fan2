@@ -15,9 +15,7 @@ class IndexController extends BaseController {
         $data['zc'] = M('myzc')->where(array('status'=>1,'createdate'=>array('between',array($start,$end))))->sum('num');
         //平台总量
         $data['total'] = M('user_coin')->sum('lth');
-        //当日收益
-        $data['income'] = M('sys_fh_log')->where(array('createdate'=>array('between',array($start,$end))))->sum('num');
-
+       
         $this->assign('data',$data);
         $this->display();
     }
