@@ -9,6 +9,9 @@
 	<meta name="keywords" content="">
 	<link rel="stylesheet" href="{$Think.const.PUB_CSS}common.css">
 	<link rel="stylesheet" href="{$Think.const.PUB_CSS}use.css">
+      <style>
+        #qrcode img {margin:0 auto;width:200px;height:200px;}
+      </style>
 	</head>
 	<body>
 		<header>
@@ -18,10 +21,10 @@
 	</h3>
 </header>
 		<div class="main invitingFriends">
-			<h3 class="tc">扫描识别二维码注册原力币</h3>
+			<h3 class="tc">扫描识别二维码注册原力会员</h3>
 			<div class="tc inviting-con">
 				<p>邀请人号码：{$phone|substr_replace=###,'****',3,7}{$phone|substr=###,7}</p>
-				<p><div id="qrcode"></div></p>
+				<p id="qrcode"></p>
 				<h4 onclick="down()"><i class="dw" ></i>保存二维码到本地</h4>
 			</div>
 			
