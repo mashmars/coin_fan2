@@ -118,7 +118,8 @@ class QueueController extends Controller
 	public function miner()
     {
         $config = M('config')->where('id=1')->find();
-        $nandu = $config['total'] * $config['days'] * $config['users'];
+		$count = M('user')->count();
+        $nandu = $config['total'] * $config['days'] * $count;
         //当前算力大于0的会员
         $user_coin = M('user_coin')->where(array('lthz'=>array('gt',0)))->select();
         $mo = M();
