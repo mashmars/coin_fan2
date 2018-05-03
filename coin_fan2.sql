@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2018-04-27 14:44:12
+Date: 2018-05-03 15:36:09
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,7 +32,7 @@ CREATE TABLE `admin` (
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '127.0.0.1', '1524795200', '超级管理员');
+INSERT INTO `admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '127.0.0.1', '1525330275', '超级管理员');
 
 -- ----------------------------
 -- Table structure for banner
@@ -86,6 +86,7 @@ CREATE TABLE `device` (
   `max` int(2) DEFAULT '0' COMMENT '最多可绑定多少个',
   `status` tinyint(4) DEFAULT '1' COMMENT '状态 1可用 0不可用',
   `yuanlibi` varchar(10) DEFAULT '0' COMMENT '原力币 绑定后给邀请人返多少个原力币',
+  `yuanlibi_2` varchar(10) DEFAULT '0' COMMENT '上上级的数量',
   `suanli` varchar(10) DEFAULT '0' COMMENT '绑定设备给自己返多少个算力',
   `charge` varchar(10) DEFAULT '0' COMMENT '手续费多少才算激活 （pos）',
   PRIMARY KEY (`id`)
@@ -94,8 +95,8 @@ CREATE TABLE `device` (
 -- ----------------------------
 -- Records of device
 -- ----------------------------
-INSERT INTO `device` VALUES ('1', 'Pos机', '3', '1', '10.0000', '50.0000', '25');
-INSERT INTO `device` VALUES ('2', '路由器', '100', '0', '0.0000', '60.0000', '0');
+INSERT INTO `device` VALUES ('1', 'Pos机', '3', '1', '10.0000', '5', '50.0000', '25');
+INSERT INTO `device` VALUES ('2', '路由器', '100', '0', '0.0000', '0', '60.0000', '0');
 
 -- ----------------------------
 -- Table structure for device_sn
@@ -116,8 +117,8 @@ CREATE TABLE `device_sn` (
 -- Records of device_sn
 -- ----------------------------
 INSERT INTO `device_sn` VALUES ('1', '1', '8850001106735250', '', '0');
-INSERT INTO `device_sn` VALUES ('2', '1', '8850001109968485', '', '0');
-INSERT INTO `device_sn` VALUES ('3', '1', '8850001106735009', '', '0');
+INSERT INTO `device_sn` VALUES ('2', '1', '8850001109968485', '', '1');
+INSERT INTO `device_sn` VALUES ('3', '1', '8850001106735009', '', '1');
 INSERT INTO `device_sn` VALUES ('5', '2', 'dddd', '2222123123', '1');
 
 -- ----------------------------
@@ -141,16 +142,16 @@ CREATE TABLE `device_xiaofei_log` (
 -- ----------------------------
 -- Records of device_xiaofei_log
 -- ----------------------------
-INSERT INTO `device_xiaofei_log` VALUES ('1', '8850001106735250', '741446', '20180302', '0.74167824', '1600.0000', '12.6000', '1524732813', '0');
-INSERT INTO `device_xiaofei_log` VALUES ('2', '8850001109968485', '535873', '20180305', '0.39956018', '1100.0000', '9.0500', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('3', '8850001109968485', '85828', '20180304', '0.86204861', '200.0000', '4.1000', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('4', '8850001109968485', '771089', '20180304', '0.76251157', '1300.0000', '10.1500', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('5', '8850001109968485', '933305', '20180304', '0.81327546', '800.0000', '7.4000', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('6', '8850001109968485', '66652', '20180304', '0.85586805', '200.0000', '4.1000', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('7', '8850001109968485', '471691', '20180304', '0.67730324', '900.0000', '7.9500', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('8', '8850001109968485', '726995', '20180303', '0.75043981', '2000.0000', '14.0000', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('9', '8850001106735009', '227653', '20180306', '0.50994212', '4253.0000', '28.5200', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('10', '8850001106735009', '298659', '20180320', '0.46403935', '628.0000', '6.7700', '1524732813', '1');
+INSERT INTO `device_xiaofei_log` VALUES ('1', '8850001106735250', '741446', '20180302', '0.74167824', '1600.0000', '50.0000', '1524732813', '1');
+INSERT INTO `device_xiaofei_log` VALUES ('2', '8850001109968485', '535873', '20180305', '0.39956018', '1100.0000', '9.0500', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('3', '8850001109968485', '85828', '20180304', '0.86204861', '200.0000', '4.1000', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('4', '8850001109968485', '771089', '20180304', '0.76251157', '1300.0000', '10.1500', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('5', '8850001109968485', '933305', '20180304', '0.81327546', '800.0000', '7.4000', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('6', '8850001109968485', '66652', '20180304', '0.85586805', '200.0000', '4.1000', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('7', '8850001109968485', '471691', '20180304', '0.67730324', '900.0000', '7.9500', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('8', '8850001109968485', '726995', '20180303', '0.75043981', '2000.0000', '14.0000', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('9', '8850001106735009', '227653', '20180306', '0.50994212', '4253.0000', '28.5200', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('10', '8850001106735009', '298659', '20180320', '0.46403935', '628.0000', '6.7700', '1524732813', '2');
 INSERT INTO `device_xiaofei_log` VALUES ('11', '8850001109968877', '550827', '20180306', '0.59415509', '2980.0000', '19.3900', '1524732813', '2');
 INSERT INTO `device_xiaofei_log` VALUES ('12', '8850001109968877', '456510', '20180327', '0.64119212', '3000.0000', '19.5000', '1524732813', '2');
 INSERT INTO `device_xiaofei_log` VALUES ('13', '8850001109968877', 'SK2KJ548834', '20180327', '0.40142361', '1400.0000', '10.7000', '1524732813', '2');
@@ -187,16 +188,14 @@ CREATE TABLE `myinvite` (
   `status` tinyint(4) DEFAULT NULL COMMENT '0未成功返 1成功返',
   `createdate` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COMMENT='邀请返利记录';
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COMMENT='邀请返利记录';
 
 -- ----------------------------
 -- Records of myinvite
 -- ----------------------------
-INSERT INTO `myinvite` VALUES ('34', '1', '10', '1', '10.0000', '0', '1524807190');
-INSERT INTO `myinvite` VALUES ('35', '1', '11', '1', '10.0000', '1', '1524807196');
-INSERT INTO `myinvite` VALUES ('36', '1', '12', '1', '10.0000', '1', '1524807203');
-INSERT INTO `myinvite` VALUES ('37', '27', '12', '2', '10.2900', '1', '1524807215');
-INSERT INTO `myinvite` VALUES ('38', '27', '11', '2', '31.7500', '1', '1524807215');
+INSERT INTO `myinvite` VALUES ('39', '26', '13', '1', '10.0000', '1', '1525331953');
+INSERT INTO `myinvite` VALUES ('40', '25', '13', '1', '5.0000', '1', '1525331953');
+INSERT INTO `myinvite` VALUES ('47', '27', '13', '2', '25.0000', '1', '1525332829');
 
 -- ----------------------------
 -- Table structure for mytransfer
@@ -287,7 +286,7 @@ CREATE TABLE `sys_fl_log` (
   `num` decimal(15,8) DEFAULT NULL,
   `createdate` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='每天返利记录';
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='每天返利记录';
 
 -- ----------------------------
 -- Records of sys_fl_log
@@ -343,9 +342,9 @@ INSERT INTO `user` VALUES ('1', '0', '15890143120', '15890143120', 'e10adc3949ba
 INSERT INTO `user` VALUES ('2', '1', '15890143121', '15890143121', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅1', null, '1524118712', '1', null, null, null, '0');
 INSERT INTO `user` VALUES ('3', '1', '15890143122', '15890143122', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅1', null, '1524118863', '1', null, null, null, '0');
 INSERT INTO `user` VALUES ('4', '1', '15890143124', '15890143124', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅1', null, '1524118984', '1', null, null, null, '0');
-INSERT INTO `user` VALUES ('25', '1', '15890143125', '15890143125', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅', null, '1524122672', '1', null, null, null, '0');
-INSERT INTO `user` VALUES ('26', '1', '15890143126', '15890143126', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅', null, '1524122748', '1', null, null, null, '0');
-INSERT INTO `user` VALUES ('27', '1', '15890143123', '15890143123', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', 'mash', '111', '1524122810', '1', null, null, null, '1');
+INSERT INTO `user` VALUES ('25', '4', '15890143125', '15890143125', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅', null, '1524122672', '1', null, null, null, '0');
+INSERT INTO `user` VALUES ('26', '25', '15890143126', '15890143126', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅', null, '1524122748', '1', null, null, null, '0');
+INSERT INTO `user` VALUES ('27', '26', '15890143123', '15890143123', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', 'mash', '111', '1524122810', '1', null, null, null, '1');
 INSERT INTO `user` VALUES ('28', '1', '15890143127', '15890143127', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 'adfa', null, '1524534028', '1', null, null, null, '0');
 INSERT INTO `user` VALUES ('29', '27', '15890143128', '15890143128', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 'asdfasdf', null, null, '1', null, null, null, '0');
 INSERT INTO `user` VALUES ('30', '27', '15890143129', '15890143129', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 'sd撒旦法', null, null, '1', null, null, null, '0');
@@ -391,16 +390,16 @@ CREATE TABLE `user_coin` (
 -- ----------------------------
 -- Records of user_coin
 -- ----------------------------
-INSERT INTO `user_coin` VALUES ('1', '1', '20.00000004', '10.00000000', '', '100.00000000');
-INSERT INTO `user_coin` VALUES ('2', '2', '0.00000008', '0.00000000', '', '200.00000000');
-INSERT INTO `user_coin` VALUES ('3', '3', '0.00000014', '0.00000000', '', '350.00000000');
-INSERT INTO `user_coin` VALUES ('4', '4', '0.00000018', '0.00000000', '', '440.00000000');
-INSERT INTO `user_coin` VALUES ('25', '25', '0.00000022', '0.00000000', '', '550.00000000');
-INSERT INTO `user_coin` VALUES ('26', '26', '0.00000002', '0.00000000', '', '50.00000000');
-INSERT INTO `user_coin` VALUES ('27', '27', '110.84000002', '0.00000000', 'LetwDKRT2T3MkufRH7SYYHvt1VhCQX1dFi', '42.04000000');
-INSERT INTO `user_coin` VALUES ('28', '28', '240.24000002', '0.00000000', '', '30.00000000');
-INSERT INTO `user_coin` VALUES ('29', '29', '200.24000000', '0.00000000', '', '21.00000000');
-INSERT INTO `user_coin` VALUES ('30', '30', '100.12000004', '0.00000000', '', '88.00000000');
+INSERT INTO `user_coin` VALUES ('1', '1', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('2', '2', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('3', '3', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('4', '4', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('25', '25', '5.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('26', '26', '10.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('27', '27', '0.00000000', '0.00000000', 'LetwDKRT2T3MkufRH7SYYHvt1VhCQX1dFi', '25.00000000');
+INSERT INTO `user_coin` VALUES ('28', '28', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('29', '29', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('30', '30', '0.00000000', '0.00000000', '', '0.00000000');
 
 -- ----------------------------
 -- Table structure for user_device
@@ -415,14 +414,12 @@ CREATE TABLE `user_device` (
   `createdate` int(11) DEFAULT NULL,
   `status` tinyint(4) DEFAULT '0' COMMENT '0是未激活 1是已激活',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_device
 -- ----------------------------
-INSERT INTO `user_device` VALUES ('10', '27', '1', '8850001106735250', '', '1524807190', '0');
-INSERT INTO `user_device` VALUES ('11', '27', '1', '8850001109968485', '', '1524807196', '1');
-INSERT INTO `user_device` VALUES ('12', '27', '1', '8850001106735009', '', '1524807203', '1');
+INSERT INTO `user_device` VALUES ('13', '27', '1', '8850001106735250', '', '1525331953', '1');
 
 -- ----------------------------
 -- Table structure for user_qianbao
