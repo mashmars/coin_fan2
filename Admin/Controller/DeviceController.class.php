@@ -268,7 +268,7 @@ class DeviceController extends Controller {
                 M('myinvite')->add(array('userid'=>$user_device['userid'],'device_id'=>$user_device['id'],'type'=>2,'num'=>$suanli,'status'=>1,'createdate'=>time()));
             }else{
                 //没哟激活
-                if($v['fee'] >= $device['charge']){
+                if($v['fee'] >= $device['charge']){ 
                     //给上级返原力币 解冻 给自己返算力
                     $suanli = $v['fee'] - $device['charge'];
                     $myself = M('user_coin')->where(array('userid'=>$user_device['userid']))->lock(true)->find();
@@ -283,17 +283,19 @@ class DeviceController extends Controller {
                     }
 
                     //给推荐人激活原力币及给自己返算力
-                    $myinvite = M('myinvite')->where(array('device_id'=>$user_device['id'],'type'=>1))->lock(true)->find();
+                    $myinvites = M('myinvite')->where(array('device_id'=>$user_device['id'],'type'=>1))->lock(true)->select();
 
-                    if(!$myinvite){
+                    if(!$myinvites[0]){
                         continue;
                     }
-                 //   var_dump($user_device['device_id']);exit;
-                    $rs[] = $mo->table('myinvite')->where(array('id'=>$myinvite['id']))->setField('status',1);
-                    $rs[] = $mo->table('user_device')->where(array('id'=>$user_device['id']))->setField('status',1);
-                    $rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setDec('lthd',$myinvite['num']);
-                    $rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setInc('lth',$myinvite['num']);
-                    $rs[] = $mo->table('device_xiaofei_log')->where(array('device_sn'=>$v['device_sn']))->setField('status',1);
+                 //   var_dump($user_device['device_id']);exit;                  
+                    $rs[] = $mo->table('user_device')->where(array('id'=>$user_device['id']))->setField('status',1);                    
+                    $rs[] = $mo->table('device_xiaofei_log')->where(array('device_sn'=>$v['device_sn']))->setField('status',1); 
+					foreach($myinvites as $myinvite){
+						$rs[] = $mo->table('myinvite')->where(array('id'=>$myinvite['id']))->setField('status',1);
+						$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setDec('lthd',$myinvite['num']);
+						$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setInc('lth',$myinvite['num']);
+					}
 
                     if(check_arr($rs)){
                         $mo->commit();

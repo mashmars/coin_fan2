@@ -238,7 +238,10 @@ class UserController extends CommonController {
             $jihuo =1; //激活
         }
 
-        $pid = M('user')->where(array('id'=>$userid))->getField('pid');
+        $pid = M('user')->where(array('id'=>$userid))->getField('pid');//上级
+		if($pid){
+			$ppid = M('user')->where(array('id'=>$pid))->getField('pid');//上上级
+		}
         $mo = M();
         $mo->startTrans();
         $rs = array();
@@ -253,6 +256,18 @@ class UserController extends CommonController {
                     $field = 'lthd';
                 }
                 $rs[] = $mo->table('user_coin')->where(array('userid'=>$pid))->setInc($field,$device['yuanlibi']);
+            }
+        }
+		if($ppid){
+            if($device['yuanlibi_2']){
+                //给推荐人返原力币
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$ppid,'device_id'=>$rs[0],'type'=>1,'num'=>$device['yuanlibi_2'],'status'=>$jihuo,'createdate'=>time()));
+                if($jihuo){
+                    $field = 'lth';
+                }else{
+                    $field = 'lthd';
+                }
+                $rs[] = $mo->table('user_coin')->where(array('userid'=>$ppid))->setInc($field,$device['yuanlibi_2']);
             }
         }
         if($jihuo){
