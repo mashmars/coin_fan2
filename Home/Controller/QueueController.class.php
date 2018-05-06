@@ -131,7 +131,7 @@ class QueueController extends Controller
             }
             $mo->startTrans();
             $rs = array();
-            $rs[] = $mo->table('user_coin')->where(array('userid'=>$coin['userid']))->setInc('lth',$num);
+           // $rs[] = $mo->table('user_coin')->where(array('userid'=>$coin['userid']))->setInc('lth',$num);
             $rs[] = $mo->table('sys_fl_log')->add(array('userid'=>$coin['userid'],'nandu'=>$nandu,'suanli'=>$coin['lthz'],'num'=>$num,'createdate'=>time())) ;
             if(check_arr($rs)){
                 $mo->commit();

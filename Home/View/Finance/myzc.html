@@ -55,6 +55,7 @@
 						<volist name='address' id='vo'>
 							<li data-id="{$vo.id}" data-value="{$vo.address}">{$vo.name}</li>
 						</volist>							
+						<li data-id="" data-value="">添加新地址</li>
 						</ul>
 					</div>
 				</div>
@@ -82,22 +83,22 @@
 		</div>
 		<footer>
 	<ul class="tc ovh">
-		<li>
-			<a href="{:U('finance/myzr')}">
+		<li class="">
+			<a href="/">
 				<i class="charge"></i>
-				<span>充币</span>
+				<span>首页</span>
 			</a>
 		</li>
-		<li class="active">
-			<a href="{:U('finance/myzc')}">
+		<li class='active'>
+			<a href="{:U('finance/index')}">
 				<i class="carry"></i>
-				<span>提币</span>
+				<span>钱包</span>
 			</a>
 		</li>
 		<li>
-			<a href="{:U('finance/index')}">
+			<a href="#">
 				<i class="wallet"></i>
-				<span>钱包</span>
+				<span>聊天</span>
 			</a>
 		</li>
 		<li >
@@ -141,6 +142,11 @@
 				$(this).siblings('i').toggleClass("active");
 			})
 			$('.selection ul li').click(function () {
+				if($(this).data('id') ==''){
+					var url = "{:U('finance/zcwallet')}";
+					location.href=url;
+				}
+				
 				$(this).parent().hide();
 				$(this).addClass('hv').siblings().removeClass('hv');
 				$(this).parent().siblings('input').val($(this).text());

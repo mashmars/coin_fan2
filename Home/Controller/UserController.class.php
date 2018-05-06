@@ -373,7 +373,18 @@ class UserController extends CommonController {
 
 
 
-
+	/*
+	*添加申请pos机或路由器
+	*/
+	public function getpos(){
+		$this->display();
+	}
+	public function getrouter(){
+		$this->display();
+	}
+	public function addaddress(){
+		$this->display();
+	}
 
 	/**
      * 退出登录

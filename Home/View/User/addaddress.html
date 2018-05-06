@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, user-scalable=no"/>
+	<title>添加收货地址</title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<link rel="stylesheet" type="text/css" href="{$Think.const.PUB_CSS}common.css"/>
+	<link rel="stylesheet" type="text/css" href="{$Think.const.PUB_CSS}address.css"/>
+	<link rel="stylesheet" type="text/css" href="{$Think.const.PUB_CSS}mobileSelect.css">
+	<script src="{$Think.const.PUB_JS}jquery-1.8.2.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="{$Think.const.PUB_JS}mobileSelect.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<header>
+			<h3 class="tc lhbg">
+				<i class="go"></i>添加收货地址
+			</h3>
+		</header>
+		<div class="main addAddress"id="main">
+			<div class="info">
+				<span>收货人：</span><input type="text" placeholder="请输入姓名" id='xm'/>
+			</div>
+			<div class="info">
+				<span>联系方式：</span><input type="text" placeholder="请输入联系方式" id='lxfs'/>
+			</div>
+			<div class="info">
+				<span>所在地区：</span><div class="clearFix area"><span class="fl" id="btnArea">请输入地区</span><span class="fr" id="btnMore">&gt</span></div>
+			</div>
+			<div class="info">
+				<span>详细地址：</span><input type="text" placeholder="请输入详细地址" id='address'/>
+			</div>
+			<!--<div class="info">
+				<span>支付方式：</span>
+				<div class="cbo" id="cbotypes">			
+					<div><input type="radio" checked="radio" name="radio" id="cboZfb" value="1" /><label class="span" for="cboZfb"></label><label for="cboZfb">支付宝</label></div>
+					<div><input type="radio" name="radio" id="cboWx" value="2" /><label class="span" for="cboWx"></label><label for="cboWx">微信</label></div>
+					<div><input type="radio" name="radio" id="cboYhk" value="3" /><label class="span" for="cboYhk"></label><label for="cboYhk">银行卡</label></div>
+				</div>
+			</div>-->
+			<div class="info clearFix">
+				<span class="mr">设为默认</span>
+				<span class="fr switchs"><i></i></span>
+			</div>
+			<p>注：一旦点击领取后，我们将安排在三天之内给您发货请注意查收</p>
+			<div class="btn"><span onclick="javascript:history.go(-1)">取消</span><span onclick="lingqu()">确定领取</span></div>
+		</div>
+		<script src="{$Think.const.PUB_JS}set.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{$Think.const.PUB_JS}mobileSelect.min.js" type="text/javascript"></script>
+		<script src="{$Think.const.PUB_LIB}layer/layer.js"></script>
+		<script>
+			var flag = true;
+			function lingqu(){
+				flag = false;
+				if(flag){
+					return false;
+				}
+				
+				var xm = $('#xm').val();
+				var lxfs = $('#lxfs').val();
+				var address = $('#address').val();
+				var area = $('#btnArea').text();
+				var type = "{:I('param.type')}";
+				if(xm ==''){
+					layer.msg('收货人姓名不能为空',{time:2000,icon:5});
+					flag = true;
+					return false;
+				}
+				if(lxfs ==''){
+					layer.msg('联系方式不能为空',{time:2000,icon:5});
+					flag = true;
+					return false;
+				}
+				if(address ==''){
+					layer.msg('收货地址不能为空',{time:2000,icon:5});
+					flag = true;
+					return false;
+				}
+				if(area =='' || area=='请输入地区'){
+					layer.msg('请选择地区',{time:2000,icon:5});
+					flag = true;
+					return false;
+				}
+				$.post("{:U('index/ajax_add_shenqing')}",{xm:xm,lxfs:lxfs,address:address,area:area,type:type},function(data){
+					if(data.info == 'success'){
+						layer.msg(data.msg,{time:2000,icon:1},function(){
+							location.reload();
+						})
+					}else{
+						layer.msg(data.msg,{time:2000,icon:5});
+						flag = true;
+					}
+				},'json')
+			}
+		</script>
+		<script type="text/javascript">
+
+var UplinkData =
+[   
+	{
+		id:'2',
+		value:'河北',
+		childs:[
+			{
+				id:'1',
+				value:'石家庄',
+				 childs:[
+							  {id:'1',value:'金水区'},
+							  {id:'2',value:'中原区'},
+							  {id:'3',value:'高新区'},
+							  {id:'4',value:'郑东新区'},
+							  {id:'5',value:'惠济区'}
+						  ]
+			},
+			{
+				id:'2',
+				value:'唐山',
+				childs:[
+							  {id:'1',value:'金水区'},
+							  {id:'2',value:'中原区'},
+							  {id:'3',value:'高新区'},
+							  {id:'4',value:'郑东新区'},
+							  {id:'5',value:'惠济区'}
+						  ]
+			},
+			{
+				id:'3',
+				value:'秦皇岛',
+				childs:[
+							  {id:'1',value:'金水区'},
+							  {id:'2',value:'中原区'},
+							  {id:'3',value:'高新区'},
+							  {id:'4',value:'郑东新区'},
+							  {id:'5',value:'惠济区'}
+						  ]
+			},
+			{
+				id:'4',
+				value:'邯郸',
+				childs:[
+							  {id:'1',value:'金水区'},
+							  {id:'2',value:'中原区'},
+							  {id:'3',value:'高新区'},
+							  {id:'4',value:'郑东新区'},
+							  {id:'5',value:'惠济区'}
+						  ]
+			},
+			{
+				id:'5',
+				value:'邢台',
+				childs:[
+							  {id:'1',value:'金水区'},
+							  {id:'2',value:'中原区'},
+							  {id:'3',value:'高新区'},
+							  {id:'4',value:'郑东新区'},
+							  {id:'5',value:'惠济区'}
+						  ]
+			},
+			{
+				id:'6',
+				value:'漯河',
+				childs:[
+							  {id:'1',value:'金水区'},
+							  {id:'2',value:'中原区'},
+							  {id:'3',value:'高新区'},
+							  {id:'4',value:'郑东新区'},
+							  {id:'5',value:'惠济区'}
+						  ]
+			}
+		]
+	}
+	,{
+		id:'1',
+		value:'河南',
+		childs:[
+			{
+				id:'1',
+				value:'郑州',
+				childs:[
+							  {id:'1',value:'金水区'},
+							  {id:'2',value:'中原区'},
+							  {id:'3',value:'高新区'},
+							  {id:'4',value:'郑东新区'},
+							  {id:'5',value:'惠济区'}
+						  ]
+			},
+			{
+				id:'2',
+				value:'开封'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'3',
+				value:'洛阳'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'4',
+				value:'平顶山'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'5',
+				value:'三门峡'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'6',
+				value:'漯河'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'7',
+				value:'许昌'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'8',
+				value:'周口'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'9',
+				value:'南阳'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'10',
+				value:'信阳'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'11',
+				value:'新乡'
+			}
+		]
+	},
+	{
+		id:'3',
+		value:'四川',
+		childs:[
+			{
+				id:'1',
+				value:'成都'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'2',
+				value:'绵阳'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'3',
+				value:'自贡'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'4',
+				value:'广元'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'5',
+				value:'宜宾'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'6',
+				value:'遂宁'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			},
+			{
+				id:'7',
+				value:'资阳'
+				,childs:[
+							  {id:'1',value:'太明区'},
+							  {id:'2',value:'小明区'},
+							  {id:'3',value:'高高区'},
+							  {id:'4',value:'东新区'},
+							  {id:'5',value:'济人区'}
+						  ]
+			}
+			
+		]
+	}
+];
+
+//MobileSelect{otype默认false,为true时选择最后一项}
+var mobileSelect5 = new MobileSelect({
+	trigger: '#btnArea',
+	title: '城市选择',
+	otype:false,
+	wheels: [
+				{data : UplinkData}
+			],
+	position: [1,0],
+	transitionEnd:function(indexArr, data){
+		
+	},
+	callback:function(indexArr, data){
+		var area=document.getElementById("btnArea");
+		area.style.color="#343333";
+	}
+});
+document.getElementById("btnMore").onclick=function(){
+	document.getElementById("btnArea").click();
+}
+
+
+</script>
+	</body>
+</html>
