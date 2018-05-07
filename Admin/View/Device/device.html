@@ -78,9 +78,9 @@
 				<th width="80">ID</th>
 				<th width="100">设备名称</th>								
 				<th width="100">允许最大数</th>								
-				<th width="100">一级原力币</th>								
-				<th width="100">二级原力币</th>								
-				<th width="100">算力</th>								
+				<!--<th width="100">一级原力币</th>								
+				<th width="100">二级原力币</th>		-->						
+				<th width="100">算力(仅自动激活有效)</th>								
 				<th width="100">最低消费</th>								
 				<th width="100">状态</th>								
 				<th width="170">操作</th>
@@ -93,8 +93,8 @@
 				<td>{$vo.id}</td>
 				<td>{$vo.name}</td>				
 				<td>{$vo.max}</td>				
-				<td>{$vo.yuanlibi}</td>				
-				<td>{$vo.yuanlibi_2}</td>				
+				<!--<td>{$vo.yuanlibi}</td>				
+				<td>{$vo.yuanlibi_2}</td>				-->
 				<td>{$vo.suanli}</td>				
 				<td>{$vo.charge}</td>				
 				<td>
@@ -159,12 +159,12 @@ $(function(){
 			$('#input').show();
 		}
 	})
-	$('#serach').click(function(){
+	$('#serach1').click(function(){
 		$('#form-search').prop('action','');
 		var field = $('#field').find('option:selected').val();
 		var type = $('#field').find('option:selected').attr('data-type');
 		if(field == 'all'){
-			var url = "{:U('user/member_list')}";
+			var url = "{:U('device/device')}";
 			window.location.href = url;
 			return false;
 		}

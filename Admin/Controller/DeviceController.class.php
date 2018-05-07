@@ -246,7 +246,7 @@ class DeviceController extends Controller {
         if(!$device_sns){
             echo ajax_return(0,'没有可用的消费记录');exit;
         }
-        $xiaofei = M('device_xiaofei_log')->where(array('device_sn'=>array('in',$device_sns),'status'=>0))->field('device_sn,sum(fee) as fee')->group('device_sn')->select();
+        $xiaofei = M('device_xiaofei_log')->where(array('device_sn'=>array('in',$device_sns),'status'=>0))->field('device_sn,sum(fee) as fee')->group('device_sn')->lock(true)->select();
         //找到pos机的设置
         $device = M('device')->where('id=1')->find();
         foreach($xiaofei as $v){
@@ -276,27 +276,24 @@ class DeviceController extends Controller {
                     $mo = M();
                     $mo->startTrans();
                     $rs = array();
+					
+					$rs[] = $mo->table('user_device')->where(array('id'=>$user_device['id']))->setField('status',1);                    
+                    $rs[] = $mo->table('device_xiaofei_log')->where(array('device_sn'=>$v['device_sn']))->setField('status',1); 
+					
                     //给自己返算力
                     if($suanli > 0){
-                        $rs[] =$mo->table('user_coin')->where(array('userid'=>$user_device['userid']))->setInc('lthz',$suanli);
+                        $rs[] =$mo->table('user_coin')->where(array('userid'=>$myself['userid']))->setInc('lthz',$suanli);
                         $rs[] = $mo->table('myinvite')->add(array('userid'=>$user_device['userid'],'device_id'=>$user_device['id'],'type'=>2,'num'=>$suanli,'status'=>1,'createdate'=>time()));
                     }
-
-                    //给推荐人激活原力币及给自己返算力
-                    $myinvites = M('myinvite')->where(array('device_id'=>$user_device['id'],'type'=>1))->lock(true)->select();
-
-                    if(!$myinvites[0]){
-                        continue;
-                    }
-                 //   var_dump($user_device['device_id']);exit;                  
-                    $rs[] = $mo->table('user_device')->where(array('id'=>$user_device['id']))->setField('status',1);                    
-                    $rs[] = $mo->table('device_xiaofei_log')->where(array('device_sn'=>$v['device_sn']))->setField('status',1); 
-					foreach($myinvites as $myinvite){
-						$rs[] = $mo->table('myinvite')->where(array('id'=>$myinvite['id']))->setField('status',1);
-						$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setDec('lthd',$myinvite['num']);
-						$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setInc('lth',$myinvite['num']);
+					//消费记录验证通过后给自己激活 或给上级 上上级激活
+                    $invites = M('myinvite')->where(array('from_id'=>$user_device['userid'],'status'=>0))->select(); //注册的记录
+					foreach($invites as $invite){
+						$rs[] = $mo->table('myinvite')->where(array('id'=>$invite['id']))->setField('status',1);
+						$rs[] = $mo->table('user_coin')->where(array('userid'=>$invite['userid']))->setDec('lthd',$invite['num']);
+						$rs[] = $mo->table('user_coin')->where(array('userid'=>$invite['userid']))->setInc('lth',$invite['num']);
 					}
-
+                    
+					
                     if(check_arr($rs)){
                         $mo->commit();
                     }else{
@@ -318,7 +315,15 @@ class DeviceController extends Controller {
     {
         $p = I('param.p',1);
         $list = 10;
-        $res = M('myinvite')->alias('a')->join('left join user_device b on a.device_id=b.id')->join('left join user c on a.userid=b.id')->field('a.*,b.sn,c.phone')->page($p.','.$list)->order('a.id desc')->select();
+        $res = M('myinvite')->alias('a')->join('left join user c on a.userid=c.id')->field('a.*,c.phone')->page($p.','.$list)->order('a.id desc')->select();
+		foreach($res as &$v){
+			if($v['from_id']){
+				$v['sn'] = M('user_device')->where(array('userid'=>$v['from_id']))->getField('sn');
+			}
+			if($v['device_id']){
+				$v['sn'] = M('user_device')->where(array('id'=>$v['device_id']))->getField('sn');
+			}
+		}
         $count = M('myinvite')->count();
         $page = new \Think\Page($count,$list);
         $show = $page->show();
@@ -327,4 +332,82 @@ class DeviceController extends Controller {
         $this->assign('page',$show);
         $this->display();
     }
+	
+	
+	
+	
+	
+	/**
+	*申请管理
+	*/
+	public function device_shenqing()
+    {	
+
+        if(IS_POST){
+            $type = I('post.type');
+			$p = I('param.p', 1);
+			$list = 10;
+			$map['type'] = $type;
+            $res = M('user_shenqing')->where($map)->page($p . ',' . $list)->order('id desc')->select();
+			$count = M('user_shenqing')->where(array('type'=>$type))->count();
+			$page = new \Think\Page($count, $list);
+			//分页跳转的时候保证查询条件
+			foreach($map as $key=>$val) {
+				$page->parameter[$key]   = $val;
+			}
+			$show = $page->show();
+			$this->assign('res', $res);
+			$this->assign('page', $show);
+			$this->assign('count', $count);
+			
+            $this->assign('type',$type);
+           
+            $this->display();
+            exit;
+		}else{
+			$type = I('param.type','');
+			$p = I('param.p', 1);
+			$list = 10;
+			if($type){
+				$map['type'] = $type;
+			}
+			$res = M('user_shenqing')->where($map)->page($p . ',' . $list)->order('id desc')->select();
+			$count = M('user_shenqing')->where($map)->count();
+			$page = new \Think\Page($count, $list);
+			$show = $page->show();
+			$this->assign('res', $res);
+			$this->assign('page', $show);
+			$this->assign('count', $count);
+			$this->assign('type',$type);
+			$this->display();
+		}
+    }
+	public function device_shenqing_edit(){
+		$id = I('param.id');
+		$info = M('user_shenqing')->where(array('id'=>$id))->find();
+		$this->assign('info',$info);
+		$this->display();
+	}
+	public function ajax_shenqing_edit(){
+		$data = I('post.');
+		$res = M('user_shenqing')->save($data);
+		if($res){
+			echo ajax_return(1,'操作成功');
+		}else{
+			echo ajax_return(0,'操作失败');
+		}
+	}
+	public function ajax_shenqing_del(){
+		$id = I('post.id');
+		$info = M('user_shenqing')->where(array('id'=>$id))->find();
+		if($info['status'] == 1){
+			echo ajax_return(1,'已处理的单子不能删除');exit;
+		}
+		$res = M('user_shenqing')->delete($id);
+		if($res){
+			echo ajax_return(1,'删除成功');
+		}else{
+			echo ajax_return(0,'删除失败');
+		}
+	}
 }

@@ -358,7 +358,7 @@ class UserController extends BaseController
             $data = I('post.');
             $field = $data['field'];
             $value = $data['keyword'];
-            $userid = M('user')->where(array($field=>$value))->getField('userid');
+            $userid = M('user')->where(array($field=>$value))->getField('id');
             $res = M('user_certification')->where(array('userid'=>$userid))->select();
             $this->assign('res',$res);
             $this->assign('field',$field);

@@ -161,7 +161,7 @@ $(function(){
 		var field = $('#field').find('option:selected').val();
 		var type = $('#field').find('option:selected').attr('data-type');
 		if(field == 'all'){
-			var url = "{:U('user/member_list')}";
+			var url = "{:U('user/member_certification')}";
 			window.location.href = url;
 			return false;
 		}

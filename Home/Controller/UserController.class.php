@@ -237,39 +237,11 @@ class UserController extends CommonController {
         }else{
             $jihuo =1; //激活
         }
-
-        $pid = M('user')->where(array('id'=>$userid))->getField('pid');//上级
-		if($pid){
-			$ppid = M('user')->where(array('id'=>$pid))->getField('pid');//上上级
-		}
         $mo = M();
         $mo->startTrans();
         $rs = array();
         $rs[] = $mo->table('user_device')->add(array('userid'=>$userid,'device_id'=>$device['id'],'sn'=>$sn,'mima'=>$mima,'createdate'=>time(),'status'=>$jihuo));
-        if($pid){
-            if($device['yuanlibi']){
-                //给推荐人返原力币
-                $rs[] = $mo->table('myinvite')->add(array('userid'=>$pid,'device_id'=>$rs[0],'type'=>1,'num'=>$device['yuanlibi'],'status'=>$jihuo,'createdate'=>time()));
-                if($jihuo){
-                    $field = 'lth';
-                }else{
-                    $field = 'lthd';
-                }
-                $rs[] = $mo->table('user_coin')->where(array('userid'=>$pid))->setInc($field,$device['yuanlibi']);
-            }
-        }
-		if($ppid){
-            if($device['yuanlibi_2']){
-                //给推荐人返原力币
-                $rs[] = $mo->table('myinvite')->add(array('userid'=>$ppid,'device_id'=>$rs[0],'type'=>1,'num'=>$device['yuanlibi_2'],'status'=>$jihuo,'createdate'=>time()));
-                if($jihuo){
-                    $field = 'lth';
-                }else{
-                    $field = 'lthd';
-                }
-                $rs[] = $mo->table('user_coin')->where(array('userid'=>$ppid))->setInc($field,$device['yuanlibi_2']);
-            }
-        }
+        //激活直接返算力
         if($jihuo){
             if($device['suanli']){
                 //给自己返算力 一般需要激活才返
@@ -277,6 +249,9 @@ class UserController extends CommonController {
                 $rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc('lthz',$device['suanli']);
             }
         }
+		
+		
+		//设置sn码不可用
         $rs[] = M('device_sn')->where(array('id'=>$device_sn['id']))->setField('status',0);
         if(check_arr($rs)){
             $mo->commit();

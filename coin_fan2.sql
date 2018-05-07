@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2018-05-06 21:17:11
+Date: 2018-05-07 15:11:30
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,7 +32,7 @@ CREATE TABLE `admin` (
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '1.119.191.254', '1525331727', '超级管理员');
+INSERT INTO `admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '127.0.0.1', '1525673227', '超级管理员');
 
 -- ----------------------------
 -- Table structure for banner
@@ -68,13 +68,16 @@ CREATE TABLE `config` (
   `total` int(11) DEFAULT '0' COMMENT '预设数量',
   `days` int(8) DEFAULT '0' COMMENT '预设天数',
   `users` int(8) DEFAULT '0' COMMENT '人数',
+  `invite` int(5) DEFAULT '0' COMMENT '给自己返多少原力币',
+  `invite1` int(5) DEFAULT '0' COMMENT '给上级返多少原力币',
+  `invite2` int(5) DEFAULT '0' COMMENT '给上上级返多少原力币',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES ('1', '', '', '', '', '', '', '', '', '', '1.5000', '100', '100', '100');
+INSERT INTO `config` VALUES ('1', '', '', '', '', '', '', '', '', '', '1.5000', '100', '100', '100', '1', '2', '3');
 
 -- ----------------------------
 -- Table structure for device
@@ -117,8 +120,8 @@ CREATE TABLE `device_sn` (
 -- Records of device_sn
 -- ----------------------------
 INSERT INTO `device_sn` VALUES ('1', '1', '8850001106735250', '', '0');
-INSERT INTO `device_sn` VALUES ('2', '1', '8850001109968485', '', '0');
-INSERT INTO `device_sn` VALUES ('3', '1', '8850001106735009', '', '0');
+INSERT INTO `device_sn` VALUES ('2', '1', '8850001109968485', '', '1');
+INSERT INTO `device_sn` VALUES ('3', '1', '8850001106735009', '', '1');
 INSERT INTO `device_sn` VALUES ('5', '2', 'dddd', '2222123123', '1');
 
 -- ----------------------------
@@ -142,16 +145,16 @@ CREATE TABLE `device_xiaofei_log` (
 -- ----------------------------
 -- Records of device_xiaofei_log
 -- ----------------------------
-INSERT INTO `device_xiaofei_log` VALUES ('1', '8850001106735250', '741446', '20180302', '0.74167824', '1600.0000', '12.6000', '1524732813', '0');
-INSERT INTO `device_xiaofei_log` VALUES ('2', '8850001109968485', '535873', '20180305', '0.39956018', '1100.0000', '9.0500', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('3', '8850001109968485', '85828', '20180304', '0.86204861', '200.0000', '4.1000', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('4', '8850001109968485', '771089', '20180304', '0.76251157', '1300.0000', '10.1500', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('5', '8850001109968485', '933305', '20180304', '0.81327546', '800.0000', '7.4000', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('6', '8850001109968485', '66652', '20180304', '0.85586805', '200.0000', '4.1000', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('7', '8850001109968485', '471691', '20180304', '0.67730324', '900.0000', '7.9500', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('8', '8850001109968485', '726995', '20180303', '0.75043981', '2000.0000', '14.0000', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('9', '8850001106735009', '227653', '20180306', '0.50994212', '4253.0000', '28.5200', '1524732813', '1');
-INSERT INTO `device_xiaofei_log` VALUES ('10', '8850001106735009', '298659', '20180320', '0.46403935', '628.0000', '6.7700', '1524732813', '1');
+INSERT INTO `device_xiaofei_log` VALUES ('1', '8850001106735250', '741446', '20180302', '0.74167824', '1600.0000', '51.0000', '1524732813', '1');
+INSERT INTO `device_xiaofei_log` VALUES ('2', '8850001109968485', '535873', '20180305', '0.39956018', '1100.0000', '9.0500', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('3', '8850001109968485', '85828', '20180304', '0.86204861', '200.0000', '4.1000', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('4', '8850001109968485', '771089', '20180304', '0.76251157', '1300.0000', '10.1500', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('5', '8850001109968485', '933305', '20180304', '0.81327546', '800.0000', '7.4000', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('6', '8850001109968485', '66652', '20180304', '0.85586805', '200.0000', '4.1000', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('7', '8850001109968485', '471691', '20180304', '0.67730324', '900.0000', '7.9500', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('8', '8850001109968485', '726995', '20180303', '0.75043981', '2000.0000', '14.0000', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('9', '8850001106735009', '227653', '20180306', '0.50994212', '4253.0000', '28.5200', '1524732813', '2');
+INSERT INTO `device_xiaofei_log` VALUES ('10', '8850001106735009', '298659', '20180320', '0.46403935', '628.0000', '6.7700', '1524732813', '2');
 INSERT INTO `device_xiaofei_log` VALUES ('11', '8850001109968877', '550827', '20180306', '0.59415509', '2980.0000', '19.3900', '1524732813', '2');
 INSERT INTO `device_xiaofei_log` VALUES ('12', '8850001109968877', '456510', '20180327', '0.64119212', '3000.0000', '19.5000', '1524732813', '2');
 INSERT INTO `device_xiaofei_log` VALUES ('13', '8850001109968877', 'SK2KJ548834', '20180327', '0.40142361', '1400.0000', '10.7000', '1524732813', '2');
@@ -182,22 +185,22 @@ DROP TABLE IF EXISTS `myinvite`;
 CREATE TABLE `myinvite` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) DEFAULT NULL,
+  `from_id` int(11) DEFAULT NULL COMMENT '来源自谁返的 0',
   `device_id` int(11) DEFAULT NULL COMMENT '这个对应我的设备id user_device',
   `type` tinyint(4) DEFAULT NULL COMMENT '1是原力币 2是算力',
   `num` decimal(10,4) DEFAULT '0.0000' COMMENT '0是未激活 1是已激活',
   `status` tinyint(4) DEFAULT NULL COMMENT '0未成功返 1成功返',
   `createdate` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COMMENT='邀请返利记录';
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COMMENT='邀请返利记录';
 
 -- ----------------------------
 -- Records of myinvite
 -- ----------------------------
-INSERT INTO `myinvite` VALUES ('34', '1', '10', '1', '10.0000', '0', '1524807190');
-INSERT INTO `myinvite` VALUES ('35', '1', '11', '1', '10.0000', '1', '1524807196');
-INSERT INTO `myinvite` VALUES ('36', '1', '12', '1', '10.0000', '1', '1524807203');
-INSERT INTO `myinvite` VALUES ('37', '27', '12', '2', '10.2900', '1', '1524807215');
-INSERT INTO `myinvite` VALUES ('38', '27', '11', '2', '31.7500', '1', '1524807215');
+INSERT INTO `myinvite` VALUES ('39', '38', '38', null, '1', '1.0000', '1', '1525672914');
+INSERT INTO `myinvite` VALUES ('40', '30', '38', null, '1', '2.0000', '1', '1525672914');
+INSERT INTO `myinvite` VALUES ('41', '27', '38', null, '1', '3.0000', '1', '1525672914');
+INSERT INTO `myinvite` VALUES ('42', '38', null, '13', '2', '26.0000', '1', '1525673299');
 
 -- ----------------------------
 -- Table structure for mytransfer
@@ -4172,7 +4175,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`) USING BTREE,
   UNIQUE KEY `phone` (`phone`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
@@ -4183,7 +4186,7 @@ INSERT INTO `user` VALUES ('3', '1', '15890143122', '15890143122', 'e10adc3949ba
 INSERT INTO `user` VALUES ('4', '1', '15890143124', '15890143124', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅1', null, '1524118984', '1', null, null, null, '0');
 INSERT INTO `user` VALUES ('25', '1', '15890143125', '15890143125', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅', null, '1524122672', '1', null, null, null, '0');
 INSERT INTO `user` VALUES ('26', '1', '15890143126', '15890143126', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', '马帅', null, '1524122748', '1', null, null, null, '0');
-INSERT INTO `user` VALUES ('27', '1', '15890143123', '15890143123', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', 'mash', '111', '1524122810', '1', null, null, null, '1');
+INSERT INTO `user` VALUES ('27', '1', '15890143110', '15890143110', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', 'mash', '111', '1524122810', '1', null, null, null, '1');
 INSERT INTO `user` VALUES ('28', '1', '15890143127', '15890143127', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 'adfa', null, '1524534028', '1', null, null, null, '0');
 INSERT INTO `user` VALUES ('29', '27', '15890143128', '15890143128', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 'asdfasdf', null, null, '1', null, null, null, '0');
 INSERT INTO `user` VALUES ('30', '27', '15890143129', '15890143129', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 'sd撒旦法', null, null, '1', null, null, null, '0');
@@ -4194,6 +4197,7 @@ INSERT INTO `user` VALUES ('34', '32', '18939238803', '18939238803', 'ab24479533
 INSERT INTO `user` VALUES ('35', '0', '18236777562', '18236777562', 'dc483e80a7a0bd9ef71d8cf973673924', '9cbf8a4dcb8e30682b927f352d6559a0', '金子', null, '1525397891', '1', null, null, null, '0');
 INSERT INTO `user` VALUES ('36', '32', '15036164378', '15036164378', '8a6f2805b4515ac12058e79e66539be9', 'f379eaf3c831b04de153469d1bec345e', '菜牙', '123456789123', '1525400770', '1', '中国', '河南', '郑州', '0');
 INSERT INTO `user` VALUES ('37', '0', '13598808667', '13598808667', '889a145324cc0b54822d12ca2140e217', '2dc22add53605cdad306d37b0e4f0348', '欧文', null, '1525404608', '1', null, null, null, '0');
+INSERT INTO `user` VALUES ('38', '30', '15890143123', '15890143123', 'e10adc3949ba59abbe56e057f20f883e', '96e79218965eb72c92a549dd5a330112', 'mashuai', null, '1525672914', '1', null, null, null, '0');
 
 -- ----------------------------
 -- Table structure for user_certification
@@ -4232,21 +4236,21 @@ CREATE TABLE `user_coin` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`userid`) USING BTREE,
   KEY `lthb` (`lthb`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_coin
 -- ----------------------------
-INSERT INTO `user_coin` VALUES ('1', '1', '20.00546818', '10.00000000', '', '100.00000000');
-INSERT INTO `user_coin` VALUES ('2', '2', '0.01093633', '0.00000000', '', '200.00000000');
-INSERT INTO `user_coin` VALUES ('3', '3', '0.01913858', '0.00000000', '', '350.00000000');
-INSERT INTO `user_coin` VALUES ('4', '4', '0.02406128', '0.00000000', '', '440.00000000');
-INSERT INTO `user_coin` VALUES ('25', '25', '0.03007709', '0.00000000', '', '550.00000000');
-INSERT INTO `user_coin` VALUES ('26', '26', '0.00273407', '0.00000000', '', '50.00000000');
-INSERT INTO `user_coin` VALUES ('27', '27', '110.84233035', '0.00000000', 'LetwDKRT2T3MkufRH7SYYHvt1VhCQX1dFi', '42.04000000');
-INSERT INTO `user_coin` VALUES ('28', '28', '240.24164124', '0.00000000', '', '30.00000000');
-INSERT INTO `user_coin` VALUES ('29', '29', '200.24114918', '0.00000000', '', '21.00000000');
-INSERT INTO `user_coin` VALUES ('30', '30', '100.12481250', '0.00000000', '', '88.00000000');
+INSERT INTO `user_coin` VALUES ('1', '1', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('2', '2', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('3', '3', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('4', '4', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('25', '25', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('26', '26', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('27', '27', '3.00000000', '0.00000000', 'LetwDKRT2T3MkufRH7SYYHvt1VhCQX1dFi', '0.00000000');
+INSERT INTO `user_coin` VALUES ('28', '28', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('29', '29', '0.00000000', '0.00000000', '', '0.00000000');
+INSERT INTO `user_coin` VALUES ('30', '30', '2.00000000', '0.00000000', '', '0.00000000');
 INSERT INTO `user_coin` VALUES ('31', '31', '0.00000000', '0.00000000', '', '0.00000000');
 INSERT INTO `user_coin` VALUES ('32', '32', '0.00000000', '0.00000000', 'GUiL0iQuDMV8JzsXif4NWJK59Atcui9v', '0.00000000');
 INSERT INTO `user_coin` VALUES ('33', '33', '0.00000000', '0.00000000', 's0d8DcujXUNcTQA95qkmwGpZ19MZEuW3', '0.00000000');
@@ -4254,6 +4258,7 @@ INSERT INTO `user_coin` VALUES ('34', '34', '0.00000000', '0.00000000', 'jNYDdRn
 INSERT INTO `user_coin` VALUES ('35', '35', '0.00000000', '0.00000000', '4eLYbcEHuUwtOQVUMiRcsKVjRJ2bKWnb', '0.00000000');
 INSERT INTO `user_coin` VALUES ('36', '36', '0.00000000', '0.00000000', 'vSxV7oeJuAgciRSP1FbDiKyZDZMMQLg5', '0.00000000');
 INSERT INTO `user_coin` VALUES ('37', '37', '0.00000000', '0.00000000', 'F3EsusnpAI2VXHux54TDVzSilhtrP4D7', '0.00000000');
+INSERT INTO `user_coin` VALUES ('38', '38', '1.00000000', '0.00000000', '', '26.00000000');
 
 -- ----------------------------
 -- Table structure for user_device
@@ -4268,14 +4273,12 @@ CREATE TABLE `user_device` (
   `createdate` int(11) DEFAULT NULL,
   `status` tinyint(4) DEFAULT '0' COMMENT '0是未激活 1是已激活',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_device
 -- ----------------------------
-INSERT INTO `user_device` VALUES ('10', '27', '1', '8850001106735250', '', '1524807190', '0');
-INSERT INTO `user_device` VALUES ('11', '27', '1', '8850001109968485', '', '1524807196', '1');
-INSERT INTO `user_device` VALUES ('12', '27', '1', '8850001106735009', '', '1524807203', '1');
+INSERT INTO `user_device` VALUES ('13', '38', '1', '8850001106735250', '', '1525673175', '1');
 
 -- ----------------------------
 -- Table structure for user_qianbao
@@ -4314,9 +4317,22 @@ CREATE TABLE `user_shenqing` (
   `status` tinyint(2) DEFAULT '2' COMMENT '2处理中 1已处理  0已作废',
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`,`status`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='pos路由器申请记录';
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='pos路由器申请记录';
 
 -- ----------------------------
 -- Records of user_shenqing
 -- ----------------------------
 INSERT INTO `user_shenqing` VALUES ('1', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('2', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('3', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('4', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('5', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('7', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('8', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('9', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('10', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('11', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('12', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('13', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('14', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '2');
+INSERT INTO `user_shenqing` VALUES ('15', '27', '测试', '123', '河南 郑州 金水区', '是是是', '0', '1525567874', '2', '1');

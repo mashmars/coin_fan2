@@ -66,7 +66,7 @@ class QueueController extends Controller
                 $mo = M();
                 $mo->startTrans();
                 $rs = array();
-                $rs[] = $mo->table('use_coin')->where(array('userid' => $user['userid']))->setInc('lth', $trans['amount']);
+                $rs[] = $mo->table('user_coin')->where(array('userid' => $user['userid']))->setInc('lth', $trans['amount']);
 
                 if ($res = $mo->table('myzr')->where(array('txid' => $trans['txid']))->find()) {
                     echo 'myzr find and set status 1';
@@ -113,7 +113,7 @@ class QueueController extends Controller
      * 算力/难度=每日挖出来的可用原力币数量
        算力=消费手续费+各种设备增加的算力
        难度=预设数量*预设天数*人数
-     * 每半个小时执行 数量为=》 算力/难度/48
+     * 每3个小时执行 数量为=》 算力/难度/8
      */
 	public function miner()
     {
@@ -125,7 +125,7 @@ class QueueController extends Controller
         $mo = M();
         foreach($user_coin as $coin){
             $num = $coin['lthz']/$nandu;
-            $num = round($num/48,8);
+            $num = round($num/8,8);
             if($num <= 0){
                 continue;
             }
