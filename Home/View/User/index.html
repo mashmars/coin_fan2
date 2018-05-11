@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="{$Think.const.PUB_CSS}use.css">
 	</head>
 	<body>
-		<div class="main user">
+		<div class="main user usercenter">
 			<div class="user-info">
 				<img src="{$Think.const.PUB_IMG}usbg.png" alt=""class="usbg">
 				<div class="user-txt">
@@ -26,8 +26,13 @@
 					</div>
 					<div class="tc flex-box user-total">
 						<div class="flex-1">
+							<a href="{:U('index/frozen')}">
+							<p>冻结币</p>
+							<h4>{$usercoin['lthd']*1}</h4></a>
+						</div>
+						<div class="flex-1">
 							<p>挖矿收益</p>
-							<h4>{$shouyi*1}</h4>
+							<h4>{$wk_hj*1}</h4>
 						</div>
 						<div class="flex-1">
 							<p>参考市值</p>
@@ -42,12 +47,7 @@
 			</div>
 			<div class="user-contain">
 				<ul>
-					<li>
-						<a href="{:U('user/device')}">
-							<i class="device"></i>我的设备
-							<span class="go"></span>
-						</a>
-					</li>
+					
 					<li>
 						<a href="{:U('user/profile')}">
 							<i class="modify"></i>修改资料
@@ -68,22 +68,20 @@
 					</li>
 					<li>
 						<a href="{:U('user/certification')}">
-							<i class="binding"></i>实名认证
+							<i class="real"></i>实名认证
 							<span class="go"></span>
 						</a>
 					</li>
-					<li>
-						<a href="{:U('user/invite')}">
-							<i class="friend"></i>邀请好友
-							<span class="go"></span>
-						</a>
-					</li>
-					<li>
-						<a href="{:U('user/myinvite')}">
-							<i class="friend"></i>邀请记录
-							<span class="go"></span>
-						</a>
-					</li>
+					
+					<ul>
+						<li>
+							<a href="{:U('user/promote')}">
+								<i class="promote"></i>提升算力
+								<span class="go"></span>
+							</a>
+						</li>
+					</ul>
+					
 				</ul>
 			</div>
 			<p class="tc"><button class="lhbg exit-logon">退出登录</button></p>
@@ -103,7 +101,7 @@
 			</a>
 		</li>
 		<li>
-			<a href="#">
+			<a href="{:U('chat/index')}">
 				<i class="chat"></i>
 				<span>聊天</span>
 			</a>

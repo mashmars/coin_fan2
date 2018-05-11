@@ -35,12 +35,19 @@
 		<label>筛选查询：</label>
 		<span class="select-box inline">			
 			<select name="type" id='field' class="select">
-				<option value="" data-type='' <if condition="$type eq ''">selected</if>>全部记录</option>
+				<option value="" data-type='' <if condition="$type eq ''">selected</if>>全部类型</option>
 				<option value="1" data-type='' <if condition="$type eq 1">selected</if>>Pos机</option>
 				<option value="2" data-type='' <if condition="$type eq 2">selected</if>>路由器</option>
 			</select>
 		</span>
-		
+		<span class="select-box inline">			
+			<select name="status" id='field' class="select">
+				<option value="" data-type='' <if condition="$status eq ''">selected</if>>全部状态</option>
+				<option value="0" data-type='' <if condition="$status eq '0'">selected</if>>作废</option>
+				<option value="1" data-type='' <if condition="$status eq 1">selected</if>>已处理</option>
+				<option value="2" data-type='' <if condition="$status eq 2">selected</if>>处理中</option>
+			</select>
+		</span>
 		<button type="button" class="btn btn-success radius" id="serach" name=""><i class="Hui-iconfont">&#xe665;</i> 筛选</button>
 		
 		</form>

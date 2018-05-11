@@ -125,8 +125,12 @@ class QueueController extends Controller
         $mo = M();
         foreach($user_coin as $coin){
             $num = $coin['lthz']/$nandu;
-            $num = round($num/8,8);
-            if($num <= 0){
+            //$num = round($num/8,8);
+            //保留四位小数 不四舍五入
+			$num = $num/8;
+			$num = substr(sprintf("%.5f",$num),0,-1);
+			
+            if($num < 0.0001){
                 continue;
             }
             $mo->startTrans();

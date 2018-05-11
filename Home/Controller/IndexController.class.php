@@ -4,6 +4,15 @@ use Think\Controller;
 use Home\Controller\CommonController;
 
 class IndexController extends CommonController {
+	//检查是否实名认证
+	private function check_certification(){
+		$userid = session('userid');
+		$is_cert = M('user')->where(array('id'=>$userid))->getField('is_cert');
+		if($is_cert){
+			return true;
+		}
+		return false;
+	}
 	public function index(){
 
 	    $userid = session('userid');
@@ -13,11 +22,14 @@ class IndexController extends CommonController {
 		M('sys_fl_log')->where(array('userid'=>$userid,'status'=>2,'createdate'=>array('lt',$guoqi)))->setField('status',0);
 		//待收取的
 		$wait = M('sys_fl_log')->where(array('userid'=>$userid,'status'=>2))->select();
+		$style = array('one','two','three','four','five','six','seven','eight');
+		$this->assign('style',$style);
+		
 		//我的收取记录4条
-		$shouqu = M('sys_fl_log')->where(array('userid'=>$userid,'status'=>1))->limit(4)->order('id desc')->select();
+		$shouqu = M('sys_fl_log')->where(array('userid'=>$userid,'status'=>1))->limit(4)->order('updatedate desc')->select();
 		if($shouqu[0]){
 			foreach($shouqu as &$v){
-				$v['createdate'] = format_date($v['createdate']);
+				$v['createdate'] = format_date($v['updatedate']);
 			}
 		}
 		//我获取的算力 4条
@@ -67,14 +79,15 @@ class IndexController extends CommonController {
 		$mo = M();
 		$rs = array();
 		$mo->startTrans();
-		$rs[] = $mo->table('sys_fl_log')->where(array('id'=>$id,'userid'=>$userid,'status'=>2))->setField('status',1);
+		$rs[] = $mo->table('sys_fl_log')->where(array('id'=>$id,'userid'=>$userid,'status'=>2))->setField(array('status'=>1,'updatedate'=>time()));
 		$rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc('lth',$info['num']);
 		
 		if(check_arr($rs)){
 			$mo->commit();
-			echo ajax_return(1,'收取成功');
+			echo json_encode(array('info'=>'success','msg'=>'收取成功','data'=>format_date(time()-1)));
 		}else{
 			$mo->rollback();
+			echo ajax_return(0,'收取失败');
 		}
 	}
 	
@@ -86,6 +99,9 @@ class IndexController extends CommonController {
 		$address = I('post.address');
 		$area = I('post.area');
 		$type = I('post.type');
+		if(!$this->check_certification()){
+			echo ajax_return(0,'请先进行实名认证');exit;
+		}
 		if($type !=1 && $type !=2){
 			echo ajax_return(0,'请求参数不正确');exit;
 		}
@@ -104,4 +120,34 @@ class IndexController extends CommonController {
 			echo ajax_return(0,'申请提交失败');
 		}
 	}
+	
+	
+	//
+	/**
+     * 邀请记录
+     */
+    public function frozen()
+    {
+        $userid = session('userid');
+        $p = I('param.p',1);
+        $list = 5;
+        $res = M('myinvite')->where(array('userid'=>$userid,'type'=>1))->order('id desc')->page($p.','.$list)->select();
+        $this->assign('res',$res);
+        $this->display();
+    }
+    /**
+     * 转出记录
+     */
+    public function ajax_frozen()
+    {
+        $userid = session('userid');
+        $p = I('param.p',1);
+        $list = 5;
+        $res = M('myinvite')->where(array('userid'=>$userid,'type'=>1))->order('id desc')->page($p.','.$list)->select();
+        foreach($res as &$v){
+            $v['date'] = date('m月d日');
+            $v['time'] = date('H:i');
+        }
+        echo json_encode($res);
+    }
 }

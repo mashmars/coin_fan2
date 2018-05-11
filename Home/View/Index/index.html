@@ -39,8 +39,8 @@
 						<ul class="tc rel">
 							<if condition="$wait[0] neq null">
 							<volist name='wait' id='vo'>
-							<li id='{$vo.id}' class='wait'>
-								<span>{$vo.num}</span>
+							<li id='{$vo.id}' class='{$style[$key]} wait'>
+								<span>{$vo['num']*1}</span>
 								<h4>待收取</h4>
 							</li>
 							</volist>
@@ -63,13 +63,19 @@
 								</a>
 							</li>
 							<li>
-								<a href="{:U('user/device')}">
+								<a href="{:U('user/promote')}">
 									<img src="{$Think.const.PUB_IMG}force.png" alt="">
 									<h4>提升算力</h4>
 								</a>
 							</li>
 						</ul>
 						<ul class="fr">
+							<li>
+								<a href="{:U('index/frozen')}">
+									<img src="{$Think.const.PUB_IMG}frozen.png" alt="">
+									<h4>激活冻结</h4>
+								</a>
+							</li>
 							<li>
 								<a href="{:U('user/invite')}">
 									<img src="{$Think.const.PUB_IMG}friends.png" alt="">
@@ -100,12 +106,12 @@
 					<span>最新记录</span>
 					
 				</h3>
-				<ul>
+				<ul id='shouqu'>
 				<volist name='shouqu' id='vo'>
 					<li class="flex-box">
 						<span>获得 </span>
 						<span  class="flex-1">
-						<em>{$vo.num}</em>CANDY</span>
+						<em>{$vo['num']*1}</em>TFC</span>
 						<span>{$vo['createdate']}</span>
 					</li>
 				</volist>	
@@ -170,7 +176,7 @@
 			</a>
 		</li>
 		<li>
-			<a href="#">
+			<a href="{:U('chat/index')}">
 				<i class="chat"></i>
 				<span>聊天</span>
 			</a>
@@ -225,10 +231,14 @@
 				$('.wait').click(function(){
 					var id = $(this).prop('id');
 					var obj = $(this);
+					var num = $(this).find('span').text();
 					$.post("{:U('index/ajax_shouqu')}",{id:id},function(data){
 						if(data.info='success'){
 							layer.msg(data.msg,{time:1000,icon:1});
 							obj.remove();
+							var li = '<li class="flex-box"><span>获得 </span><span  class="flex-1"><em>'+num+'</em>TFC</span><span>'+data.data+'</span></li>';
+							$('#shouqu').prepend(li);
+							$('#shouqu li:gt(3)').remove();
 						}else{
 							layer.msg(data.msg,{time:1000})
 						}

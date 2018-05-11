@@ -45,13 +45,26 @@
 		</form>
 		
 	</div>
-	
+	<div class="text-c" style='margin-top:20px;'>
+		<form action=''  method='post' id='form-search'>
+		
+		<label>设备号：</label>
+				
+			<input type="text" name="sn" id="" placeholder=" sn码" style="width:250px" class="input-text" value="{$sn}" />
+		
+		
+		<button type="submit" class="btn btn-success radius" id="serach" name=""><i class="Hui-iconfont">&#xe665;</i> 筛选</button>
+		
+		</form>
+	</div>
 	<div class="mt-20">
 	<table class="table table-border table-bordered table-hover table-bg ">
 		<thead>
 			<tr class="text-c">
 				<th width="25"><input type="checkbox" name="" value=""></th>
 				<th width="80">ID</th>
+				<th width="100">姓名</th>								
+				<th width="100">手机号</th>								
 				<th width="100">设备sn</th>								
 				<th width="100">交易号</th>								
 				<th width="100">交期日期</th>								
@@ -67,6 +80,8 @@
 			<tr class="text-c">
 				<td><input type="checkbox" value="{$vo.id}" name=""></td>
 				<td>{$vo.id}</td>
+				<td>{$vo.realname}</td>				
+				<td>{$vo.phone}</td>				
 				<td>{$vo.device_sn}</td>				
 				<td>{$vo.order_sn}</td>				
 				<td>{$vo.day}</td>				
@@ -87,6 +102,12 @@
 				</td>
 			</tr>
 		</volist>
+		<th>
+		<td colspan='6' style='text-align:right'>合计：</td>
+		<td>{$money}</td>
+		<td>{$fee}</td>
+		<td colspan='3'></td>
+		</th>
 		</tbody>
 		<!--
 		<tr class="text-c" >

@@ -17,7 +17,7 @@
 		<header>
 	<h3 class="tc lhbg">
 		<i class="go"></i>
-		修改资料
+		邀请好友
 	</h3>
 </header>
 		<div class="main invitingFriends">
@@ -25,11 +25,15 @@
 			<div class="tc inviting-con">
 				<p>邀请人号码：{$phone|substr_replace=###,'****',3,7}{$phone|substr=###,7}</p>
 				<p id="qrcode"></p>
-				<h4 onclick="down()"><i class="dw" ></i>保存二维码到本地</h4>
+				<h4 onclick="down()"><i class="dw" ></i>长按二维码保存到手机相册</h4>
 			</div>
 			
 			<a id="tttt"></a>
-			<p class="inviting-tips"><em>推广注册：</em>使用推荐码注册后，推荐人后台即显示推荐获增的原力币，在被推荐人未成为有效用户是该页面显示的值为不可用或者冻结状态。再被推荐成为有效后该页面显示的值为不可用或者冻结状态。再被推荐成为有效后。
+			<p class="inviting-tips"><em>推广注册：</em>使用推荐码注册后，推荐人钱包即可显示推荐获赠的原力币，在被推荐人成为有效用户（实名认证绑定设备即可成为有效用户）前，该页面显示的值为冻结状态。
+			</p>
+			<p class="inviting-tips"><em>冻结激活：</em>激活获赠的冻结原力币，需要在实名认证并且绑定设备（绑定POS机SN码或者路由器SN码）成为有效用户后，才可解冻使用；
+			</p>
+			<p class="inviting-tips"><em>算力激活：</em>绑定设备同时获得算力值，暂定为路由器基础值是60；POS机基础值是50；
 			</p>
 		</div>
 	</body>
@@ -40,7 +44,7 @@
 	<script src="{$Think.const.PUB_LIB}qrcode.min.js"></script>
 	<script>
 	$(function(){
-		var url = "/index.php/login/register/mobile/{$phone}.html" ;
+		var url = "http://{$Think.server.HTTP_HOST}/index.php/login/register/mobile/{$phone}.html" ;
 		new QRCode(document.getElementById('qrcode'), url);
 	})
 	

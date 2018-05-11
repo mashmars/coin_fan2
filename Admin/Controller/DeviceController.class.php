@@ -66,14 +66,118 @@ class DeviceController extends Controller {
     public function sn(){
         $p = I('param.p',1);
         $list = 10;
-        $res = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->field('a.*,b.name')->page($p.','.$list)->select();
-        $count = M('device_sn')->count();
+		$status = I('post.status');
+		if($status !==''){
+			$map['a.status'] = $status;
+		}
+		
+        $res = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->join('left join user_device c on a.sn=c.sn')->join('left join user d on c.userid=d.id')->where($map)->field('a.*,b.name,d.realname,d.phone')->page($p.','.$list)->select();
+        $count = M('device_sn')->alias('a')->where($map)->count();
         $page = new \Think\Page($count,$list);
+		//分页跳转的时候保证查询条件
+		foreach($map as $key=>$val) {
+			$page->parameter[$key]   = $val;
+		}
         $show = $page->show();
         $this->assign('res',$res);
         $this->assign('count',$count);
         $this->assign('page',$show);
+        $this->assign('status',$status);
         $this->display();
+    }
+	/**
+     * 消费记录导入 先上传 再导入
+     */
+    public function import_sn(){
+        if(IS_POST){
+            $up = new \Think\Upload();
+            $up->exts = array('xls','xlsx');
+
+            $up->subName  =''; // 子目录创建方式
+            $up->rootPath  = '.' . UP_INFO;
+
+            $info = $up->uploadOne($_FILES['info']);
+            if(!$info){
+                $this->error($up->getError());
+            }else{
+                $filename =  $info['savepath'] . $info['savename'];
+
+                //导入数据库
+                $this->import_info_sn($filename);
+
+            }
+        }
+    }
+   
+    //导入数据库操作
+    private function import_info_sn($filename){
+        vendor('PHPExcel');
+        Vendor("PHPExcel.IOFactory");
+        Vendor("PHPExcel.Reader.Excel5");
+        Vendor("PHPExcel.Reader.Excel2007");
+
+        $filename = '.' . UP_INFO . $filename; //文件位置
+        if(!is_file($filename)){
+            $this->error('excel文件有误,请检查!','',2);
+        }
+        /*$objReader = \PHPExcel_IOFactory::createReader('Excel5');
+        $objPHPExcel = $objReader->load($filename,$encode='utf-8');
+        */
+        $extension = strtolower( pathinfo($filename, PATHINFO_EXTENSION) );
+        if ($extension =='xlsx') {
+            $objReader = new \PHPExcel_Reader_Excel2007();
+            $objPHPExcel = $objReader ->load($filename);
+        } else if ($extension =='xls') {
+            $objReader = new \PHPExcel_Reader_Excel5();
+            $objPHPExcel = $objReader ->load($filename);
+        } else if ($extension=='csv') {
+            $PHPReader = new \PHPExcel_Reader_CSV();
+            //默认输入字符集
+            $PHPReader->setInputEncoding('GBK');
+            //默认的分隔符
+            $PHPReader->setDelimiter(',');
+            //载入文件
+            $objPHPExcel = $PHPReader->load($filename);
+        }
+
+
+        $sheet = $objPHPExcel->getSheet(0);
+        $columns = $sheet->getHighestColumn(); //获取最大列数
+
+        if($columns != 'C'){
+            $this->error('excel表格式列数不正确!'.$columns,'',1);
+        }
+        $rows = $sheet->getHighestRow();             //获取最大行数
+
+        //要导入的字段名
+        $fields = array('device_id','sn','mima');
+
+        $column =array('A','B','C');
+
+        for($i=2;$i<=$rows;$i++){
+
+            $data = array();
+            for($j=0;$j<count($column);$j++){
+                if($fields[$j] == 'sn'){
+                    $d = $objPHPExcel->getActiveSheet()->getCell($column[$j].$i)->getValue();
+                    if(M('device_sn')->where(array('sn'=>$d))->getField('id')){
+                        $data['no_insert'] = true;
+                    }
+                }
+                $data[$fields[$j]] = $objPHPExcel->getActiveSheet()->getCell($column[$j].$i)->getValue();
+
+            }
+
+            if($data['no_insert']){
+                continue;
+            }
+
+            $data['status'] = 1;
+            M('device_sn')->add($data);
+        }
+
+        $this->success('导入数据库成功!','',1);
+
     }
     public function sn_add()
     {
@@ -153,16 +257,29 @@ class DeviceController extends Controller {
             }
         }
     }
+	/**
+	 消费记录的搜索功能 搜索某个设备号的交易记录 同时再加上设备对应的姓名手机号，金额的升降序排列  总金额和手续费的统计
+	**/
     public function device_log(){
         $p = I('param.p',1);
         $list = 10;
-        $res = M('device_xiaofei_log')->page($p.','.$list)->select();
-        $count = M('device_xiaofei_log')->count();
+		$sn = I('post.sn');
+		if($sn){
+			$map['a.device_sn'] = $sn;
+		}
+        $res = M('device_xiaofei_log')->alias('a')->join('left join user_device b on a.device_sn=b.sn')->join('left join user c on b.userid=b.id')->where($map)->page($p.','.$list)->field('a.*,c.realname,c.phone')->order('a.money desc')->select();
+        $count = M('device_xiaofei_log')->alias('a')->where($map)->count();
+		//总金额和手续费的统
+		$money = M('device_xiaofei_log')->alias('a')->where($map)->sum('money');
+		$fee = M('device_xiaofei_log')->alias('a')->where($map)->sum('fee');
         $page = new \Think\Page($count,$list);
         $show = $page->show();
         $this->assign('res',$res);
         $this->assign('count',$count);
         $this->assign('page',$show);
+        $this->assign('sn',$sn);
+        $this->assign('money',$money);
+        $this->assign('fee',$fee);
         $this->display();
     }
     //导入数据库操作
@@ -265,7 +382,7 @@ class DeviceController extends Controller {
                 $myself = M('user_coin')->where(array('userid'=>$user_device['userid']))->lock(true)->find();
                 M('user_coin')->where(array('userid'=>$user_device['userid']))->setInc('lthz',$suanli);
                 M('device_xiaofei_log')->where(array('device_sn'=>$v['device_sn']))->setField('status',1);
-                M('myinvite')->add(array('userid'=>$user_device['userid'],'device_id'=>$user_device['id'],'type'=>2,'num'=>$suanli,'status'=>1,'createdate'=>time()));
+                M('myinvite')->add(array('userid'=>$user_device['userid'],'device_id'=>$user_device['id'],'type'=>2,'num'=>$suanli,'status'=>1,'createdate'=>time(),'channel'=>3));
             }else{
                 //没哟激活
                 if($v['fee'] >= $device['charge']){ 
@@ -283,7 +400,7 @@ class DeviceController extends Controller {
                     //给自己返算力
                     if($suanli > 0){
                         $rs[] =$mo->table('user_coin')->where(array('userid'=>$myself['userid']))->setInc('lthz',$suanli);
-                        $rs[] = $mo->table('myinvite')->add(array('userid'=>$user_device['userid'],'device_id'=>$user_device['id'],'type'=>2,'num'=>$suanli,'status'=>1,'createdate'=>time()));
+                        $rs[] = $mo->table('myinvite')->add(array('userid'=>$user_device['userid'],'device_id'=>$user_device['id'],'type'=>2,'num'=>$suanli,'status'=>1,'createdate'=>time(),'channel'=>3));
                     }
 					//消费记录验证通过后给自己激活 或给上级 上上级激活
                     $invites = M('myinvite')->where(array('from_id'=>$user_device['userid'],'status'=>0))->select(); //注册的记录
@@ -315,7 +432,19 @@ class DeviceController extends Controller {
     {
         $p = I('param.p',1);
         $list = 10;
-        $res = M('myinvite')->alias('a')->join('left join user c on a.userid=c.id')->field('a.*,c.phone')->page($p.','.$list)->order('a.id desc')->select();
+		$type = I('post.type');
+		$status = I('post.status');
+		$channel = I('post.channel');
+		if($type != ''){
+			$map['a.type'] = $type;
+		}
+		if($status != ''){
+			$map['a.status'] = $status;
+		}
+		if($channel != ''){
+			$map['a.channel'] = $channel;
+		}
+        $res = M('myinvite')->alias('a')->join('left join user c on a.userid=c.id')->where($map)->field('a.*,c.phone')->page($p.','.$list)->order('a.id desc')->select();
 		foreach($res as &$v){
 			if($v['from_id']){
 				$v['sn'] = M('user_device')->where(array('userid'=>$v['from_id']))->getField('sn');
@@ -324,12 +453,19 @@ class DeviceController extends Controller {
 				$v['sn'] = M('user_device')->where(array('id'=>$v['device_id']))->getField('sn');
 			}
 		}
-        $count = M('myinvite')->count();
+        $count = M('myinvite')->alias('a')->where($map)->count();
         $page = new \Think\Page($count,$list);
+		foreach($map as $key=>$val){
+			$page->parameter[$key] = $val;
+		}
         $show = $page->show();
         $this->assign('res',$res);
         $this->assign('count',$count);
         $this->assign('page',$show);
+		
+		$this->assign('type',$type);
+		$this->assign('status',$status);
+		$this->assign('channel',$channel);
         $this->display();
     }
 	
@@ -342,45 +478,33 @@ class DeviceController extends Controller {
 	*/
 	public function device_shenqing()
     {	
-
-        if(IS_POST){
-            $type = I('post.type');
-			$p = I('param.p', 1);
-			$list = 10;
+		$type = I('post.type');
+		$status = I('post.status');
+		$p = I('param.p', 1);
+		$list = 10;
+		if($type != ''){
 			$map['type'] = $type;
-            $res = M('user_shenqing')->where($map)->page($p . ',' . $list)->order('id desc')->select();
-			$count = M('user_shenqing')->where(array('type'=>$type))->count();
-			$page = new \Think\Page($count, $list);
-			//分页跳转的时候保证查询条件
-			foreach($map as $key=>$val) {
-				$page->parameter[$key]   = $val;
-			}
-			$show = $page->show();
-			$this->assign('res', $res);
-			$this->assign('page', $show);
-			$this->assign('count', $count);
-			
-            $this->assign('type',$type);
-           
-            $this->display();
-            exit;
-		}else{
-			$type = I('param.type','');
-			$p = I('param.p', 1);
-			$list = 10;
-			if($type){
-				$map['type'] = $type;
-			}
-			$res = M('user_shenqing')->where($map)->page($p . ',' . $list)->order('id desc')->select();
-			$count = M('user_shenqing')->where($map)->count();
-			$page = new \Think\Page($count, $list);
-			$show = $page->show();
-			$this->assign('res', $res);
-			$this->assign('page', $show);
-			$this->assign('count', $count);
-			$this->assign('type',$type);
-			$this->display();
 		}
+		if($status != ''){
+			$map['status'] = $status;
+		}
+		$res = M('user_shenqing')->where($map)->page($p . ',' . $list)->order('id desc')->select();
+		$count = M('user_shenqing')->where($map)->count();
+		$page = new \Think\Page($count, $list);
+		//分页跳转的时候保证查询条件
+		foreach($map as $key=>$val) {
+			$page->parameter[$key]   = $val;
+		}
+		$show = $page->show();
+		$this->assign('res', $res);
+		$this->assign('page', $show);
+		$this->assign('count', $count);
+		
+		$this->assign('type',$type);
+		$this->assign('status',$status);
+	   
+		$this->display();
+		
     }
 	public function device_shenqing_edit(){
 		$id = I('param.id');

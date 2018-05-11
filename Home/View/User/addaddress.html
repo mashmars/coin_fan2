@@ -47,10 +47,23 @@
 			<p>注：一旦点击领取后，我们将安排在三天之内给您发货请注意查收</p>
 			<div class="btn"><span onclick="javascript:history.go(-1)">取消</span><span onclick="lingqu()">确定领取</span></div>
 		</div>
+		<div class="shadow">
+			<div class="shadow-txt"><p id='notice'>您已提交申请，请耐心等待。</p></div>
+		</div>
 		<script src="{$Think.const.PUB_JS}set.js" type="text/javascript" charset="utf-8"></script>
 		<script src="{$Think.const.PUB_JS}mobileSelect.min.js" type="text/javascript"></script>
+		<script src="{$Think.const.PUB_JS}global.js"></script>
 		<script src="{$Think.const.PUB_LIB}layer/layer.js"></script>
 		<script>
+			var y = "{$y}"
+			if(y){
+				shadow();
+			}
+			function shadow(){
+				$('.shadow').show();
+				$('header').addClass('fixheader');
+				$('.main').addClass('fixmain');
+			}
 			var flag = true;
 			function lingqu(){
 				flag = false;

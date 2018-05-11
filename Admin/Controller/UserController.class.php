@@ -71,13 +71,38 @@ class UserController extends BaseController
         //去掉
         unset($data['refer']);
         unset($data['zone']);
+		
+		$config = M('config')->find(1);
+		
         $mo = M();
         $mo->startTrans();
         $rs = array();
         //注册成功
         $rs[] = $mo->table('user')->add($data);
-        //插入资产表
-        $rs[] = $mo->table('user_coin')->add(array('userid'=>$rs[0]));
+        //给自己返
+		$rs[] = $mo->table('user_coin')->add(array('userid'=>$rs[0],'lthd'=>$config['invite'],'lthz'=>$config['register_suanli']));
+		$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite'],'status'=>0,'createdate'=>time(),'channel'=>1));
+		$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>'','type'=>2,'num'=>$config['register_suanli'],'status'=>1,'createdate'=>time(),'channel'=>1));//注册送算力 from_id为空
+		//给上级返和上上级返
+		$pid = M('user')->where(array('id'=>$rs[0]))->getField('pid');//上级
+		if($pid){
+			$ppid = M('user')->where(array('id'=>$pid))->getField('pid');//上上级
+		}
+		if($pid){
+            if($config['invite1']){
+                //给推荐人返原力币
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$pid,'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite1'],'status'=>0,'createdate'=>time(),'channel'=>2));
+                $rs[] = $mo->table('user_coin')->where(array('userid'=>$pid))->setInc('lthd',$config['invite1']);
+            }
+        }
+		if($ppid){
+            if($config['invite2']){
+                //给推荐人返原力币
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$ppid,'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite2'],'status'=>0,'createdate'=>time(),'channel'=>2));
+                
+                $rs[] = $mo->table('user_coin')->where(array('userid'=>$ppid))->setInc('lthd',$config['invite2']);
+            }
+        }
 
         if(check_arr($rs)){
             $mo->commit();
@@ -369,7 +394,7 @@ class UserController extends BaseController
             $p = I('param.p', 1);
             $list = 10;
             $res = M('user_certification')->alias('a')->join('left join user b on a.userid=b.id')->field('a.*,b.phone')->page($p . ',' . $list)->order('a.status asc,a.id desc')->select();
-            $count = M('user')->count();
+            $count = M('user_certification')->count();
             $page = new \Think\Page($count, $list);
             $show = $page->show();
             $this->assign('res', $res);

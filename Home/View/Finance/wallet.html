@@ -20,15 +20,15 @@
 		<div class="main assetManagement">
 			<div class="lhbg tc asset-info">
 				<p>昨日挖矿收益</p>
-				<h3>{$yestoday_shouyi*1}</h3>
+				<h3>{$wk_zt*1}</h3>
 				<h4>TFC：{$usercoin['lth']*1}</h4>
 				<div class="flex-box asset-total">
 					<div class="flex-1">
-						<p>{$month_shouyi*1}</p>
+						<p>{$wk_by*1}</p>
 						<p>本月挖矿收益</p>
 					</div>
 					<div class="flex-1">
-						<p>{$shouyi*1}</p>
+						<p>{$wk_hj*1}</p>
 						<p>累计挖矿收益</p>
 					</div>
 				</div>
@@ -48,7 +48,7 @@
 				</li>
 				<li>
 					<a href="{:U('finance/transfer')}">
-						<i class="out"></i>账户转账
+						<i class="outbox"></i>账户转账
 						<span class="go"></span>
 					</a>
 				</li>
