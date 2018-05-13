@@ -364,7 +364,32 @@ class UserController extends CommonController {
         }
         echo json_encode($res);
     }
-
+	
+	//邀请好友记录
+	public function friends()
+    {
+        $userid = session('userid');
+        $p = I('param.p',1);
+        $list = 5;
+        $res = M('user')->where(array('pid'=>$userid))->order('id desc')->page($p.','.$list)->select();
+        $this->assign('res',$res);
+        $this->display();
+    }
+    /**
+     * 转出记录
+     */
+    public function ajax_friends()
+    {
+        $userid = session('userid');
+        $p = I('param.p',1);
+        $list = 5;
+        $res = M('user')->where(array('pid'=>$userid))->order('id desc')->page($p.','.$list)->select();
+        foreach($res as &$v){
+            $v['date'] = date('m月d日');
+            $v['time'] = date('H:i');
+        }
+        echo json_encode($res);
+    }
 
 
 

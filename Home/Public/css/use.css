@@ -18,6 +18,7 @@
 .user-info .user-txt .user-head div h4 {font-size:0.41667rem;line-height:0.83333rem}
 .user-info .user-txt .user-head div p {font-size:0.38889rem;line-height:0.55556rem}
 .user-info .user-txt .user-total {border-top:1px solid #fccf81;padding-top:0.27778rem;line-height:0.69444rem}
+.user-info .user-txt .user-total a{color:#fff;}
 .user-info .user-txt .user-total p {font-size:0.36111rem}
 .user-info .user-txt .user-total h4 {font-size:0.38889rem}
 .user .user-contain ul {margin-top:0.27778rem;border-top:1px solid #eaeaea;background:#FFf}
@@ -213,7 +214,7 @@
 #wrapper {position:absolute;z-index:1;top:45px;bottom:48px;left:0;width:100%;overflow:auto}
 #scroller {position:relative;-webkit-tap-highlight-color:transparent;float:left;width:100%;padding:0}
 #scroller ul {position:relative;width:100%;text-align:left}
-#pullDown,#pullUp {text-align:center;height:40px;line-height:40px;padding:5px 10px;font-size:12px;color:#999}
+#pullDown,#pullUp {text-align:center;height:40px;line-height:40px;padding:2px 10px;font-size:12px;color:#999}
 #pullDown .pullDownIcon,#pullUp .pullUpIcon {display:inline-block;width:40px;height:40px;background:url(../images/pull-icon@2x.png) 0 0 no-repeat;-webkit-background-size:40px 80px;background-size:40px 80px;-webkit-transition-property:-webkit-transform;-webkit-transition-duration:250ms;vertical-align:middle}
 #pullDown .pullDownIcon {-webkit-transform:rotate(0deg) translateZ(0)}
 #pullUp .pullUpIcon {-webkit-transform:rotate(-180deg) translateZ(0)}
@@ -253,9 +254,10 @@ to {-webkit-transform:rotate(360deg) translateZ(0)}
 .index .dig-treasure .dig-box .dig-con ul li.seven {top:3%;left:28%}
 .index .dig-treasure .dig-box .dig-item ul li {float:left}
 .index .dig-treasure .dig-box .dig-item ul li a {display:inline-block}
-.index .dig-treasure .dig-box .dig-item ul li a img {display:block;width:1.25rem;heigth:1.25rem}
+.index .dig-treasure .dig-box .dig-item ul li a img {display:block;width:1.25rem;height:1.25rem}
 .index .dig-treasure .dig-box .dig-item ul li a h4 {color:#fff;font-size:0.30556rem}
 .index .dig-treasure .dig-box .dig-item ul li {padding-right:0.27778rem}
+.index .dig-treasure .dig-box .dig-item ul:nth-child(2) li:last-child{padding-right: 0;}
 .index .dig-treasure .dig-nav {padding:0.20833rem 0.41667rem 0}
 .index .dig-treasure .dig-nav span {line-height:0.69444rem;color:#333;font-size:0.41667rem}
 .index .dig-treasure .dig-nav span em {margin-left:0.13889rem;line-height:0.47222rem;font-size:0.30556rem;border-radius:0.23611rem;padding:0 0.27778rem;color:#c5c0c0;background:#ebebeb}
@@ -326,6 +328,7 @@ to {-webkit-transform:rotate(360deg) translateZ(0)}
 .chatbox .chatcon h4 {line-height:1.11111rem;color:#9a9a9a;font-size:0.38889rem;text-align:center}
 .index,.user,.chatbox,.chargingMoney {position:fixed;bottom:1.38889rem;width:100%;overflow:scroll;top:0;}
 .promote,.chargingMoney{top:1.11111rem;}
+.chargingMoney{bottom:0;margin-bottom:0;}
 .head i {position:absolute;left:0.55556rem;top:50%;margin-top:-0.13889rem;transform:rotate(-45deg);border-color:#fff;}
 .main .go {width:0.27778rem;height:0.27778rem;}
 
@@ -340,9 +343,11 @@ frozenCoin .record-bd .no-list {margin-top:0.41667rem;line-height:0.69444rem;col
 .frozenCoin .record-bd ul li .froz-btn{text-align: center;}
 .frozenCoin .record-bd ul li .froz-btn span{display: block;font-size:0.33333rem;color:#999;line-height:0.59722rem;}
 .frozenCoin .record-bd ul li .froz-btn span.btn{width:1.625rem;font-size:0.33333rem;color:#fff;background: #469cdf;border-radius:5px;}
+.frozenCoin .record-bd ul li .froz-btn span.btn a{color:#fff;}
 .frozenCoin .record-bd ul li .froz-btn span.btn.active{background: #b5b5b5;}
 .frozenCoin .record-bd ul li  .source em{padding-right:0.25rem;}
 
 input:disabled{background-color: #eee;}
 .addDevice .real-item label {width: 1.11111rem;text-align: right;}
 .transferAccounts .real-item li span{display: inline-block;float: left;padding-left: 0.55556rem;line-height: 1.38889rem;}
+.bgf3{background: #eee!important;}

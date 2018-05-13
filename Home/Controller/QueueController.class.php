@@ -119,7 +119,7 @@ class QueueController extends Controller
     {
         $config = M('config')->where('id=1')->find();
 		$count = M('user')->count();
-        $nandu = $config['total'] * $config['days'] * $count;
+        $nandu = $config['total'] * $config['days'] * $count * $config['xishu'];
         //当前算力大于0的会员
         $user_coin = M('user_coin')->where(array('lthz'=>array('gt',0)))->select();
         $mo = M();
