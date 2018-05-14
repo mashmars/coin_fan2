@@ -49,6 +49,13 @@
 		
 		<label>筛选查询：</label>
 		<span class="select-box inline">			
+			<select name="name"  class="select">
+				<option value="" data-type='' <if condition="$name eq ''">selected</if>>全部类型</option>
+				<option value="Pos机" data-type='' <if condition="$name eq 'Pos机'">selected</if>>Pos机</option>
+				<option value="路由器" data-type='' <if condition="$name eq '路由器'">selected</if>>路由器</option>
+			</select>
+		</span>
+		<span class="select-box inline">			
 			<select name="status" id='field' class="select">
 				<option value="" data-type='' <if condition="$status eq NULL">selected</if>>全部</option>
 				<option value="1" data-type='' <if condition="$status eq '1'">selected</if>>未用</option>

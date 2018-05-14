@@ -131,7 +131,7 @@
 .assetManagement .asset-item li a i.enter {background:url(../images/enter.png) no-repeat;background-size:100% 100%}
 .assetManagement .asset-item li a i.out {background:url(../images/out.png) no-repeat;background-size:100% 100%}
 .assetManagement .asset-item li a i.outbox {background:url(../images/outbox.png) no-repeat;background-size:100% 100%}
-
+.assetManagement .asset-item li a i.purse {background:url(../images/purse.png) no-repeat;background-size:100% 100%}
 .assetManagement .asset-item li a i.record {background:url(../images/record.png) no-repeat;background-size:100% 100%}
 .assetManagement .asset-item li a .go {position:absolute;top:50%;right:0.34722rem;margin-top:-0.13889rem}
 .change {margin-top:0.27778rem;background:#FFF}
@@ -351,3 +351,6 @@ input:disabled{background-color: #eee;}
 .addDevice .real-item label {width: 1.11111rem;text-align: right;}
 .transferAccounts .real-item li span{display: inline-block;float: left;padding-left: 0.55556rem;line-height: 1.38889rem;}
 .bgf3{background: #eee!important;}
+
+
+.purseAddress ul{padding-top:0.34722rem}.purseAddress ul li{padding:0 0.41667rem;margin-bottom:0.27778rem}.purseAddress ul li div{background:#fff3de;padding:0.20833rem;line-height:0.69444rem;border:1px dashed #f6d191;border-top-left-radius:0.13889rem;border-top-right-radius:0.13889rem;border-bottom:1px solid #fff}.purseAddress ul li div img{margin-right:0.20833rem;width:0.69444rem;height:0.69444rem}.purseAddress ul li div span{color:#a8751c;font-size:0.36111rem}.purseAddress ul li div em{color:#a8751c;font-size:0.33333rem}.purseAddress ul li div p{line-height:0.55556rem;color:#a88445;font-size:0.27778rem}.purseAddress ul li .purse-btn{border-top:1px solid #f3e2c4;overflow:hidden}.purseAddress ul li .purse-btn a{float:left;width:50%;line-height:0.80556rem;background:#9c9c9c;text-align:center;color:#fff6e6;font-size:0.30556rem;border-right:1px solid #f3e2c4}.purseAddress ul li .purse-btn a:first-child{border-bottom-left-radius:0.13889rem}.purseAddress ul li .purse-btn a:last-child{border-bottom-right-radius:0.13889rem;border-right:none}.purseAddress .additem{margin:0 0.41667rem;height:2.69444rem;background:#f1f1f1;border-radius:0.13889rem;justify-content:center;align-items:center;display:-webkit-flex;border: 1.5px dashed #c3c3c3;}.purseAddress .additem a{display:block}.purseAddress .additem a img{display:block;width:1.11111rem;height:1.125rem}

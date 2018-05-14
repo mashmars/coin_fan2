@@ -66,13 +66,17 @@ class DeviceController extends Controller {
     public function sn(){
         $p = I('param.p',1);
         $list = 10;
-		$status = I('post.status');
+		$status = I('param.status');
+		$name = I('param.name');
 		if($status !==''){
 			$map['a.status'] = $status;
 		}
+		if($name !==''){
+			$map['name'] = $name;
+		}
 		
         $res = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->join('left join user_device c on a.sn=c.sn')->join('left join user d on c.userid=d.id')->where($map)->field('a.*,b.name,d.realname,d.phone')->page($p.','.$list)->select();
-        $count = M('device_sn')->alias('a')->where($map)->count();
+        $count = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->where($map)->count();
         $page = new \Think\Page($count,$list);
 		//分页跳转的时候保证查询条件
 		foreach($map as $key=>$val) {
@@ -83,6 +87,7 @@ class DeviceController extends Controller {
         $this->assign('count',$count);
         $this->assign('page',$show);
         $this->assign('status',$status);
+        $this->assign('name',$name);
         $this->display();
     }
 	/**
@@ -267,7 +272,7 @@ class DeviceController extends Controller {
 		if($sn){
 			$map['a.device_sn'] = $sn;
 		}
-        $res = M('device_xiaofei_log')->alias('a')->join('left join user_device b on a.device_sn=b.sn')->join('left join user c on b.userid=b.id')->where($map)->page($p.','.$list)->field('a.*,c.realname,c.phone')->order('a.money desc')->select();
+        $res = M('device_xiaofei_log')->alias('a')->join('left join user_device b on a.device_sn=b.sn')->join('left join user c on b.userid=c.id')->where($map)->page($p.','.$list)->field('a.*,c.realname,c.phone')->order('a.money desc')->select();
         $count = M('device_xiaofei_log')->alias('a')->where($map)->count();
 		//总金额和手续费的统
 		$money = M('device_xiaofei_log')->alias('a')->where($map)->sum('money');

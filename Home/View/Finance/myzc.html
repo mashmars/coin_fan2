@@ -34,7 +34,7 @@
 						<volist name='address' id='vo'>
 							<li data-id="{$vo.id}" data-value="{$vo.address}">{$vo.name}</li>
 						</volist>							
-						<li data-id="" data-value="">添加新地址</li>
+						<li data-id="" data-value="">地址管理</li>
 						</ul>
 					</div>
 				</div>
@@ -94,7 +94,7 @@
 			})
 			$('.selection ul li').click(function () {
 				if($(this).data('id') ==''){
-					var url = "{:U('finance/zcwallet')}";
+					var url = "{:U('finance/address')}";
 					location.href=url;
 				}
 				

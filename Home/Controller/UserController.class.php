@@ -195,6 +195,7 @@ class UserController extends CommonController {
      */
     public function ajax_get_device()
     {
+		$userid = session('userid');
         $id = I('post.id');
         $device = M('device')->where(array('id'=>$id))->find();
         if(!$device){
@@ -202,6 +203,11 @@ class UserController extends CommonController {
         }
         if(!$device['status']){
             echo ajax_return(0,'暂未开放');exit;
+        }
+		//判断最大数量
+        $count = M('user_device')->where(array('userid'=>$userid,'device_id'=>$device['id']))->count();
+        if($count>=$device['max']){
+            echo ajax_return(0,'您已超过该设备绑定添加的最大限制');exit;
         }
         echo ajax_return(1,'yes');exit;
     }
