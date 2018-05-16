@@ -22,7 +22,7 @@
 				<ul class="real-item">
 					<li class="fix selection">
 						<label>证件类型</label>
-						<input type="text"placeholder="身份证">
+						<input type="text"placeholder="身份证" <if condition="$info.status eq 1">value="身份证"</if>>
 						<i></i>
 						<ul class="tc">
 							<li id="1">身份证</li>
@@ -30,13 +30,14 @@
 					</li>
 					<li class="fix">
 						<label>真实姓名</label>
-						<input type="text"placeholder="请输入真实姓名" id='realname' name='realname'>
+						<input type="text"placeholder="请输入真实姓名" id='realname' name='realname' <if condition="$info.status eq 1">value="{$info['realname']|mb_substr=###,0,1,'utf-8'}*"</if>>
 					</li>
 					<li class="fix">
 						<label>证件号码</label>
-						<input type="text"placeholder="请输入证件号码" id='idcard' name='idcard'> 
+						<input type="text"placeholder="请输入证件号码" id='idcard' name='idcard' <if condition="$info.status eq 1">value="{$info['idcard']|substr=###,0,4}***********{$info['idcard']|substr=###,-3}"</if>> 
 					</li>
 				</ul>
+				<if condition="$info['status'] neq 1">
 				<ul class="upload">
 					<li class="flex-box">
 						<div class="flex-1 item">
@@ -76,6 +77,7 @@
 					</li>
 				</ul>
 				<p class="tc"><a class="lhbg mod-btn" id='submit'>提交验证</a></p>
+				</if>
 			</form>
 		</div>
 		<div class="shadow">
@@ -168,7 +170,9 @@
 	<script>
 	function shadow(){
 		$('.shadow').show();
+		$('header').html('<h3 class="tc lhbg"><i class="go"></i>实名认证</h3>')
 		$('header').addClass('fixheader');
+
 		$('.main').addClass('fixmain');
 	}
 	var is_cert = "{$is_cert}";

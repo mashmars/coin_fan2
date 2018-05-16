@@ -36,7 +36,9 @@
 				</volist>	
 				</ul>
 			</div>
-			<p class="tc"><a href="javascript:;" class="lhbg mod-btn">添加更多设备<span id="addDevice"></span></a></p>
+			<p class="tc"><if condition="$is_cert eq 1"><a href="javascript:;" class="lhbg mod-btn">添加更多设备<span id="addDevice"></span></a>
+				<else /><a href="{:U('user/certification')}" class="lhbg mod-btn">请先进行实名认证<span id=""></span></a></if>
+			</p>
 		</div>
 	</body>
 	<script src="{$Think.const.PUB_JS}set.js"></script>

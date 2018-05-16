@@ -181,13 +181,14 @@ class UserController extends CommonController {
         $userid = session('userid');
         $mydevice = M('user_device')->alias('a')->join('left join device b on a.device_id=b.id')->field('a.*,b.name')->where(array('userid'=>$userid))->select();
         $this->assign('mydevice',$mydevice);
-
+		$is_cert = M('user')->where(array('id'=>$userid))->getField('is_cert');
         $device = M('device')->select();
         $res = array();
         foreach($device as $v){ //{id:'1',value:'POS机'}
             $res[] = array('id'=>$v['id'],'value'=>$v['name']);
         }
         $this->assign('res',json_encode($res));
+        $this->assign('is_cert',$is_cert);
         $this->display();
     }
     /**
@@ -326,6 +327,7 @@ class UserController extends CommonController {
             $notice = '您已提交实名认证，请耐心等待后台审核';
         }
         $this->assign('is_cert',$is_cert);
+        $this->assign('info',$info);
         $this->assign('notice',$notice);
         $this->display();
     }
