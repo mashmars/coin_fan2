@@ -71,17 +71,13 @@
 							<i class="real"></i>实名认证
 							<span class="go"></span>
 						</a>
+					</li>	
+					<li>
+						<a href="{:U('user/promote')}">
+							<i class="promote"></i>提升算力
+							<span class="go"></span>
+						</a>
 					</li>
-					
-					<ul>
-						<li>
-							<a href="{:U('user/promote')}">
-								<i class="promote"></i>提升算力
-								<span class="go"></span>
-							</a>
-						</li>
-					</ul>
-					
 				</ul>
 			</div>
 			<p class="tc"><button class="lhbg exit-logon">退出登录</button></p>
@@ -127,7 +123,7 @@
 			$.post("{:U('user/ajax_logout')}",'',function(data){
 				if(data.info == 'success'){
 					layer.msg(data.msg,{time:2000,icon:1},function(){
-						location.href = '/';
+						location.href = '/index.php/login/password.html';
 					})
 				}else{
 					layer.msg(data.msg,{time:2000,icon:5})

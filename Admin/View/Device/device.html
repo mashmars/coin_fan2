@@ -78,10 +78,9 @@
 				<th width="80">ID</th>
 				<th width="100">设备名称</th>								
 				<th width="100">允许最大数</th>								
-				<!--<th width="100">一级原力币</th>								
-				<th width="100">二级原力币</th>		-->						
-				<th width="100">算力(仅自动激活有效)</th>								
-				<th width="100">最低消费</th>								
+				<th width="100">原力币(自动激活直接送)</th>	
+				<th width="100">算力(仅自动激活送)</th>								
+				<th width="100">最低消费(0为自动激活)</th>								
 				<th width="100">状态</th>								
 				<th width="170">操作</th>
 			</tr>
@@ -93,8 +92,7 @@
 				<td>{$vo.id}</td>
 				<td>{$vo.name}</td>				
 				<td>{$vo.max}</td>				
-				<!--<td>{$vo.yuanlibi}</td>				
-				<td>{$vo.yuanlibi_2}</td>				-->
+				<td>{$vo.yuanlibi}</td>
 				<td>{$vo.suanli}</td>				
 				<td>{$vo.charge}</td>				
 				<td>

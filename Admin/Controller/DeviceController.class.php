@@ -384,15 +384,28 @@ class DeviceController extends Controller {
             //已激活
             if($user_device['status'] == 1){
                 $suanli = $v['fee'];
-                $myself = M('user_coin')->where(array('userid'=>$user_device['userid']))->lock(true)->find();
-                M('user_coin')->where(array('userid'=>$user_device['userid']))->setInc('lthz',$suanli);
-                M('device_xiaofei_log')->where(array('device_sn'=>$v['device_sn']))->setField('status',1);
-                M('myinvite')->add(array('userid'=>$user_device['userid'],'device_id'=>$user_device['id'],'type'=>2,'num'=>$suanli,'status'=>1,'createdate'=>time(),'channel'=>3));
+				$suanli = intval($suanli);
+				if($suanli>0){
+					$mo = M();
+                    $mo->startTrans();
+                    $rs = array();
+					$myself = M('user_coin')->where(array('userid'=>$user_device['userid']))->lock(true)->find();
+					$rs[] = $mo->table('user_coin')->where(array('userid'=>$user_device['userid']))->setInc('lthz',$suanli);
+					$rs[] = $mo->table('device_xiaofei_log')->where(array('device_sn'=>$v['device_sn']))->setField('status',1);
+					$rs[] = $mo->table('myinvite')->add(array('userid'=>$user_device['userid'],'device_id'=>$user_device['id'],'type'=>2,'num'=>$suanli,'status'=>1,'createdate'=>time(),'channel'=>3));
+					if(check_arr($rs)){
+						$mo->commit();
+					}else{
+						$mo->rollback();
+					}
+				}
+                
             }else{
                 //没哟激活
                 if($v['fee'] >= $device['charge']){ 
                     //给上级返原力币 解冻 给自己返算力
                     $suanli = $v['fee'] - $device['charge'];
+					$suanli = intval($suanli);
                     $myself = M('user_coin')->where(array('userid'=>$user_device['userid']))->lock(true)->find();
 
                     $mo = M();

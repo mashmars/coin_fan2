@@ -89,6 +89,8 @@
 .login .lolink a {text-decoration:underline;color:#838383;font-size:0.36111rem}
 .login .forget {padding:0 0.27778rem;line-height:0.69444rem}
 .login .forget a {color:#e8a618;font-size:0.36111rem}
+.login .forget span{color:#e8a618;font-size:0.36111rem}
+.login .forget span input{margin-right:3px;vertical-align:middle;width:0.33333rem;height:0.33333rem;}
 .chargingMoney {margin-bottom:0.5rem}
 .chargingMoney .charging-item {margin-top:0.27778rem;background:#fff;padding:0 0.34722rem}
 .chargingMoney .charging-item h3 {margin-bottom:0.20833rem;line-height:1.31944rem;border-bottom:1px solid #ddd;color:#404040;font-size:0.38889rem}
@@ -107,6 +109,7 @@
 .chargingMoney .charging-item p.notice-txt {line-height:0.69444rem;color:#888;font-size:0.33333rem}
 .chargingMoney .charging-item .charging-inpu input {padding-left:0.20833rem;line-height:1.33333rem;width:100%;border:none;font-size:0.38889rem}
 .chargingMoney .charging-item .charging-inpu #code {position:absolute;right:0;top:0;display:inline-block;line-height:1.33333rem;color:#e79e1e}
+.chargingMoney .charging-item .charging-inpu .forget-btn{position: absolute;right: 0;top: 0;display: inline-block;line-height: 1.33333rem;color: #e79e1e;}
 .chargingMoney .charging-item .charging-inpu.selection input {cursor:pointer}
 .chargingMoney .charging-item .charging-inpu.selection i {position:absolute;top:50%;right:0.27778rem;display:inline-block;width:0;height:0;border-top:7px solid #888;border-left:5px solid transparent;border-right:5px solid transparent}
 .chargingMoney .charging-item .charging-inpu.selection i.active {border-bottom:7px solid #888;border-top:none}
@@ -232,7 +235,7 @@ to {-webkit-transform:rotate(360deg) translateZ(0)}
 .index .dig-treasure .dig-box {height:10.05556rem;background:url(../images/bg.png) no-repeat;background-size:100% 100%;padding-top:0.55556rem}
 .index .dig-treasure .dig-box .notice {width:100%;position:relative;white-space:nowrap;overflow:hidden;height:0.55556rem;background:rgba(0,0,0,0.6)}
 .index .dig-treasure .dig-box .notice #noticeList {position:absolute;top:0;height:0.55556rem}
-.index .dig-treasure .dig-box .notice #noticeList ul li {float:left;line-height:0.55556rem;color:#f3f3f3;font-size:0.30556rem}
+.index .dig-treasure .dig-box .notice #noticeList ul li {float:left;width:100%;line-height:0.55556rem;color:#f3f3f3;font-size:0.30556rem}
 .index .dig-treasure .dig-box .dig-num,.index .dig-treasure .dig-box .dig-con,.index .dig-treasure .dig-box .dig-item {padding:0 0.41667rem}
 .index .dig-treasure .dig-box .dig-num {color:#fff;margin-top:0.20833rem}
 .index .dig-treasure .dig-box .dig-num .dig-total {display:inline-block;line-height:0.75rem;padding:0 0.55556rem;font-size:0.36111rem;border-radius:0.375rem;background:rgba(0,0,0,0.5)}
@@ -244,14 +247,7 @@ to {-webkit-transform:rotate(360deg) translateZ(0)}
 .index .dig-treasure .dig-box .dig-con ul li span {display:inline-block;width:0.77778rem;height:0.94444rem;line-height:0.94444rem;background:url(../images/lbg.png) no-repeat;background-size:100% 100%;font-size:0.16667rem}
 .index .dig-treasure .dig-box .dig-con ul li span em {position:absolute;width:100%;left:0;font-size:0.16667rem;transform:scale(0.9)}
 .index .dig-treasure .dig-box .dig-con ul li h4 {font-size:0.16667rem}
-.index .dig-treasure .dig-box .dig-con ul li.one {top:25%;left:-4%}
-.index .dig-treasure .dig-box .dig-con ul li.five {top:65%;left:2%}
-.index .dig-treasure .dig-box .dig-con ul li.four {top:42%;left:25%}
-.index .dig-treasure .dig-box .dig-con ul li.three {top:33%;left:55%}
-.index .dig-treasure .dig-box .dig-con ul li.two {top:60%;left:80%}
-.index .dig-treasure .dig-box .dig-con ul li.six {top:10%;right:0%}
-.index .dig-treasure .dig-box .dig-con ul li.eight {bottom:2%;right:29%}
-.index .dig-treasure .dig-box .dig-con ul li.seven {top:3%;left:28%}
+.index .dig-treasure .dig-box .dig-con ul li h4{font-size:0.16667rem}.index .dig-treasure .dig-box .dig-con ul li.one{top:25%;left:-4%}.index .dig-treasure .dig-box .dig-con ul li.five{top:65%;left:2%}.index .dig-treasure .dig-box .dig-con ul li.four{top:42%;left:25%}.index .dig-treasure .dig-box .dig-con ul li.three{top:33%;left:55%}.index .dig-treasure .dig-box .dig-con ul li.two{top:60%;left:80%}.index .dig-treasure .dig-box .dig-con ul li.six{top:10%;left:86%}.index .dig-treasure .dig-box .dig-con ul li.eight{top:73%;left:45%}.index .dig-treasure .dig-box .dig-con ul li.seven{top:3%;left:28%}.index .dig-treasure .dig-box .dig-con ul li.active.one,.index .dig-treasure .dig-box .dig-con ul li.active.five,.index .dig-treasure .dig-box .dig-con ul li.active.four,.index .dig-treasure .dig-box .dig-con ul li.active.three,.index .dig-treasure .dig-box .dig-con ul li.active.two,.index .dig-treasure .dig-box .dig-con ul li.active.six,.index .dig-treasure .dig-box .dig-con ul li.active.eight,.index .dig-treasure .dig-box .dig-con ul li.active.seven{top:100%;left:-4%;transform:scale(1.1)}
 .index .dig-treasure .dig-box .dig-item ul li {float:left}
 .index .dig-treasure .dig-box .dig-item ul li a {display:inline-block}
 .index .dig-treasure .dig-box .dig-item ul li a img {display:block;width:1.25rem;height:1.25rem}

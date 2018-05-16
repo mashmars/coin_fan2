@@ -39,7 +39,7 @@
 								</div>
 							</div>
 							<div>
-							<span class="source"><em><if condition="$vo.channel eq 1">注册<elseif condition="$vo.channel eq 2" />邀请好友<elseif condition="$vo.channel eq 3" />消费<else />消费</if></em>+{$vo.num}</span>
+							<span class="source"><em><if condition="$vo.channel eq 1">注册<elseif condition="$vo.channel eq 2" />邀请好友<elseif condition="$vo.channel eq 3" />消费<else />消费</if></em>+{$vo['num']*1}</span>
 							</div>
 						</li>
 					</volist>

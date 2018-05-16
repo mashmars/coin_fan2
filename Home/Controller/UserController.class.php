@@ -254,7 +254,7 @@ class UserController extends CommonController {
         }
         //可以绑定
         $jihuo = 0;
-        if($device['charge']){
+        if($device['charge']>0){
             $jihuo = 0; //未激活
         }else{
             $jihuo =1; //激活
@@ -263,14 +263,31 @@ class UserController extends CommonController {
         $mo->startTrans();
         $rs = array();
         $rs[] = $mo->table('user_device')->add(array('userid'=>$userid,'device_id'=>$device['id'],'sn'=>$sn,'mima'=>$mima,'createdate'=>time(),'status'=>$jihuo));
-        //激活直接返算力
+        
+		//给自己返原力币
+		if($device['yuanlibi']>0){
+			//给自己返算力 一般需要激活才返
+			$rs[] = $mo->table('myinvite')->add(array('userid'=>$userid,'device_id'=>$rs[0],'type'=>1,'num'=>$device['yuanlibi'],'status'=>$jihuo,'createdate'=>time()));
+			$rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc('lth',$device['yuanlibi']);
+		}
+		
+		//激活直接返算力
         if($jihuo){
-            if($device['suanli']){
+            if($device['suanli']>0){
                 //给自己返算力 一般需要激活才返
                 $rs[] = $mo->table('myinvite')->add(array('userid'=>$userid,'device_id'=>$rs[0],'type'=>2,'num'=>$device['suanli'],'status'=>$jihuo,'createdate'=>time()));
                 $rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc('lthz',$device['suanli']);
             }
         }
+		//激活给注册冻结解冻
+		if($jihuo){
+			$invites = M('myinvite')->where(array('from_id'=>$userid,'status'=>0))->select(); //注册的记录
+			foreach($invites as $invite){
+				$rs[] = $mo->table('myinvite')->where(array('id'=>$invite['id']))->setField('status',1);
+				$rs[] = $mo->table('user_coin')->where(array('userid'=>$invite['userid']))->setDec('lthd',$invite['num']);
+				$rs[] = $mo->table('user_coin')->where(array('userid'=>$invite['userid']))->setInc('lth',$invite['num']);
+			}
+		}
 		
 		
 		//设置sn码不可用

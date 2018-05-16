@@ -4,11 +4,36 @@ use Think\Controller;
 
 class LoginController extends Controller
 {
-
+	
+	//生成随机数,用于生成salt
+    public function random_str($length){
+        //生成一个包含 大写英文字母, 小写英文字母, 数字 的数组
+        $arr = array_merge(range(0, 9), range('a', 'z'), range('A', 'Z'));
+        $str = '';
+        $arr_len = count($arr);
+        for ($i = 0; $i < $length; $i++){
+            $rand = mt_rand(0, $arr_len-1);
+            $str.=$arr[$rand];
+        }
+        return $str;
+    }
+	public function saveRemember($userid,$identifier,$token,$timeout){
+        $auth = M("sys_cookie");
+        $data['identifier'] = $identifier;
+        $data['token'] = $token;
+        $data['timeout'] = $timeout;
+        $data['userid'] = $userid;
+        if($auth->where(array('userid'=>$userid))->find()){
+			$auth->where(array('userid'=>$userid))->save($data);
+		}else{
+			$auth->add($data);
+		}
+    }
+	
     /**
      * 手机登录
      */
-
+	
     /**
      * 登录发送验证码
      */
@@ -63,6 +88,7 @@ class LoginController extends Controller
     {
         $phone = I('post.phone');
         $password = I('post.password');
+        $remember = I('post.remember');
 
         if ($password == '') {
             echo ajax_return(0, '登录密码不能为空');
@@ -78,10 +104,25 @@ class LoginController extends Controller
             echo ajax_return(0, '登录密码不正确');
             exit;
         }
+		if($remember){			
+			//设置cookie 3天
+			$salt = $this->random_str(16);
+			//第二分身标识
+			$identifier = md5($salt . md5($phone . $salt));
+			//永久登录标识
+			$token = md5(uniqid(rand(), true));
+			//永久登录超时时间(3)
+			$timeout = time()+3600*24*3;
+			//存入cookie
+			cookie('auth',"$identifier:$token",$timeout,"/");
+			
+			$this->saveRemember($info['id'],$identifier,$token,$timeout);
+		}
         //可以登录
         echo ajax_return(1, '登录成功');
         session('userid', $info['id']);
         session('phone', $phone);
+		
     }
 
     /**
@@ -139,8 +180,13 @@ class LoginController extends Controller
     }
 
 	public function register(){
+		
         $mobile = I('mobile');
         $this->assign('mobile',$mobile);
+		if($mobile){
+			session('refer',$mobile);
+		}
+		
 		$this->display();
 	}
 	//发送注册短信验证
@@ -180,7 +226,7 @@ class LoginController extends Controller
 	}
     //注册
     public function ajax_register()
-    {
+    {	
         $phone = I('post.phone');
         $sms = I('post.sms');
         $realname = I('post.realname');
@@ -269,6 +315,7 @@ class LoginController extends Controller
             $mo->commit();
             session($phone . 'reg' ,null);
             echo ajax_return(1,'注册成功');
+			
         }else{
             $mo->rollback();
             echo ajax_return(0,'注册失败');

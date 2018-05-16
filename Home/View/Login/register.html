@@ -42,7 +42,9 @@
 						<a href="#" id='read'>《原力用户注册协议》</a>
 					</p>
 					<p class="tc reg-btn"><button class="lhbg mod-btn" id='register'>注册</button></p>
+					<if condition="$mobile eq ''">
 					<p class="tr logbtn"><a href="{:U('login/password')}">已有账号去登录</a></p>
+					</if>
 				</div>
 			
 		</div>
@@ -181,7 +183,7 @@ $(function(){
 		},'json')
 		
 	})
-	
+	var d = "{$mobile}";
 	$('#register').click(function(){
 		var obj = $(this);
 		obj.prop('disabled',true);
@@ -226,7 +228,12 @@ $(function(){
 		$.post("{:U('login/ajax_register')}",{phone:phone,sms:sms,realname:realname,password:password,paypassword:paypassword,refer:refer},function(data){
 			if(data.info == 'success'){
 				layer.msg(data.msg,{time:2000,icon:1},function(){
-					var url = "{:U('login/password')}";
+					var url = "";
+					if(d){
+						url = 'https://www.pgyer.com/Nwzd';
+					}else{
+						url = "{:U('login/password')}";
+					}
 					location.href = url;
 				})
 			}else{

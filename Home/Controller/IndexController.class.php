@@ -14,7 +14,7 @@ class IndexController extends CommonController {
 		return false;
 	}
 	public function index(){
-
+		
 	    $userid = session('userid');
 	    
 		//24小时内待收取的  超过24小时作废
