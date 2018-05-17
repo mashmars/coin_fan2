@@ -31,7 +31,12 @@
 						<i class="icpay"></i><input type="password" placeholder="登录密码" id='password'>
 						<!--<i class="hided"></i>-->
 					</li>
+					<li class="active">
+						<i class="icpay"></i><input type="password" placeholder="确认登录密码" id='password2'>
+						<!--<i class="hided"></i>-->
+					</li>
 					<li><i class="icpwd2"></i><input type="password"placeholder="支付密码" id='paypassword'></li>
+					<li><i class="icpwd2"></i><input type="password"placeholder="确认支付密码" id='paypassword2'></li>
 					<li><i class="icrec"></i><input type="number" placeholder="推荐人手机号码(选填)" id='refer' value="{$mobile}" <if condition="$mobile neq ''">readonly disabled</if>></li>
 				</ul>
 				<div class="reg-box">
@@ -191,7 +196,9 @@ $(function(){
 		var sms = $('#sms').val();
 		var realname = $('#realname').val();
 		var password = $('#password').val();
+		var password2 = $('#password2').val();
 		var paypassword = $('#paypassword').val();
+		var paypassword2 = $('#paypassword2').val();
 		var refer = $('#refer').val();
 	
 		var agree = $('#agree i').hasClass('active');
@@ -214,8 +221,17 @@ $(function(){
 			layer.msg('登录密码不能为空',{time:2000,icon:5});
 			return false;
 		}
+		if(password != password2){
+			layer.msg('登录密码和确认登录密码不一样',{time:2000,icon:5});
+			return false;
+		}
 		if(paypassword == ''){
 			layer.msg('支付密码不能为空',{time:2000,icon:5});
+			obj.prop('disabled',false);
+			return false;
+		}
+		if(paypassword != paypassword2){
+			layer.msg('支付密码和确认支付密码不一样',{time:2000,icon:5});
 			obj.prop('disabled',false);
 			return false;
 		}
