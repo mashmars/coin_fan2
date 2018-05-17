@@ -54,8 +54,8 @@
 .passwordManagement .pwd-con .pwd-item ul li input {background:transparent}
 .hided {position:absolute;display:inline-block;margin-right:0.13889rem;width:0.5rem;vertical-align:middle;top:50%;right:0.27778rem;margin:-0.09722rem 0.27778rem 0;width:0.36111rem;height:0.19444rem;background:url(../images/hd.png) no-repeat;background-size:100% 100%;cursor:pointer}
 .agreement {padding:0 0.34722rem;line-height:1.11111rem;color:#4e4e4e;font-size:0.33333rem}
-.agreement i {display:inline-block;margin-right:0.06944rem;width:0.41667rem;height:0.41667rem;border:1px solid #ddd;vertical-align:text-top;cursor:pointer}
-.agreement i.active {width:0.41667rem;height:0.41667rem;border:none;background:url(../images/ag.png) no-repeat;background-size:100% 100%;border:none}
+.agreement i,.remember-box i{display:inline-block;margin-right:0.06944rem;width:0.41667rem;height:0.41667rem;border:1px solid #ddd;vertical-align:text-top;cursor:pointer}
+.agreement i.active,.remember-box i.active{width:0.41667rem;height:0.41667rem;border:none;background:url(../images/ag.png) no-repeat;background-size:100% 100%;border:none}
 .agreement a {display:inline-block;color:#e79e1e}
 .register {margin-top:0.27778rem}
 .register ul {background:#fff}

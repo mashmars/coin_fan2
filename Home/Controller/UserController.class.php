@@ -191,7 +191,7 @@ class UserController extends CommonController {
         $this->assign('is_cert',$is_cert);
         $this->display();
     }
-    /**
+     /**
      * 获取设备信息
      */
     public function ajax_get_device()
@@ -208,7 +208,7 @@ class UserController extends CommonController {
 		//判断最大数量
         $count = M('user_device')->where(array('userid'=>$userid,'device_id'=>$device['id']))->count();
         if($count>=$device['max']){
-            echo ajax_return(0,'您已超过该设备绑定添加的最大限制');exit;
+            echo ajax_return(0,'已超过该设备绑定添加的最大限制');exit;
         }
         echo ajax_return(1,'yes');exit;
     }
@@ -239,8 +239,6 @@ class UserController extends CommonController {
         if(!$device['status']){
             echo ajax_return(0,'暂未开放,不能绑定');exit;
         }
-		
-		
         $device_sn = M('device_sn')->where(array('device_id'=>$id,'sn'=>$sn,'mima'=>$mima))->find();
         if(!$device_sn){
             echo ajax_return(0,'SN码或密码不正确');exit;
@@ -370,7 +368,7 @@ class UserController extends CommonController {
         $userid = session('userid');
         $p = I('param.p',1);
         $list = 5;
-        $res = M('myinvite')->where(array('userid'=>$userid))->order('id desc')->page($p.','.$list)->select();
+        $res = M('myinvite')->where(array('userid'=>$userid,'type'=>2))->order('id desc')->page($p.','.$list)->select();
         $this->assign('res',$res);
         $this->display();
     }
@@ -382,7 +380,7 @@ class UserController extends CommonController {
         $userid = session('userid');
         $p = I('param.p',1);
         $list = 5;
-        $res = M('myinvite')->where(array('userid'=>$userid))->order('id desc')->page($p.','.$list)->select();
+        $res = M('myinvite')->where(array('userid'=>$userid,'type'=>2))->order('id desc')->page($p.','.$list)->select();
         foreach($res as &$v){
             $v['date'] = date('m月d日');
             $v['time'] = date('H:i');
@@ -390,6 +388,33 @@ class UserController extends CommonController {
         echo json_encode($res);
     }
 	
+	 /**
+     * 邀请记录
+     */
+    public function coin()
+    {
+        $userid = session('userid');
+        $p = I('param.p',1);
+        $list = 5;
+        $res = M('myinvite')->where(array('userid'=>$userid,'type'=>1))->order('id desc')->page($p.','.$list)->select();
+        $this->assign('res',$res);
+        $this->display();
+    }
+    /**
+     * 转出记录
+     */
+    public function ajax_coin()
+    {
+        $userid = session('userid');
+        $p = I('param.p',1);
+        $list = 5;
+        $res = M('myinvite')->where(array('userid'=>$userid,'type'=>1))->order('id desc')->page($p.','.$list)->select();
+        foreach($res as &$v){
+            $v['date'] = date('m月d日');
+            $v['time'] = date('H:i');
+        }
+        echo json_encode($res);
+    }
 	//邀请好友记录
 	public function friends()
     {
@@ -415,6 +440,8 @@ class UserController extends CommonController {
         }
         echo json_encode($res);
     }
+
+
 
 
 
