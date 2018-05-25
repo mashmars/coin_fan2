@@ -36,6 +36,7 @@
 .user .user-contain ul li a i.invitation{height:0.5rem;background:url(../images/invitation.png) no-repeat;background-size:100% 100%}
 .user .user-contain ul li a i.device {height:0.48611rem;background:url(../images/device.png) no-repeat;background-size:100% 100%}
 .user .user-contain ul li a i.promote {height:0.52778rem;background:url(../images/promote.png) no-repeat;background-size:100% 100%}
+.user .user-contain ul li a i.iconForce {height:0.52778rem;background:url(../images/icForce.png) no-repeat;background-size:100% 100%}
 .user .user-contain ul li a .go {position:absolute;top:50%;right:0.34722rem;margin-top:-0.13889rem}
 .user .exit-logon {margin:0.55556rem 0;border:none;width:9.27778rem;line-height:1.38889rem;font-size:0.41667rem;color:#fff;background:-webkit-linear-gradient(left,#ffc23a,#e8a717);background:linear-gradient(to right,#ffc23a,#e8a717);border-radius:0.20833rem}
 .modify ul,.bindingPhone ul,.pwd-item ul {margin-top:0.27778rem}
@@ -66,6 +67,7 @@
 .register ul li i.icodetxt {margin-top:-0.22917rem;height:0.45833rem;background:url(../images/co.png) no-repeat;background-size:100% 100%}
 .register ul li i.icname {margin-top:-0.25rem;height:0.5rem;background:url(../images/us.png) no-repeat;background-size:100% 100%}
 .register ul li i.icpay {margin-top:-0.26389rem;height:0.52778rem;background:url(../images/pwd1.png) no-repeat;background-size:100% 100%}
+.register ul li i.icpay2 {margin-top:-0.26389rem;height:0.55555555555556rem;background:url(../images/icpay2.png) no-repeat;background-size:100% 100%}
 .register ul li i.icpwd1 {margin-top:-0.26389rem;height:0.52778rem;background:url(../images/pwd1.png) no-repeat;background-size:100% 100%}
 .register ul li i.icpwd2 {margin-top:-0.26389rem;height:0.52778rem;background:url(../images/pwd2.png) no-repeat;background-size:100% 100%}
 .register ul li i.icrec {margin-top:-0.30556rem;height:0.61111rem;background:url(../images/reco.png) no-repeat;background-size:100% 100%}
@@ -243,11 +245,11 @@ to {-webkit-transform:rotate(360deg) translateZ(0)}
 .index .dig-treasure .dig-box .dig-num .tips {line-height:0.83333rem;font-size:0.33333rem}
 .index .dig-treasure .dig-box .dig-con {height:5.13889rem}
 .index .dig-treasure .dig-box .dig-con ul {height:5.13889rem}
-.index .dig-treasure .dig-box .dig-con ul li {position:absolute;color:#fff;-webkit-animation:float ease-in-out 1.5s infinite;animation:float ease-in-out 1.5s infinite}
+.index .dig-treasure .dig-box .dig-con ul li {position:absolute;color:#fff;-webkit-animation:float ease-in-out 2s infinite;animation:float ease-in-out 2s infinite}
 .index .dig-treasure .dig-box .dig-con ul li span {display:inline-block;width:0.77778rem;height:0.94444rem;line-height:0.94444rem;background:url(../images/lbg.png) no-repeat;background-size:100% 100%;font-size:0.16667rem}
 .index .dig-treasure .dig-box .dig-con ul li span em {position:absolute;width:100%;left:0;font-size:0.16667rem;transform:scale(0.9)}
 .index .dig-treasure .dig-box .dig-con ul li h4 {font-size:0.16667rem}
-.index .dig-treasure .dig-box .dig-con ul li h4{font-size:0.16667rem}.index .dig-treasure .dig-box .dig-con ul li.one{top:25%;left:-4%}.index .dig-treasure .dig-box .dig-con ul li.five{top:65%;left:2%}.index .dig-treasure .dig-box .dig-con ul li.four{top:42%;left:25%}.index .dig-treasure .dig-box .dig-con ul li.three{top:33%;left:55%}.index .dig-treasure .dig-box .dig-con ul li.two{top:60%;left:80%}.index .dig-treasure .dig-box .dig-con ul li.six{top:10%;left:86%}.index .dig-treasure .dig-box .dig-con ul li.eight{top:73%;left:45%}.index .dig-treasure .dig-box .dig-con ul li.seven{top:3%;left:28%}.index .dig-treasure .dig-box .dig-con ul li.active.one,.index .dig-treasure .dig-box .dig-con ul li.active.five,.index .dig-treasure .dig-box .dig-con ul li.active.four,.index .dig-treasure .dig-box .dig-con ul li.active.three,.index .dig-treasure .dig-box .dig-con ul li.active.two,.index .dig-treasure .dig-box .dig-con ul li.active.six,.index .dig-treasure .dig-box .dig-con ul li.active.eight,.index .dig-treasure .dig-box .dig-con ul li.active.seven{top:100%;left:-4%;transform:scale(1.1)}
+.index .dig-treasure .dig-box .dig-con ul li h4{font-size:0.16667rem}.index .dig-treasure .dig-box .dig-con ul li.one{top:25%;left:-4%}.index .dig-treasure .dig-box .dig-con ul li.five{top:65%;left:2%}.index .dig-treasure .dig-box .dig-con ul li.four{top:42%;left:25%}.index .dig-treasure .dig-box .dig-con ul li.three{top:33%;left:55%}.index .dig-treasure .dig-box .dig-con ul li.two{top:60%;left:80%}.index .dig-treasure .dig-box .dig-con ul li.six{top:10%;left:86%}.index .dig-treasure .dig-box .dig-con ul li.eight{top:73%;left:45%}.index .dig-treasure .dig-box .dig-con ul li.seven{top:3%;left:28%}.index .dig-treasure .dig-box .dig-con ul li.active.one,.index .dig-treasure .dig-box .dig-con ul li.active.five,.index .dig-treasure .dig-box .dig-con ul li.active.four,.index .dig-treasure .dig-box .dig-con ul li.active.three,.index .dig-treasure .dig-box .dig-con ul li.active.two,.index .dig-treasure .dig-box .dig-con ul li.active.six,.index .dig-treasure .dig-box .dig-con ul li.active.eight,.index .dig-treasure .dig-box .dig-con ul li.active.seven{top:88%;left:.18rem;opacity: .5;}
 .index .dig-treasure .dig-box .dig-item ul li {float:left}
 .index .dig-treasure .dig-box .dig-item ul li a {display:inline-block}
 .index .dig-treasure .dig-box .dig-item ul li a img {display:block;width:1.25rem;height:1.25rem}
@@ -290,8 +292,9 @@ to {-webkit-transform:rotate(360deg) translateZ(0)}
 .index .ranking ul li span {display:inline-block;color:#958976;font-size:0.27778rem}
 .index .ranking ul li span:first-child {width:1.38889rem;color:#bebebe;font-size:0.36111rem}
 .index .ranking ul li span:last-child {width:1.52778rem;color:#eca526}
-.index .ranking ul li span em {display:inline-block;width:0.65278rem;line-height:0.55556rem;height:0.55556rem;color:#fff}
+.index .ranking ul li span em {display:inline-block;width:0.65278rem;line-height:0.55556rem;height:0.55556rem;color:#bebebe;}
 .index .ranking ul li span i {display:inline-block;margin-left:0.13889rem;width:0.40278rem;height:0.31944rem}
+.index .ranking ul li.first span em,.index .ranking ul li.second span em,.index .ranking ul li.third span em{color:#fff;}
 .index .ranking ul li.first span em {background:url(../images/first.png) no-repeat;background-size:100% 100%}
 .index .ranking ul li.first span i {background:url(../images/one.png) no-repeat;background-size:100% 100%}
 .index .ranking ul li.second span em {background:url(../images/second.png) no-repeat;background-size:100% 100%}
@@ -308,12 +311,12 @@ to {-webkit-transform:rotate(360deg) translateZ(0)}
 .layui-layer.layui-layer-page.open .layui-layer-btn a.layui-layer-btn1 {color:#1E9FFF}
 .layui-layer.layui-layer-page.close .layui-layer-btn a.layui-layer-btn1 {color:#999}
 .layui-layer.layui-layer-page.close .layui-layer-btn a.layui-layer-btn0 {color:#1E9FFF}
-.getPos .banner img {width:100%}
-.getPos .get-con {margin-top:0.27778rem;background:#fff;padding:0 0.41667rem;color:#000}
-.getPos .get-con h3 {line-height:0.83333rem;font-size:0.33333rem}
+.getPos .banner img {width:100%;display:block;}
+.getPos .get-con {margin-top:0.27778rem;background:#fff;padding:.4rem 0.41667rem 1.2rem;color:#000}
+.getPos .get-con h3 {line-height:0.83333rem;font-size:0.33333rem;font-weight:600;}
 .getPos .get-con .get-bd {font-size:0.27778rem;margin-bottom:1.66667rem}
-.getPos .get-con .get-bd p {line-height:0.55556rem}
-.getPos .get-con .get-bd p span {display:inline-block;padding-right:0.27778rem}
+.getPos .get-con .get-bd p {line-height:0.55556rem;padding-bottom:.2rem;}
+.getPos .get-con .get-bd p span {display:inline-block;font-weight:600;}
 .getPos .get-con .get-bd p .receive-btn {position:fixed;display:block;width:80%;left:10%;bottom:0.34722rem;margin:0.34722rem auto 0;line-height:1.11111rem;text-align:center;background:#e4ad2f;color:#fff;font-size:0.36111rem;border-radius:10px}
 .return {position:fixed;top:0.27778rem;left:0.27778rem;width:0.77778rem;height:0.77778rem;background:#979797;border-radius:50%}
 .return .go {margin:0.25rem 0.27778rem;border-color:#fff;transform:rotate(-45deg);border-width:2px}
@@ -325,6 +328,7 @@ to {-webkit-transform:rotate(360deg) translateZ(0)}
 .index,.user,.chatbox,.chargingMoney {position:fixed;bottom:1.38889rem;width:100%;overflow:scroll;top:0;}
 .promote,.chargingMoney{top:1.11111rem;}
 .chargingMoney{bottom:0;margin-bottom:0;}
+.promote,.chargingMoney{top:1.11111rem;}
 .head i {position:absolute;left:0.55556rem;top:50%;margin-top:-0.13889rem;transform:rotate(-45deg);border-color:#fff;}
 .main .go {width:0.27778rem;height:0.27778rem;}
 
@@ -350,3 +354,6 @@ input:disabled{background-color: #eee;}
 
 
 .purseAddress ul{padding-top:0.34722rem}.purseAddress ul li{padding:0 0.41667rem;margin-bottom:0.27778rem}.purseAddress ul li div{background:#fff3de;padding:0.20833rem;line-height:0.69444rem;border:1px dashed #f6d191;border-top-left-radius:0.13889rem;border-top-right-radius:0.13889rem;border-bottom:1px solid #fff}.purseAddress ul li div img{margin-right:0.20833rem;width:0.69444rem;height:0.69444rem}.purseAddress ul li div span{color:#a8751c;font-size:0.36111rem}.purseAddress ul li div em{color:#a8751c;font-size:0.33333rem}.purseAddress ul li div p{line-height:0.55556rem;color:#a88445;font-size:0.27778rem}.purseAddress ul li .purse-btn{border-top:1px solid #f3e2c4;overflow:hidden}.purseAddress ul li .purse-btn a{float:left;width:50%;line-height:0.80556rem;background:#9c9c9c;text-align:center;color:#fff6e6;font-size:0.30556rem;border-right:1px solid #f3e2c4}.purseAddress ul li .purse-btn a:first-child{border-bottom-left-radius:0.13889rem}.purseAddress ul li .purse-btn a:last-child{border-bottom-right-radius:0.13889rem;border-right:none}.purseAddress .additem{margin:0 0.41667rem;height:2.69444rem;background:#f1f1f1;border-radius:0.13889rem;justify-content:center;align-items:center;display:-webkit-flex;border: 1.5px dashed #c3c3c3;}.purseAddress .additem a{display:block}.purseAddress .additem a img{display:block;width:1.11111rem;height:1.125rem}
+
+.alipayBox{width: 42%;margin: 0 auto;}
+.alipayBox img{display:block;width:100%;}

@@ -246,14 +246,14 @@ class UserController extends BaseController
     }
 
     //资产编辑
-    public function member_coin_edit______(){
+    public function member_coin_edit(){
 	    $id = I('param.id');
 	    $info = M('user_coin')->alias('a')->join('left join user b on a.userid=b.id')->where(array('a.id'=>$id))->field('a.*,b.username,b.phone')->find();
 	    $this->assign('info',$info);
 	    $this->display();
     }
     //资产编辑提交
-    public function ajax_member_coin_edit____(){
+    public function ajax_member_coin_edit(){
 	    $data = I('post.');
 	    $res = M('user_coin')->save($data);
 	    if($res){

@@ -4,7 +4,6 @@ use Think\Controller;
 
 class LoginController extends Controller
 {
-	
 	//生成随机数,用于生成salt
     public function random_str($length){
         //生成一个包含 大写英文字母, 小写英文字母, 数字 的数组
@@ -23,17 +22,64 @@ class LoginController extends Controller
         $data['token'] = $token;
         $data['timeout'] = $timeout;
         $data['userid'] = $userid;
-        if($auth->where(array('userid'=>$userid))->find()){
+        if($auth->where(array('userid'=>$userid))->find()){ 
 			$auth->where(array('userid'=>$userid))->save($data);
 		}else{
 			$auth->add($data);
 		}
     }
-	
     /**
-     * 手机登录
+     * 登录
      */
-	
+	  public function phone(){
+		 //判断是否有cookie
+		$denglu = $this->checkRemember();
+		if($denglu){
+			session("userid",$denglu['id']);
+			session("phone",$denglu['phone']);
+			redirect('/');
+		}
+		 $this->display();
+	 }
+	 public function password(){
+		 //判断是否有cookie
+		$denglu = $this->checkRemember();
+		if($denglu){
+			session("userid",$denglu['id']);
+			session("phone",$denglu['phone']);
+			redirect('/');
+		}
+		 $this->display();
+	 }
+	 //验证用户是否永久登录（记住我）
+    public function checkRemember(){
+        $arr = array();
+        $now = time();
+
+        list($identifier,$token) = explode(':',$_COOKIE['auth']);
+        if (ctype_alnum($identifier) && ctype_alnum($token)){
+            $arr['identifier'] = $identifier;
+            $arr['token'] = $token;
+        }else{
+            return false;
+        }
+
+        $auth = M("sys_cookie");
+        $info = $auth->where(array('identifier'=>$arr['identifier']))->find();
+        if($info != null){
+            if($arr['token'] != $info['token']){
+                return false;
+            }else if($now > $info['timeout']){
+                return false;
+            }else{
+				$res = M('user')->find($info['userid']);
+                return $res;
+            }
+        }else{
+            return false;
+        }
+    }
+
     /**
      * 登录发送验证码
      */
@@ -47,7 +93,7 @@ class LoginController extends Controller
             exit;
         }
         $code = mt_rand(10000, 99999);
-        $result = send_sms('72923', $phone, $code);
+        $result = send_sms('78771', $phone, $code);
         if ($result['info'] == 'success') {
             session($phone . 'login', $code);
             echo ajax_return(1, '短信验证码发送成功');
@@ -104,6 +150,7 @@ class LoginController extends Controller
             echo ajax_return(0, '登录密码不正确');
             exit;
         }
+        //可以登录
 		if($remember){			
 			//设置cookie 3天
 			$salt = $this->random_str(16);
@@ -118,11 +165,9 @@ class LoginController extends Controller
 			
 			$this->saveRemember($info['id'],$identifier,$token,$timeout);
 		}
-        //可以登录
         echo ajax_return(1, '登录成功');
         session('userid', $info['id']);
         session('phone', $phone);
-		
     }
 
     /**
@@ -138,7 +183,7 @@ class LoginController extends Controller
             exit;
         }
         $code = mt_rand(10000, 99999);
-        $result = send_sms('72713', $phone, $code);
+        $result = send_sms('78771', $phone, $code);
         if ($result['info'] == 'success') {
             session($phone . 'find', $code);
             echo ajax_return(1, '短信验证码发送成功');
@@ -180,13 +225,11 @@ class LoginController extends Controller
     }
 
 	public function register(){
-		
         $mobile = I('mobile');
         $this->assign('mobile',$mobile);
 		if($mobile){
 			session('refer',$mobile);
 		}
-		
 		$this->display();
 	}
 	//发送注册短信验证
@@ -199,7 +242,7 @@ class LoginController extends Controller
             echo ajax_return(0,'手机号已注册');exit;
         }
         $code = mt_rand(10000,99999);
-        $result = send_sms('72695',$phone,$code);
+        $result = send_sms('78771',$phone,$code);
         if($result['info'] == 'success'){
             session($phone.'reg',$code);
             echo ajax_return(1,'短信验证码发送成功');
@@ -218,15 +261,15 @@ class LoginController extends Controller
 			//判断当前用户下面有人没 有的话 返回success 否则返回erroe
 			$zone = M('user_zone')->where(array('pid'=>$id))->find();
 			if($zone){
-				echo ajax_register(1,'没人');
+				echo ajax_return(1,'没人');
 			}else{
-				echo ajax_register(0,'有人');
+				echo ajax_return(0,'有人');
 			}
 		}
 	}
     //注册
     public function ajax_register()
-    {	
+    {
         $phone = I('post.phone');
         $sms = I('post.sms');
         $realname = I('post.realname');
@@ -301,13 +344,23 @@ class LoginController extends Controller
                 $rs[] = $mo->table('myinvite')->add(array('userid'=>$pid,'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite1'],'status'=>0,'createdate'=>time(),'channel'=>2));
                 $rs[] = $mo->table('user_coin')->where(array('userid'=>$pid))->setInc('lthd',$config['invite1']);
             }
+			if($config['invite1_suanli']){
+                //给推荐人返算力
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$pid,'from_id'=>$rs[0],'type'=>2,'num'=>$config['invite1_suanli'],'status'=>1,'createdate'=>time(),'channel'=>2));
+                $rs[] = $mo->table('user_coin')->where(array('userid'=>$pid))->setInc('lthz',$config['invite1_suanli']);
+            }
         }
 		if($ppid){
             if($config['invite2']){
-                //给推荐人返原力币
-                $rs[] = $mo->table('myinvite')->add(array('userid'=>$ppid,'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite2'],'status'=>0,'createdate'=>time(),'channel'=>1));
+                //给推荐人的推荐人返原力币
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$ppid,'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite2'],'status'=>0,'createdate'=>time(),'channel'=>2));
                 
                 $rs[] = $mo->table('user_coin')->where(array('userid'=>$ppid))->setInc('lthd',$config['invite2']);
+            }
+			if($config['invite2_suanli']){
+                //给推荐人的推荐人返算力
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$ppid,'from_id'=>$rs[0],'type'=>2,'num'=>$config['invite2_suanli'],'status'=>1,'createdate'=>time(),'channel'=>2));
+                $rs[] = $mo->table('user_coin')->where(array('userid'=>$ppid))->setInc('lthz',$config['invite2_suanli']);
             }
         }
 
@@ -315,7 +368,6 @@ class LoginController extends Controller
             $mo->commit();
             session($phone . 'reg' ,null);
             echo ajax_return(1,'注册成功');
-			
         }else{
             $mo->rollback();
             echo ajax_return(0,'注册失败');

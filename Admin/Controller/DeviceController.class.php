@@ -60,9 +60,6 @@ class DeviceController extends Controller {
         }
     }
 
-    /**
-     * SN管理
-     */
     public function sn(){
         $p = I('param.p',1);
         $list = 10;
@@ -385,7 +382,7 @@ class DeviceController extends Controller {
             if($user_device['status'] == 1){
                 $suanli = $v['fee'];
 				$suanli = intval($suanli);
-				if($suanli>0){
+                if($suanli>0){
 					$mo = M();
                     $mo->startTrans();
                     $rs = array();
@@ -427,7 +424,12 @@ class DeviceController extends Controller {
 						$rs[] = $mo->table('user_coin')->where(array('userid'=>$invite['userid']))->setDec('lthd',$invite['num']);
 						$rs[] = $mo->table('user_coin')->where(array('userid'=>$invite['userid']))->setInc('lth',$invite['num']);
 					}
-                    
+					
+					//消费够了，给自己的设备激活 解冻原力币
+					$myinvite = M('myinvite')->where(array('device_id'=>$user_device['id']))->lock(true)->find();
+                    $rs[] = $mo->table('myinvite')->where(array('id'=>$myinvite['id']))->setField('status',1);
+					$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setDec('lthd',$myinvite['num']);
+					$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setInc('lth',$myinvite['num']);
 					
                     if(check_arr($rs)){
                         $mo->commit();

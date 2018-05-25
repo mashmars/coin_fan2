@@ -10,7 +10,7 @@ class CommonController extends Controller {
     {	
         $userid = session('userid');
         if(!$userid){
-			//判断是否有cookie
+            //判断是否有cookie
 			$denglu = $this->checkRemember();
 			if($denglu){
 				session("userid",$denglu['id']);
@@ -31,7 +31,7 @@ class CommonController extends Controller {
         //获取用户资产
         $usercoin = M('user_coin')->where(array('userid'=>$userid))->find();
         $this->assign('usercoin',$usercoin);
-
+        
         //获取网站基本配置
         $config = M('config')->where('id=1')->find();
         $this->assign('config',$config);

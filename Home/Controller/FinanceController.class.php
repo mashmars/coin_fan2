@@ -55,6 +55,21 @@ class FinanceController extends CommonController {
         $userid = session('userid');
         $phone = session('phone');
         $wallet = M('user_coin')->where(array('userid'=>$userid))->find();
+		
+		if(!$wallet['lthb']){
+			$str='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+			$qianbao = '';
+			for($i=0;$i<32;$i++){
+				$qianbao .= $str[mt_rand(0,61)] ;
+			}
+			M('user_coin')->where(array('userid'=>$userid))->save(array('lthb'=>$qianbao));
+		}else{
+			$qianbao = $wallet['lthb'];
+		}
+		
+		/*
+		
         //没有钱包地址先生成
         if(!$wallet['lthb']){
             Vendor("Move.ext.client");
@@ -88,6 +103,7 @@ class FinanceController extends CommonController {
         }else{
             $qianbao = $wallet['lthb'];
         }
+		*/
         $this->assign('qianbao',$qianbao);
         $this->display();
     }
@@ -128,8 +144,7 @@ class FinanceController extends CommonController {
         $this->assign('address',$address);
         $this->display();
     }
-	
-	/*
+    /*
 	地址列表
 	*/
 	public function address(){
@@ -212,7 +227,7 @@ class FinanceController extends CommonController {
 			echo ajax_return(0,'请先进行实名认证');exit;
 		}
         $code = mt_rand(10000, 99999);
-        $result = send_sms('72713', $phone, $code);
+        $result = send_sms('78771', $phone, $code);
         if ($result['info'] == 'success') {
             session($phone . 'myzc', $code);
             echo ajax_return(1, '短信验证码发送成功');
@@ -300,7 +315,7 @@ class FinanceController extends CommonController {
         echo json_encode($res);
     }
 
-
+   
     /**
      * 会员转账
      */

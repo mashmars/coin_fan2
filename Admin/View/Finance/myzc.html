@@ -78,7 +78,8 @@
 				<th width="80">ID</th>
 				<th width="100">用户名</th>								
 				<th width="100">手机号</th>								
-				<th width="100">转入数量</th>								
+				<th width="150">转出数量</th>								
+				<th width="100">转出地址</th>								
 				<th width="100">时间</th>								
 				<th width="100">状态</th>								
 				<th width="170">操作</th>
@@ -92,6 +93,7 @@
 				<td>{$vo.username}</td>				
 				<td>{$vo.phone}</td>				
 				<td>{$vo.num}</td>				
+				<td>{$vo.address}</td>				
 				<td>{$vo.createdate|date='Y-m-d',###}</td>
 				<td><if condition="$vo.status eq 1"><span class="label label-success radius">已完成</span><elseif condition="$vo.status eq 2" /><span class="label label-primary radius">已拒绝</span><else /><span class="label label-danger radius">待审核</span></if></td>					
 				<td class="td-manage">
@@ -209,7 +211,7 @@ function del(obj,id){
 			success:function(data){
 				if(data.info =='success'){
 					layer.msg(data.msg,{time:2000,icon:6},function(){
-						parent.location.reload();
+						window.location.reload();
 					})
 				}else{
 					layer.msg(data.msg,{time:2000,icon:5})
@@ -229,7 +231,7 @@ function shenhe(id){
 			success:function(data){
 				if(data.info =='success'){
 					layer.msg(data.msg,{time:2000,icon:6},function(){
-						parent.location.reload();
+						window.location.reload();
 					})
 				}else{
 					layer.msg(data.msg,{time:2000,icon:5})

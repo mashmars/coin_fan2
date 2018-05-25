@@ -3,15 +3,19 @@ namespace Admin\Controller;
 use Think\Controller;
 use Admin\Controller\BaseController;
 class SystemController extends BaseController {
-
-    ////系统设置
+	
+	
+	
+	
+////系统设置
     public function system_base(){
-        $info = M('config')->where("id=1")->find();
 		$users = M('user')->count();
+        $info = M('config')->where("id=1")->find();
         $this->assign('info' , $info);
         $this->assign('users' , $users);
         if(IS_POST){
             $data = I('post.');
+			
             //上传图片
             if($_FILES['logo']['name']){
                 $data['logo'] = upload_file(UP_SYSTEM,$_FILES['logo']);

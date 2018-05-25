@@ -14,7 +14,7 @@ class IndexController extends CommonController {
 		return false;
 	}
 	public function index(){
-		
+
 	    $userid = session('userid');
 	    
 		//24小时内待收取的  超过24小时作废
@@ -36,12 +36,35 @@ class IndexController extends CommonController {
 		$suanli = M('myinvite')->where(array('userid'=>$userid,'type'=>2))->limit(4)->order('id desc')->select();
 		
 		//前三名算理最多的
-		$paihang = M('user_coin')->alias('a')->join('left join user b on a.userid=b.id')->field('b.phone,a.lthz')->order('lthz desc,a.id desc')->limit(3)->select();
+		$paihang = M('user_coin')->alias('a')->join('left join user b on a.userid=b.id')->field('b.phone,a.lthz')->order('lthz desc,a.id desc')->limit(10)->select();
 		
 		$this->assign('wait',$wait);
 		$this->assign('shouqu',$shouqu);
 		$this->assign('suanli',$suanli);
 		$this->assign('paihang',$paihang);
+		
+		//新增每天首次登录返算力
+		
+		$start = mktime(0,0,0,date('m'),date('d'),date('Y'));
+		$end = mktime(23,59,59,date('m'),date('d'),date('Y'));
+		$is = M('myinvite')->where(array('userid'=>$userid,'createdate'=>array('between',array($start,$end)),'channel'=>4))->find();
+		if(!$is){
+			$config = M('config')->find(1);
+			if($config['login_suanli']){
+				$mo = M();
+				$rs = array();
+				$mo->startTrans();
+				//给推荐人返算力
+				$rs[] = $mo->table('myinvite')->add(array('userid'=>$userid,'type'=>2,'num'=>$config['login_suanli'],'status'=>1,'createdate'=>time(),'channel'=>4));
+				$rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc('lthz',$config['login_suanli']);
+				if(check_arr($rs)){
+					$mo->commit();
+				}else{
+					$mo->rollback();
+				}
+			}
+		}
+		
 		
 		$this->display();
 		exit;
@@ -120,7 +143,6 @@ class IndexController extends CommonController {
 			echo ajax_return(0,'申请提交失败');
 		}
 	}
-	
 	
 	//
 	/**

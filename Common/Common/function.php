@@ -1,7 +1,4 @@
 <?php
-
-
-
 function format_date($time){
     $t=time()-$time;
     $f=array(

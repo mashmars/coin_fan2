@@ -4,3 +4,11 @@
 .shadow .shadow-txt p {color:#fff;text-align:center;font-size:0.44444rem}
 .fixheader {position:fixed;z-index:9999;left:0;top:0;width:100%}
 .fixmain {margin-top:1.11111rem}
+
+
+.alipayBox{width: 42%;margin: .1rem auto;}
+.alipayBox img{display:block;width:100%;}
+.red{color:red!important;}
+.alipayAgre {color:#555!important;}
+.alipayAgre i{display:inline-block;margin-right:0.16944rem;width:0.41667rem;height:0.41667rem;border:1px solid #ddd;vertical-align:text-top;cursor:pointer}
+.alipayAgre i.active{width:0.41667rem;height:0.41667rem;border:none;background:url(../images/ag.png) no-repeat;background-size:100% 100%;border:none}

@@ -66,31 +66,73 @@ class UserController extends CommonController {
         $this->display();
     }
     /**
+     *发送修改登录密码短信验证
+     */
+    public function ajax_password_send_sms()
+    {
+        $phone = session('phone');
+		if(session($phone.'password')){
+			echo ajax_return(1,'短信验证码发送成功,请勿频繁发送');exit;
+		}
+        $code = mt_rand(10000,99999);
+        $result = send_sms('78771',$phone,$code);
+        if($result['info'] == 'success'){
+            session($phone.'password',$code);
+            echo ajax_return(1,'短信验证码发送成功');
+        }else{
+            echo ajax_return(0,$result['msg']);
+        }
+    }
+    /**
      * 修改登录密码
      */
     public function ajax_password()
     {
         $userid = session('userid');
-        $oldpassword = I('post.oldpassword');
+        
         $newpassword = I('post.newpassword');
         $newpassword2 = I('post.newpassword2');
-
-        if($oldpassword == '' || $newpassword == '' || $newpassword2 == '' || $newpassword != $newpassword2){
+		$sms = I('post.sms');
+		$phone = session('phone');
+        if( $newpassword == '' || $newpassword2 == '' || $newpassword != $newpassword2){
             echo ajax_return(0,'密码设置不正确');exit;
         }
-
-        $password = M('user')->where(array('id'=>$userid))->getField('password');
-        if($password != md5($oldpassword)){
-            echo ajax_return(0,'原始密码输入不正确');exit;
+		if($sms == ''){
+            echo ajax_return(0,'短信验证码不能为空');exit;
         }
-
+		//判断短信吗是否正确
+        if($sms != session($phone . 'password')){
+            echo ajax_return(0,'短信验证码不正确');exit;
+        }
+		
+        $password = M('user')->where(array('id'=>$userid))->getField('password');
+        
         $info = M('user')->where(array('id'=>$userid))->setField(array('password'=>md5($newpassword)));
         if($info){
+			session($phone.'password',null);
             echo ajax_return(1,'修改成功');exit;
         }else{
             echo ajax_return(0,'修改失败');
         }
 
+    }
+	/**
+     *发送修改交易密码短信验证
+     */
+    public function ajax_paypassword_send_sms()
+    {
+        $phone = session('phone');
+		if(session($phone.'paypassword')){
+			echo ajax_return(1,'短信验证码发送成功,请勿频繁发送');exit;
+		}
+        $code = mt_rand(10000,99999);
+        $result = send_sms('78771',$phone,$code);
+        if($result['info'] == 'success'){
+            session($phone.'paypassword',$code);
+            echo ajax_return(1,'短信验证码发送成功');
+        }else{
+            echo ajax_return(0,$result['msg']);
+        }
     }
     /**
      * 修改交易密码
@@ -98,21 +140,27 @@ class UserController extends CommonController {
     public function ajax_paypassword()
     {
         $userid = session('userid') ;
-        $oldpassword = I('post.oldpassword');
+       
         $newpassword = I('post.newpassword');
         $newpassword2 = I('post.newpassword2');
-
-        if($oldpassword == '' || $newpassword == '' || $newpassword2 == '' || $newpassword != $newpassword2){
+        $sms = I('post.sms');
+		$phone = session('phone');
+        if($newpassword == '' || $newpassword2 == '' || $newpassword != $newpassword2){
             echo ajax_return(0,'密码设置不正确');exit;
+        }
+		if($sms == ''){
+            echo ajax_return(0,'短信验证码不能为空');exit;
+        }
+		//判断短信吗是否正确
+        if($sms != session($phone . 'paypassword')){
+            echo ajax_return(0,'短信验证码不正确');exit;
         }
 
         $password = M('user')->where(array('id'=>$userid))->getField('paypassword');
-        if($password != md5($oldpassword)){
-            echo ajax_return(0,'原始密码输入不正确');exit;
-        }
-
+       
         $info = M('user')->where(array('id'=>$userid))->setField(array('paypassword'=>md5($newpassword)));
         if($info){
+			session($phone.'paypassword',null);
             echo ajax_return(1,'修改成功');exit;
         }else{
             echo ajax_return(0,'修改失败');
@@ -140,7 +188,7 @@ class UserController extends CommonController {
             echo ajax_return(0,'手机号已存在');exit;
         }
         $code = mt_rand(10000,99999);
-        $result = send_sms('72713',$phone,$code);
+        $result = send_sms('78771',$phone,$code);
         if($result['info'] == 'success'){
             session($phone.'chg',$code);
             echo ajax_return(1,'短信验证码发送成功');
@@ -255,8 +303,10 @@ class UserController extends CommonController {
         $jihuo = 0;
         if($device['charge']>0){
             $jihuo = 0; //未激活
+			$field = 'lthd';
         }else{
             $jihuo =1; //激活
+			$field = 'lth';
         }
         $mo = M();
         $mo->startTrans();
@@ -267,7 +317,7 @@ class UserController extends CommonController {
 		if($device['yuanlibi']>0){
 			//给自己返算力 一般需要激活才返
 			$rs[] = $mo->table('myinvite')->add(array('userid'=>$userid,'device_id'=>$rs[0],'type'=>1,'num'=>$device['yuanlibi'],'status'=>$jihuo,'createdate'=>time()));
-			$rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc('lth',$device['yuanlibi']);
+			$rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc($field,$device['yuanlibi']);
 		}
 		
 		//激活直接返算力
@@ -471,7 +521,9 @@ class UserController extends CommonController {
      * 退出登录
      */
 	public function ajax_logout()
-    {
+    {	
+		$userid = session('userid');
+		M('sys_cookie')->where(array('userid'=>$userid))->delete();
         session(null);
         echo ajax_return(1,'退出成功');
     }

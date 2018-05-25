@@ -3,6 +3,9 @@ namespace Admin\Controller;
 use Think\Controller;
 use Admin\Controller\BaseController;
 class FinanceController extends BaseController {
+	
+	
+	
     /**
      * 转入记录
      */

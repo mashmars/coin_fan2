@@ -23,9 +23,7 @@
 					<div class="notice" id="notice">
 						<div id="noticeList">
 							<ul class="ovh">
-								<li>好消息！好消息！好消息！好消息！</li>
-								<li>好消息！好消息！好消息！好消息！</li>
-								<li>好消息！好消息！好消息！好消息！</li>
+								<li>原力BYL挖矿路由器1200兆，内置挖矿功能预挖TFC，首发1万台，预购从速......</li>
 							</ul>
 						</div>
 					</div>
@@ -100,6 +98,11 @@
 							<img src="{$Think.const.PUB_IMG}ban02.png" alt="">
 						</a>
 					</li>
+					<li>
+						<a href="#">
+							<img src="{$Think.const.PUB_IMG}ban03.png" alt="">
+						</a>
+					</li>
 				</ul>
 			</div>
 			<div class="latest-record">
@@ -158,7 +161,15 @@
 						<span  class="flex-1">{$paihang[2]['phone']|substr=###,0,4}****{$paihang[2]['phone']|substr=###,8}</span>
 						<span>{:round($paihang[2]['lthz'],4)}<i></i></span>
 					</li>
-					
+					<volist name='paihang' id='vo'>
+					<if condition="$key gt 2">
+					<li class="flex-box">
+						<span><em>{$key+1}</em></span>
+						<span  class="flex-1">{$vo['phone']|substr=###,0,4}****{$vo['phone']|substr=###,8}</span>
+						<span>{:round($vo['lthz'],4)}<i></i></span>
+					</li>	
+					</if>
+					</volist>
 				</ul>
 			</div>
 		</div>
