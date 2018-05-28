@@ -316,7 +316,7 @@ class UserController extends CommonController {
 		//给自己返原力币
 		if($device['yuanlibi']>0){
 			//给自己返算力 一般需要激活才返
-			$rs[] = $mo->table('myinvite')->add(array('userid'=>$userid,'device_id'=>$rs[0],'type'=>1,'num'=>$device['yuanlibi'],'status'=>$jihuo,'createdate'=>time()));
+			$rs[] = $mo->table('myinvite')->add(array('userid'=>$userid,'device_id'=>$rs[0],'type'=>1,'num'=>$device['yuanlibi'],'status'=>$jihuo,'createdate'=>time(),'channel'=>5));
 			$rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc($field,$device['yuanlibi']);
 		}
 		
@@ -324,7 +324,7 @@ class UserController extends CommonController {
         if($jihuo){
             if($device['suanli']>0){
                 //给自己返算力 一般需要激活才返
-                $rs[] = $mo->table('myinvite')->add(array('userid'=>$userid,'device_id'=>$rs[0],'type'=>2,'num'=>$device['suanli'],'status'=>$jihuo,'createdate'=>time()));
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$userid,'device_id'=>$rs[0],'type'=>2,'num'=>$device['suanli'],'status'=>$jihuo,'createdate'=>time(),'channel'=>5));
                 $rs[] = $mo->table('user_coin')->where(array('userid'=>$userid))->setInc('lthz',$device['suanli']);
             }
         }

@@ -39,7 +39,7 @@
 								</div>
 							</div>
 							<div>
-							<span class="source"><em><if condition="$vo.channel eq 1">注册<elseif condition="$vo.channel eq 2" />邀请好友<elseif condition="$vo.channel eq 3" />消费<elseif condition="$vo.channel eq 4" />登录<else />消费</if></em>+{$vo['num']*1}</span>
+							<span class="source"><em><if condition="$vo.channel eq 1">注册<elseif condition="$vo.channel eq 2" />邀请好友<elseif condition="$vo.channel eq 3" />消费<elseif condition="$vo.channel eq 4" />登录<elseif condition="$vo.channel eq 5" />绑定设备<else />消费</if></em>+{$vo['num']*1}</span>
 							</div>
 						</li>
 					</volist>
@@ -136,6 +136,8 @@
 									ch = '消费';
 								}else if(v.channel ==4){
 									ch = '登录';
+								}else if(v.channel ==5){
+									ch = '绑定设备';
 								}
 								if(v.id){
 									list += '<li class="flex-box"><div class="flex-1 flex-box"><img src="{$Think.const.PUB_IMG}amount.png" alt="">';
