@@ -115,7 +115,7 @@ class QueueController extends Controller
        难度=预设数量*预设天数*人数
      * 每3小时执行 数量为=》 算力/难度/8
      */
-	public function miner()
+	public function miner123()
     {
         $config = M('config')->where('id=1')->find();
 		$count = M('user')->count(); //总人数
@@ -146,5 +146,65 @@ class QueueController extends Controller
         echo 'successful';
     }
 	
+	/*
+	*公式 发行数/总算力 * 个人的算力 / 8  分8次分完,如果是派送币大于0的话就不用除以8了
+	*/
+	public function miner()
+    {
+        $config = M('config')->where('id=1')->find();
+		
+		$total = 0;
+		if($config['total']>0){
+			$total = $config['total']/8;
+		}else{
+			$total = $config['total1'];
+		}
+		//总算力
+		$suanli = M('user_coin')->sum('lthz');
+		
+        //当前算力大于0的会员
+        $user_coin = M('user_coin')->where(array('lthz'=>array('gt',0)))->select();
+        $mo = M();
+        foreach($user_coin as $coin){
+            $num = $total /$suanli * $coin['lthz'];
+            
+			//保留四位小数 不四舍五入
+			//$num = $num/8; //放到上面判断里面了
+			$num = substr(sprintf("%.5f",$num),0,-1);
+			
+            if($num < 0.0001){
+                continue;
+            }
+            $mo->startTrans();
+            $rs = array();
+           // $rs[] = $mo->table('user_coin')->where(array('userid'=>$coin['userid']))->setInc('lth',$num);
+            $rs[] = $mo->table('sys_fl_log')->add(array('userid'=>$coin['userid'],'nandu'=>'','suanli'=>$coin['lthz'],'num'=>$num,'createdate'=>time())) ;
+            if(check_arr($rs)){
+                $mo->commit();
+            }else{
+                $mo->rollback();
+            }
+        }
+		M('config')->where('id=1')->setField('total1',0);
+        echo 'successful';
+    }
+	
+	/**
+	每小时派送 规则是 总人数/2 * 6.25
+	*/
+	public function exce_hour(){
+		$config = M('config')->where('id=1')->find();
+		$count = M('user')->count(); //总人数
+		
+		$count = intval($count/2);
+		$num =  $count* 6.25 ;
+		
+		M('config')->where(array('id'=>1))->setInc('total1',$num);
+		echo 'successful';
+	}
+	public function exce_hour_clear(){
+		M('config')->where('id=1')->setField('total1',0);
+		echo 'successful';
+	}
 	
 }

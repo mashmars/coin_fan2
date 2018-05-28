@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2018-05-25 15:14:07
+Date: 2018-05-28 14:51:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -66,6 +66,7 @@ CREATE TABLE `config` (
   `banner` varchar(30) DEFAULT NULL,
   `price` decimal(16,4) DEFAULT '1.0000',
   `total` int(11) DEFAULT '0' COMMENT '预设数量',
+  `total1` int(11) DEFAULT '0' COMMENT '每小时派币 累计加',
   `days` int(8) DEFAULT '0' COMMENT '预设天数',
   `users` int(8) DEFAULT '0' COMMENT '人数',
   `xishu` decimal(7,5) DEFAULT '1.00000' COMMENT '难度系数',
@@ -82,7 +83,7 @@ CREATE TABLE `config` (
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES ('1', '', '', '', '', '', '', '', '', '', '1.0000', '200', '2', '100', '0.10000', '0', '10', '5', '50', '10', '5', '1');
+INSERT INTO `config` VALUES ('1', '', '', '', '', '', '', '', '', '', '1.0000', '200', '0', '2', '100', '0.10000', '0', '10', '5', '50', '10', '5', '1');
 
 -- ----------------------------
 -- Table structure for device
@@ -254,7 +255,7 @@ CREATE TABLE `myinvite` (
   KEY `rex` (`userid`,`createdate`,`channel`),
   KEY `rex1` (`from_id`,`status`),
   KEY `device_id` (`device_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=utf8 COMMENT='邀请返利记录';
+) ENGINE=InnoDB AUTO_INCREMENT=140 DEFAULT CHARSET=utf8 COMMENT='邀请返利记录';
 
 -- ----------------------------
 -- Records of myinvite
@@ -389,6 +390,8 @@ INSERT INTO `myinvite` VALUES ('134', '18', '26', null, '2', '10.0000', '1', '15
 INSERT INTO `myinvite` VALUES ('135', '6', null, null, '2', '1.0000', '1', '1527219265', '4');
 INSERT INTO `myinvite` VALUES ('136', '13', null, null, '2', '1.0000', '1', '1527221061', '4');
 INSERT INTO `myinvite` VALUES ('137', '7', null, null, '2', '1.0000', '1', '1527231743', '4');
+INSERT INTO `myinvite` VALUES ('138', '21', null, null, '2', '1.0000', '1', '1527232832', '4');
+INSERT INTO `myinvite` VALUES ('139', '21', null, null, '2', '1.0000', '1', '1527490167', '4');
 
 -- ----------------------------
 -- Table structure for mytransfer
@@ -486,7 +489,7 @@ INSERT INTO `sys_cookie` VALUES ('31', '10', '6218867a411cb3ea512debba2acac149',
 INSERT INTO `sys_cookie` VALUES ('32', '24', '9ac369e2f222c72892a0f7639be5c152', 'e2f675cdacc4c5323e5d62b36447dbb3', '1527313086');
 INSERT INTO `sys_cookie` VALUES ('37', '12', '994cd6033be0ac056e6735f8626292d6', 'c9ef8fd6ee2f4bb0e2f39099c9822a70', '1527409660');
 INSERT INTO `sys_cookie` VALUES ('38', '4', '49bc15c9346b8b977c730d61fdcde951', '260048c1793d5bf31b576088f89ed6b8', '1527407343');
-INSERT INTO `sys_cookie` VALUES ('39', '21', 'f0f2c5a21ad203edfc8abd5cf3fea563', '7b41d8321c09461659b110a66279367d', '1527329525');
+INSERT INTO `sys_cookie` VALUES ('39', '21', '0883a21c7bf71bcd107755137767e49a', 'cf8a1f17e3336e94621cef167336f553', '1527749364');
 INSERT INTO `sys_cookie` VALUES ('41', '6', '860f00c1993f09818b5f515189b92c45', '63b56c5de22c864f8d9dec7cd457b542', '1527334926');
 INSERT INTO `sys_cookie` VALUES ('42', '5', '820bab64c9ac6de547eede8d3ae1d0c5', '95c1aaa1ed09e1b4099aabb3f3f8a4f9', '1527410570');
 INSERT INTO `sys_cookie` VALUES ('43', '1', 'aaf8ec34428b197f1425338251558eb4', 'c9f3bf2645c2cd629896f60883f97c55', '1527443824');
@@ -506,7 +509,7 @@ CREATE TABLE `sys_fl_log` (
   `updatedate` int(11) DEFAULT '0' COMMENT '收取时间',
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`,`status`,`createdate`)
-) ENGINE=InnoDB AUTO_INCREMENT=891 DEFAULT CHARSET=utf8 COMMENT='每天返利记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='每天返利记录';
 
 -- ----------------------------
 -- Records of sys_fl_log
@@ -628,7 +631,7 @@ INSERT INTO `user_coin` VALUES ('17', '17', '0.00000000', '20.00000000', '', '50
 INSERT INTO `user_coin` VALUES ('18', '18', '0.22600000', '30.00000000', '', '64.00000000');
 INSERT INTO `user_coin` VALUES ('19', '19', '0.00000000', '20.00000000', '', '50.00000000');
 INSERT INTO `user_coin` VALUES ('20', '20', '0.00000000', '20.00000000', '', '51.00000000');
-INSERT INTO `user_coin` VALUES ('21', '21', '0.10030000', '20.00000000', '', '53.00000000');
+INSERT INTO `user_coin` VALUES ('21', '21', '0.10030000', '20.00000000', '', '55.00000000');
 INSERT INTO `user_coin` VALUES ('22', '22', '0.04430000', '0.00000000', '', '52.00000000');
 INSERT INTO `user_coin` VALUES ('23', '23', '0.00000000', '0.00000000', '', '50.00000000');
 INSERT INTO `user_coin` VALUES ('24', '24', '0.04650000', '0.00000000', '', '52.00000000');

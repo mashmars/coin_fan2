@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost
-Source Server Version : 50553
-Source Host           : localhost:3306
-Source Database       : coin_fan2
+Source Server         : fan_coin2
+Source Server Version : 50719
+Source Host           : 47.89.23.187:3306
+Source Database       : app_tfp_kim
 
 Target Server Type    : MYSQL
-Target Server Version : 50553
+Target Server Version : 50719
 File Encoding         : 65001
 
-Date: 2018-05-06 09:18:44
+Date: 2018-05-27 22:33:04
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -30,6 +30,11 @@ CREATE TABLE `admin` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=gbk;
 
 -- ----------------------------
+-- Records of admin
+-- ----------------------------
+INSERT INTO `admin` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '183.240.196.69', '1527431302', '超级管理员');
+
+-- ----------------------------
 -- Table structure for banner
 -- ----------------------------
 DROP TABLE IF EXISTS `banner`;
@@ -39,6 +44,10 @@ CREATE TABLE `banner` (
   `image` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of banner
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for config
@@ -57,10 +66,24 @@ CREATE TABLE `config` (
   `banner` varchar(30) DEFAULT NULL,
   `price` decimal(16,4) DEFAULT '1.0000',
   `total` int(11) DEFAULT '0' COMMENT '预设数量',
+  `total1` int(11) DEFAULT '0' COMMENT '人数/2 * 6.25 每小时',
   `days` int(8) DEFAULT '0' COMMENT '预设天数',
   `users` int(8) DEFAULT '0' COMMENT '人数',
+  `xishu` decimal(7,5) DEFAULT '1.00000' COMMENT '难度系数',
+  `invite` int(5) DEFAULT '0' COMMENT '给自己返多少',
+  `invite1` int(5) DEFAULT '0' COMMENT '给上级返多少',
+  `invite2` int(5) DEFAULT '0' COMMENT '给上上级返多少',
+  `register_suanli` int(10) DEFAULT '0' COMMENT '注册送算力',
+  `invite1_suanli` int(5) DEFAULT '0' COMMENT '直推的人获得多少算力，即上级',
+  `invite2_suanli` int(5) DEFAULT '0' COMMENT '简介推荐人获得算力',
+  `login_suanli` int(10) DEFAULT '0' COMMENT '登录加算力',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of config
+-- ----------------------------
+INSERT INTO `config` VALUES ('1', '', '', '', '', '', '', '', '', '', '0.1000', '0', '0', '2', '100', '0.10000', '0', '10', '5', '50', '10', '5', '1');
 
 -- ----------------------------
 -- Table structure for device
@@ -71,12 +94,18 @@ CREATE TABLE `device` (
   `name` varchar(30) DEFAULT NULL,
   `max` int(2) DEFAULT '0' COMMENT '最多可绑定多少个',
   `status` tinyint(4) DEFAULT '1' COMMENT '状态 1可用 0不可用',
-  `yuanlibi` varchar(10) DEFAULT '0' COMMENT '原力币 绑定后给邀请人返多少个原力币',
-  `yuanlibi_2` varchar(10) DEFAULT '0' COMMENT '给邀请人的邀请人返利数量',
+  `yuanlibi` varchar(10) DEFAULT '0' COMMENT '原力币 绑定后给自己返多少个原力币',
+  `yuanlibi_2` varchar(10) DEFAULT '0' COMMENT '不用',
   `suanli` varchar(10) DEFAULT '0' COMMENT '绑定设备给自己返多少个算力',
   `charge` varchar(10) DEFAULT '0' COMMENT '手续费多少才算激活 （pos）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of device
+-- ----------------------------
+INSERT INTO `device` VALUES ('1', 'Pos机', '1', '1', '420', '2', '50.0000', '30.5');
+INSERT INTO `device` VALUES ('2', '路由器', '100', '1', '420', '0', '60.0000', '0');
 
 -- ----------------------------
 -- Table structure for device_sn
@@ -91,7 +120,11 @@ CREATE TABLE `device_sn` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `sn` (`sn`),
   KEY `comp` (`device_id`,`sn`,`mima`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of device_sn
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for device_xiaofei_log
@@ -109,7 +142,11 @@ CREATE TABLE `device_xiaofei_log` (
   `status` tinyint(4) DEFAULT '0' COMMENT '0是未匹配 1是已匹配，2是无效',
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_sn` (`order_sn`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of device_xiaofei_log
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mycz
@@ -121,7 +158,11 @@ CREATE TABLE `mycz` (
   `num` decimal(16,4) DEFAULT NULL,
   `createdate` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mycz
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for myinvite
@@ -130,13 +171,23 @@ DROP TABLE IF EXISTS `myinvite`;
 CREATE TABLE `myinvite` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) DEFAULT NULL,
+  `from_id` int(11) DEFAULT NULL COMMENT '来源自谁返的 ',
   `device_id` int(11) DEFAULT NULL COMMENT '这个对应我的设备id user_device',
   `type` tinyint(4) DEFAULT NULL COMMENT '1是原力币 2是算力',
   `num` decimal(10,4) DEFAULT '0.0000' COMMENT '0是未激活 1是已激活',
   `status` tinyint(4) DEFAULT NULL COMMENT '0未成功返 1成功返',
   `createdate` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COMMENT='邀请返利记录';
+  `channel` tinyint(4) DEFAULT '0' COMMENT '来源 1注册 2邀请好友 3消费4,登录',
+  PRIMARY KEY (`id`),
+  KEY `rex` (`userid`,`createdate`,`channel`),
+  KEY `rex1` (`from_id`,`status`),
+  KEY `device_id` (`device_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='邀请返利记录';
+
+-- ----------------------------
+-- Records of myinvite
+-- ----------------------------
+INSERT INTO `myinvite` VALUES ('1', '33', null, null, '2', '1.0000', '1', '1527430456', '4');
 
 -- ----------------------------
 -- Table structure for mytransfer
@@ -151,7 +202,11 @@ CREATE TABLE `mytransfer` (
   `realname` varchar(30) DEFAULT NULL,
   `phone` varchar(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mytransfer
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for myzc
@@ -169,7 +224,11 @@ CREATE TABLE `myzc` (
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`),
   KEY `address` (`address`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of myzc
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for myzr
@@ -186,7 +245,30 @@ CREATE TABLE `myzr` (
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`),
   KEY `zuhe1` (`txid`,`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of myzr
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_cookie
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_cookie`;
+CREATE TABLE `sys_cookie` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userid` int(11) DEFAULT NULL,
+  `identifier` varchar(100) DEFAULT NULL,
+  `token` varchar(100) DEFAULT NULL,
+  `timeout` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userid` (`userid`) USING BTREE,
+  KEY `identifier` (`identifier`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_cookie
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_fl_log
@@ -199,10 +281,15 @@ CREATE TABLE `sys_fl_log` (
   `suanli` varchar(15) DEFAULT NULL,
   `num` decimal(15,8) DEFAULT NULL,
   `createdate` int(11) DEFAULT NULL,
-  `status` tinyint(2) DEFAULT '2' COMMENT '1已收取 0不可用 2是待收取',
+  `status` tinyint(2) DEFAULT '2' COMMENT '1是已收取 0是作废 2是待收取',
+  `updatedate` int(11) DEFAULT '0' COMMENT '收取时间',
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`,`status`,`createdate`)
-) ENGINE=InnoDB AUTO_INCREMENT=3855 DEFAULT CHARSET=utf8 COMMENT='每天返利记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='每天返利记录';
+
+-- ----------------------------
+-- Records of sys_fl_log
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user
@@ -226,7 +313,11 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`) USING BTREE,
   UNIQUE KEY `phone` (`phone`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user_certification
@@ -243,7 +334,11 @@ CREATE TABLE `user_certification` (
   `realname` varchar(30) DEFAULT NULL,
   `idcard` char(18) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user_certification
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user_coin
@@ -259,7 +354,11 @@ CREATE TABLE `user_coin` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`userid`) USING BTREE,
   KEY `lthb` (`lthb`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user_coin
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user_device
@@ -274,7 +373,11 @@ CREATE TABLE `user_device` (
   `createdate` int(11) DEFAULT NULL,
   `status` tinyint(4) DEFAULT '0' COMMENT '0是未激活 1是已激活',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user_device
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user_qianbao
@@ -288,7 +391,11 @@ CREATE TABLE `user_qianbao` (
   `createdate` int(11) DEFAULT NULL,
   `status` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user_qianbao
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user_shenqing
@@ -307,4 +414,8 @@ CREATE TABLE `user_shenqing` (
   `status` tinyint(2) DEFAULT '2' COMMENT '2处理中 1已处理  0已作废',
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`,`status`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='pos路由器申请记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='pos路由器申请记录';
+
+-- ----------------------------
+-- Records of user_shenqing
+-- ----------------------------
