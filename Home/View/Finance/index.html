@@ -30,7 +30,7 @@
 					<div class="tc flex-box user-total">
 						<div class="flex-1">
 						<a href="{:U('index/frozen')}">
-							<p>冻结币</p>
+							<p>冻结TFC</p>
 							<h4>{$usercoin['lthd']*1}</h4>
 						</a>
 						</div>
@@ -40,7 +40,7 @@
 						</div>
 						<div class="flex-1">
 							<p>参考市值</p>
-							<h4>{$usercoin['lth']*$config['price']}</h4>
+							<h4>≈￥{$usercoin['lth']*$config['price']+$usercoin['lthd']*$config['price']}</h4>
 						</div>
 						<div class="flex-1">
 							<p>TFC</p>

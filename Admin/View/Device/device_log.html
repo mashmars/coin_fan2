@@ -61,7 +61,7 @@
 	<table class="table table-border table-bordered table-hover table-bg ">
 		<thead>
 			<tr class="text-c">
-				<th width="25"><input type="checkbox" name="" value=""></th>
+				<th width="25"><input type="checkbox" name="" value="" class='all'></th>
 				<th width="80">ID</th>
 				<th width="100">姓名</th>								
 				<th width="100">手机号</th>								
@@ -78,7 +78,7 @@
 		<tbody id='tbody'>
 		<volist name='res' id='vo'>
 			<tr class="text-c">
-				<td><input type="checkbox" value="{$vo.id}" name=""></td>
+				<td><input type="checkbox" value="{$vo.id}" name="" class='id'></td>
 				<td>{$vo.id}</td>
 				<td>{$vo.realname}</td>				
 				<td>{$vo.phone}</td>				
@@ -98,12 +98,15 @@
 				</td>				
 				<td>{$vo.createdate|date='Y-m-d',###}</td>				
 				<td class="td-manage">				
-				
+				<if condition="$vo.status neq 1">
+				<a style="text-decoration:none" class="btn btn-danger-outline radius size-MINI" onClick="del(this,'{$vo.id}')" href="javascript:;" title="删除">删除</a>
+				</if>
 				</td>
 			</tr>
 		</volist>
 		<th>
-		<td colspan='6' style='text-align:right'>合计：</td>
+		<td  colspan='3' style='text-align:left'><input type='button' id='piliang' class="btn btn-danger radius" value='批量删除'></td>
+		<td colspan='3' style='text-align:right'>合计：</td>
 		<td>{$money}</td>
 		<td>{$fee}</td>
 		<td colspan='3'></td>
@@ -278,6 +281,51 @@ function verify(obj){
 		}
 	},'json');
 }
+function del(obj,id){
+	layer.confirm('是否确认删除,一经删除，无法恢复',function(){
+		$.ajax({
+			url:"{:U('device/ajax_verify_xiaofei_del')}",
+			data:{id:id},
+			type:"post",
+			dataType:"json",
+			success:function(data){
+				if(data.info =='success'){
+					layer.msg(data.msg,{time:2000,icon:6},function(){
+						$(obj).parents('tr').remove();
+					})
+				}else{
+					layer.msg(data.msg,{time:2000,icon:5})
+				}
+			}
+		})
+	})
+}
+$('#piliang').click(function(){
+	var ids = new Array();
+	$('.id').each(function(){
+		if($(this).prop('checked')){
+			ids.push($(this).val());
+		}
+	})
+	
+	layer.confirm('是否确认批量删除,一经删除，无法恢复',function(){
+		$.ajax({
+			url:"{:U('device/ajax_verify_xiaofei_piliang_del')}",
+			data:{ids:ids},
+			type:"post",
+			dataType:"json",
+			success:function(data){
+				if(data.info =='success'){
+					layer.msg(data.msg,{time:2000,icon:6},function(){
+						location.reload();
+					})
+				}else{
+					layer.msg(data.msg,{time:2000,icon:5})
+				}
+			}
+		})
+	})
+})
 </script> 
 </body>
 </html>

@@ -105,3 +105,12 @@
   border-radius: 50%;
   background: #e4ad2f;
 }
+.buybox{overflow: hidden;}
+.buybox span{float: left;line-height: 1.25rem!important;}
+.buy{float: left;width: 60%;overflow: hidden;padding-right: 0.41667rem;font-size: 14px;}
+.buy input{outline: none;}
+.buy .min,.buy .add{width:25px!important;height:25px!important;}
+.buy .text_box{width:35px!important;height:25px!important;text-align: center;}
+.dn{display: none!important;}
+.total{font-size: 18px;color:red;}
+;}

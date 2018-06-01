@@ -26,6 +26,24 @@
 			<div class="info">
 				<span>联系方式：</span><input type="text" placeholder="请输入联系方式" id='lxfs'/>
 			</div>
+			<if condition="I('get.type') eq 2">
+				<div class="info buybox">
+					<span class="dn price">599.00</span>
+					<span>购买数量：</span>
+					<div class="buy">
+						<input class="min" name="" type="button" value="-" /> 
+						<input class="text_box" name="" type="text" readonly="readonly"value="1" /> 
+						<input class="add" name="" type="button" value="+" /> 
+					</div>
+				</div>
+<!-- 				<div class="info">
+					<span>库存数量：</span><input type="text" class="numble"readonly="readonly" value="6000" />
+				</div> -->
+				<div class="info">
+					<span>共计：</span>
+					<span class="total"><em>599.00</em>元</span>
+				</div>
+			</if>
 			<div class="info">
 				<span>所在地区：</span><div class="clearFix area"><span class="fl" id="btnArea">请输入地区</span><span class="fr" id="btnMore">&gt</span></div>
 			</div>
@@ -40,10 +58,10 @@
 					<div><input type="radio" name="radio" id="cboYhk" value="3" /><label class="span" for="cboYhk"></label><label for="cboYhk">银行卡</label></div>
 				</div>
 			</div>-->
-			<div class="info clearFix">
+		<!-- 	<div class="info clearFix">
 				<span class="mr">设为默认</span>
 				<span class="fr switchs"><i></i></span>
-			</div>
+			</div> -->
 			<if condition="I('get.type') eq 2">
 			<div class="alipayBox">
 				<img src="{$Think.const.PUB_IMG}alipay.png" />
@@ -11555,7 +11573,30 @@ var mobileSelect5 = new MobileSelect({
 				$(this).siblings('input').val("1");
 			}
 		});
-
+		$(".add").click(function(){  //加号函数
+			var t=$(this).parent().find('input[class*=text_box]');
+			t.val(parseInt(t.val())+1);
+			//$('.numble').val(parseInt(n.val())-1);
+			setTotal(); 
+		});
+		$(".min").click(function(){  //减数函数
+			var t=$(this).parent().find('input[class*=text_box]'),
+			n = $('.numble').val();; 
+			t.val(parseInt(t.val())-1);
+			if(parseInt(t.val())<1){ 
+			t.val(1); 
+			}else{
+				//$('.numble').val(parseInt(n.val())+1);
+			}
+			setTotal(); 
+		});
+		function setTotal(){ 
+			var s=0; 
+			$(".buybox .buy").each(function(){ 
+				s+=parseInt($(this).find('input[class*=text_box]').val())*parseFloat($('.price').text()); 
+			}); 
+			$(".total em").text(s.toFixed(2)); 
+		}
 </script>
 	</body>
 </html>

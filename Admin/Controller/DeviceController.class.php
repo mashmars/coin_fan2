@@ -1,8 +1,9 @@
 <?php
 namespace Admin\Controller;
 use Think\Controller;
+use Admin\Controller\BaseController;
 
-class DeviceController extends Controller {
+class DeviceController extends BaseController {
 	public function device(){
 	    $p = I('param.p',1);
 	    $list = 10;
@@ -242,7 +243,7 @@ class DeviceController extends Controller {
     public function import(){
         if(IS_POST){
             $up = new \Think\Upload();
-            $up->exts = array('xls','xlsx');
+            $up->exts = array('xls','xlsx','csv');
 
             $up->subName  =''; // 子目录创建方式
             $up->rootPath  = '.' . UP_INFO;
@@ -319,15 +320,15 @@ class DeviceController extends Controller {
         $sheet = $objPHPExcel->getSheet(0);
         $columns = $sheet->getHighestColumn(); //获取最大列数
 
-        if($columns != 'F'){
+        if($columns != 'O'){
             $this->error('excel表格式列数不正确!','',1);
         }
         $rows = $sheet->getHighestRow();             //获取最大行数
 
         //要导入的字段名
-        $fields = array('device_sn','order_sn','day','time','money','fee');
+        $fields = array('jgmc','device_sn','zdpc','jylx','order_sn','day','time','money','fee','yhkh','sjhm','khxm','sfzh','sxfl','gdsxf');
 
-        $column =array('A','B','C','D','E','F');
+        $column =array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O');
 
         for($i=2;$i<=$rows;$i++){
 
@@ -339,7 +340,7 @@ class DeviceController extends Controller {
                         $data['no_insert'] = true;
                     }
                 }
-                $data[$fields[$j]] = $objPHPExcel->getActiveSheet()->getCell($column[$j].$i)->getValue();
+                $data[$fields[$j]] = trim($objPHPExcel->getActiveSheet()->getCell($column[$j].$i)->getValue(),"'");
 
             }
 
@@ -372,7 +373,10 @@ class DeviceController extends Controller {
             $suanli = 0;//增加的算力
             //先找到这个sn被绑定没 ，如果没绑定直接作废 ， 如果有绑定 先判断该设备的状态是激活还是未激活
             // 如果激活只给自己返算力 没激活则判断激活条件 达到后给上级的冻结原力币去掉进可用 同时给你返算力
-            $user_device = M('user_device')->where(array('sn'=>$v['device_sn']))->find();
+			//因pos机导出的比实际多出最后一位 所以最后一位不验证
+			$len = strlen($v['device_sn']);
+			$sn_tmp = substr($v['device_sn'],0,$len-1);
+            $user_device = M('user_device')->where(array('sn'=>$sn_tmp))->find();
             if(!$user_device){
                 M('device_xiaofei_log')->where(array('device_sn'=>$v['device_sn']))->setField('status',2);//无效状态
                 continue;
@@ -444,7 +448,36 @@ class DeviceController extends Controller {
         echo ajax_return(1,'验证完成');exit;
     }
 
-
+	public function ajax_verify_xiaofei_del()
+    {
+        $id = I('post.id');
+		$info = M('device_xiaofei_log')->find($id);
+		if(!$info || $info['status'] == 1){
+			echo ajax_return(0,'请求有误');exit;
+		}
+        $res = M('device_xiaofei_log')->delete($id);
+        if($res){
+            echo ajax_return(1,'删除成功');
+        }else{
+            echo ajax_return(0,'删除失败');
+        }
+    }
+	public function ajax_verify_xiaofei_piliang_del()
+    {
+        $ids = I('post.ids');
+		foreach($ids as $id){
+			$info = M('device_xiaofei_log')->find($id);
+			if(!$info || $info['status'] == 1){
+				continue;
+			}
+			$res = M('device_xiaofei_log')->delete($id);
+		}
+        if($res){
+            echo ajax_return(1,'删除成功');
+        }else{
+            echo ajax_return(0,'删除失败');
+        }
+    }
     /**
      * 验证返利记录
      */

@@ -287,7 +287,10 @@ class UserController extends CommonController {
         if(!$device['status']){
             echo ajax_return(0,'暂未开放,不能绑定');exit;
         }
-        $device_sn = M('device_sn')->where(array('device_id'=>$id,'sn'=>$sn,'mima'=>$mima))->find();
+		if(strlen($sn) < 15){
+			echo ajax_return(0,'SN码格式不正确');exit;
+		}
+        $device_sn = M('device_sn')->where(array('device_id'=>$id,'sn'=>array('like',$sn.'%'),'mima'=>$mima))->find();
         if(!$device_sn){
             echo ajax_return(0,'SN码或密码不正确');exit;
         }
@@ -346,6 +349,7 @@ class UserController extends CommonController {
             echo ajax_return(1,'新增设备成功');
         }else{
             $mo->rollback();
+			//var_dump($rs);
             echo ajax_return(0,'新增设备失败');
         }
 

@@ -42,25 +42,37 @@
 	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>收货人:</label>
 		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" class="input-text" value="{$info.shr}" placeholder="" readonly>
+			<input type="text" class="input-text" value="{$info.shr}" placeholder="" readonly disabled>
 		</div>
 	</div>
 	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>联系方式:</label>
 		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" class="input-text" value="{$info.lxfs}" placeholder="" readonly>
+			<input type="text" class="input-text" value="{$info.lxfs}" placeholder="" readonly disabled>
 		</div>
 	</div>
 	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>地区:</label>
 		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" class="input-text" value="{$info.area}" placeholder="" readonly>
+			<input type="text" class="input-text" value="{$info.area}" placeholder="" readonly disabled>
 		</div>
 	</div>
 	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>地址:</label>
 		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" class="input-text" value="{$info.address}" placeholder="" readonly>
+			<input type="text" class="input-text" value="{$info.address}" placeholder="" readonly disabled>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>快递公司:</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="{$info.kuaidi}" placeholder="" name='kuaidi' <if condition="$info['kuaidi'] neq ''">readonly disabled</if>>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>快递单号:</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="{$info.danhao}" placeholder=""  name='danhao' <if condition="$info['danhao'] neq ''">readonly disabled</if>>
 		</div>
 	</div>
 	<div class="row cl">
@@ -72,7 +84,7 @@
 			</div>
 			<div class="radio-box">
 				<input name="status" type="radio" id="sex-1" value='1' >
-				<label for="sex-1">已处理</label>
+				<label for="sex-1">已发货</label>
 			</div>
 			<div class="radio-box">
 				<input type="radio" id="sex-2" value='0' name="status">

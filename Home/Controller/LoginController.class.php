@@ -330,14 +330,17 @@ class LoginController extends Controller
         $rs[] = $mo->table('user')->add(array('phone'=>$phone,'username'=>$phone,'password'=>md5($password),'paypassword'=>md5($paypassword),'pid'=>$pid,'realname'=>$realname,'createdate'=>time()));
         //插入资产表
 		//给自己返
-		$rs[] = $mo->table('user_coin')->add(array('userid'=>$rs[0],'lthd'=>$config['invite'],'lthz'=>$config['register_suanli']));
-		if($config['invite']>0){
-			$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite'],'status'=>0,'createdate'=>time(),'channel'=>1));
+		$rs[] = $mo->table('user_coin')->add(array('userid'=>$rs[0],'lth'=>$config['invite'],'lthd'=>$config['invite_dongjie'],'lthz'=>$config['register_suanli']));
+		if($config['invite']>0){ //直接返币
+			$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite'],'status'=>1,'createdate'=>time(),'channel'=>1));
 		}
-		
+		if($config['invite_dongjie']>0){ //返币 冻结状态
+			$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite_dongjie'],'status'=>0,'createdate'=>time(),'channel'=>1));
+		}
 		if($config['register_suanli']>0){
 			$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>'','type'=>2,'num'=>$config['register_suanli'],'status'=>1,'createdate'=>time(),'channel'=>1));//注册送算力 from_id为空
 		}
+		
 		//给上级返和上上级返
 		$pid = M('user')->where(array('id'=>$rs[0]))->getField('pid');//上级
 		if($pid){

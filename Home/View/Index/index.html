@@ -15,6 +15,7 @@
 	
 	<script src="{$Think.const.PUB_LIB}layer/layer.js"></script>
 	<script src="{$Think.const.PUB_JS}global.js"></script>
+<script src="{$Think.const.PUB_LIB}jquery.cookie.js"></script>
 	</head>
 	<body>
 		<div class="main index">
@@ -237,6 +238,31 @@
 			};
 			$("#notice").textScroll();
 
+			function adBox(){  //弹窗广告
+				var html='<div class="adslider"><ul class="slides"><li><a href="{:U(\'user/getrouter\')}"><img src="{$Think.const.PUB_IMG}ad01.png" alt=""></a></li><li><a href="{:U(\'user/getpos\')}"><img src="{$Think.const.PUB_IMG}ad02.png" alt=""></a></li></ul></div>';
+				var index = layer.open({
+					type: 1,
+					content: html,
+					skin: 'adBox',
+					title:false,
+					fixed:true,
+					closeBtn: 1,
+					success: function(layero, index){
+						var glide = $('.adslider').glide({
+								animationTime:200, 
+								arrows:false,
+							});
+					},
+				});
+			};
+			
+			var c = $.cookie('ad');
+			if(!c){
+				adBox();
+				var expire= new Date();  
+				expire.setTime(expire.getTime()+30*60*1000);
+				$.cookie('ad', 'ad', { path : '/',expires: expire });
+			}
 		</script>
 		<script>
 			var music = document.getElementById("bgMusic");

@@ -11,7 +11,7 @@ class QueueController extends Controller
     public function qianbao()
     {
         Vendor("Move.ext.client");
-        $client = new \client('a5c','543', '127.0.0.1', 31253, 5, [], 1);
+         $client = new \client('...','...', '', 29416, 5, [], 1);
         $json = $client->getinfo();
 
         if (!isset($json['version']) || !$json['version']) {
@@ -196,8 +196,8 @@ class QueueController extends Controller
 		$config = M('config')->where('id=1')->find();
 		$count = M('user')->count(); //总人数
 		
-		$count = intval($count/2);
-		$num =  $count* 6.25 ;
+		$count = intval($count/$config['block_renshu']);
+		$num =  $count* $config['block_num'] ;
 		
 		M('config')->where(array('id'=>1))->setInc('total1',$num);
 		echo 'successful';

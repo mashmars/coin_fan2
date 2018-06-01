@@ -44,7 +44,7 @@
 			<select name="status" id='field' class="select">
 				<option value="" data-type='' <if condition="$status eq ''">selected</if>>全部状态</option>
 				<option value="0" data-type='' <if condition="$status eq '0'">selected</if>>作废</option>
-				<option value="1" data-type='' <if condition="$status eq 1">selected</if>>已处理</option>
+				<option value="1" data-type='' <if condition="$status eq 1">selected</if>>已发货</option>
 				<option value="2" data-type='' <if condition="$status eq 2">selected</if>>处理中</option>
 			</select>
 		</span>
@@ -73,6 +73,8 @@
 				<th width="100">地址</th>								
 				<th width="100">时间</th>								
 				<th width="100">状态</th>								
+				<th width="100">快递公司</th>								
+				<th width="100">快递单号</th>								
 				<th width="170">操作</th>
 			</tr>
 		</thead>
@@ -90,13 +92,15 @@
 						
 				<td>
 				<if condition="$vo.status eq 1">
-				<span class="label label-success radius">已处理</span>
+				<span class="label label-success radius">已发货</span>
 				<elseif condition="$vo.status eq 2" />
 				<span class="label label-primary radius">未处理</span>
 				<else />
 				<span class="label label-danger radius">已作废</span>
 				</if>
-				</td>					
+				</td>
+				<td>{$vo.kuaidi}</td>		
+				<td>{$vo.danhao}</td>						
 				<td class="td-manage">
 				<if condition="$vo.status eq 2">
 				<a style="text-decoration:none" class="btn btn-secondary-outline radius size-MINI" onclick="member_add('编辑','{:U('device/device_shenqing_edit',array('id'=>$vo['id']))}','','510')"   title="编辑">编辑</a>

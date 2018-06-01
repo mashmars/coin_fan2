@@ -30,6 +30,7 @@ class CommonController extends Controller {
         $this->assign('userinfo',$userinfo);
         //获取用户资产
         $usercoin = M('user_coin')->where(array('userid'=>$userid))->find();
+		
         $this->assign('usercoin',$usercoin);
         
         //获取网站基本配置

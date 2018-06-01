@@ -56,19 +56,8 @@ class FinanceController extends CommonController {
         $phone = session('phone');
         $wallet = M('user_coin')->where(array('userid'=>$userid))->find();
 		
-		if(!$wallet['lthb']){
-			$str='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-			$qianbao = '';
-			for($i=0;$i<32;$i++){
-				$qianbao .= $str[mt_rand(0,61)] ;
-			}
-			M('user_coin')->where(array('userid'=>$userid))->save(array('lthb'=>$qianbao));
-		}else{
-			$qianbao = $wallet['lthb'];
-		}
 		
-		/*
+		
 		
         //没有钱包地址先生成
         if(!$wallet['lthb']){
@@ -78,7 +67,7 @@ class FinanceController extends CommonController {
             $host = C('wallet_host');
             $port = C('wallet_port');
             //$client = new \client($user,$pwd,$host,$port, 5, [], 1); //暂时不能用 。。。。。
-            $client = new \client('a5c','543', '127.0.0.1', 31253, 5, [], 1);
+            $client = new \client('...','...', '', 29416, 5, [], 1);
 
             if(!$client){
                 $qianbao = '';
@@ -103,7 +92,7 @@ class FinanceController extends CommonController {
         }else{
             $qianbao = $wallet['lthb'];
         }
-		*/
+		
         $this->assign('qianbao',$qianbao);
         $this->display();
     }

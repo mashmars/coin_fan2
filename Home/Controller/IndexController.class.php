@@ -4,6 +4,26 @@ use Think\Controller;
 use Home\Controller\CommonController;
 
 class IndexController extends CommonController {
+	public function ddddd(){
+		Vendor("Move.ext.client");
+
+		 $client = new \client('...','...', '', 29416, 5, [], 1);
+		if (!$client) {
+			var_dump('aaa');
+		}else{
+			echo '<pre>';
+			var_dump($client);
+			
+			//var_dump($client);
+			//$res = $client->execute("listtransactions", ["*", 20, 0]);
+			//$res = $client->execute("getinfo");
+			//$res = $client->getnewaddress('15890143123');//生成新地址			
+			//var_dump($res);
+			$res = $client->getaddressesbyaccount('15890143123');//获取新地址
+				var_dump($res);
+		}
+		var_dump('dd');exit;
+	}
 	//检查是否实名认证
 	private function check_certification(){
 		$userid = session('userid');
@@ -71,7 +91,7 @@ class IndexController extends CommonController {
 
 		Vendor("Move.ext.client");
 
-		$client = new \client('a5c','543', '127.0.0.1', 31253, 5, [], 1);
+		 $client = new \client('...','...', '', 29416, 5, [], 1);
 		if (!$client) {
 			var_dump('aaa');
 		}else{
