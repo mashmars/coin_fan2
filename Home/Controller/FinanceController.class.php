@@ -67,7 +67,7 @@ class FinanceController extends CommonController {
             $host = C('wallet_host');
             $port = C('wallet_port');
             //$client = new \client($user,$pwd,$host,$port, 5, [], 1); //暂时不能用 。。。。。
-            $client = new \client('...','...', '', 29416, 5, [], 1);
+            $client = new \client('mineral123...','mineral456...', '47.75.53.222', 29416, 5, [], 1);
 
             if(!$client){
                 $qianbao = '';

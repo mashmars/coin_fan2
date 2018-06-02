@@ -16,6 +16,19 @@ class UserController extends CommonController {
 		}
 		return false;
 	}
+
+    //
+    public function qrcode(){
+        vendor('phpqrcode.phpqrcode');
+        $url = I('get.url');
+
+        if (strpos($url, 'http')===false) {
+            //if no http
+            $url='http://'.$url;
+        }
+        \QRcode::png($url); 
+    }
+
     public function index(){
 		$userid = session('userid');
 		//合计挖矿收益
@@ -363,6 +376,20 @@ class UserController extends CommonController {
         $this->assign('phone',$phone);
         $this->display();
     }
+
+
+    /**
+     * 邀请好友
+     */
+    public function invite2()
+    {
+        session('phone',1546489464);
+        $phone = session('phone');
+        $this->assign('phone',$phone);
+        $this->display();
+    }
+
+
     /**
      * 实名认证
      */

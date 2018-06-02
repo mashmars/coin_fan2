@@ -80,9 +80,17 @@ class UserController extends BaseController
         //注册成功
         $rs[] = $mo->table('user')->add($data);
         //给自己返
-		$rs[] = $mo->table('user_coin')->add(array('userid'=>$rs[0],'lthd'=>$config['invite'],'lthz'=>$config['register_suanli']));
-		$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite'],'status'=>0,'createdate'=>time(),'channel'=>1));
-		$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>'','type'=>2,'num'=>$config['register_suanli'],'status'=>1,'createdate'=>time(),'channel'=>1));//注册送算力 from_id为空
+		$rs[] = $mo->table('user_coin')->add(array('userid'=>$rs[0],'lth'=>$config['invite'],'lthd'=>$config['invite_dongjie'],'lthz'=>$config['register_suanli']));
+		if($config['invite']>0){ //直接返币
+			$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite'],'status'=>1,'createdate'=>time(),'channel'=>1));
+		}
+		if($config['invite_dongjie']>0){ //返币 冻结状态
+			$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite_dongjie'],'status'=>0,'createdate'=>time(),'channel'=>1));
+		}
+		if($config['register_suanli']>0){
+			$rs[] = $mo->table('myinvite')->add(array('userid'=>$rs[0],'from_id'=>'','type'=>2,'num'=>$config['register_suanli'],'status'=>1,'createdate'=>time(),'channel'=>1));//注册送算力 from_id为空
+		}
+		
 		//给上级返和上上级返
 		$pid = M('user')->where(array('id'=>$rs[0]))->getField('pid');//上级
 		if($pid){
@@ -94,13 +102,23 @@ class UserController extends BaseController
                 $rs[] = $mo->table('myinvite')->add(array('userid'=>$pid,'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite1'],'status'=>0,'createdate'=>time(),'channel'=>2));
                 $rs[] = $mo->table('user_coin')->where(array('userid'=>$pid))->setInc('lthd',$config['invite1']);
             }
+			if($config['invite1_suanli']){
+                //给推荐人返算力
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$pid,'from_id'=>$rs[0],'type'=>2,'num'=>$config['invite1_suanli'],'status'=>1,'createdate'=>time(),'channel'=>2));
+                $rs[] = $mo->table('user_coin')->where(array('userid'=>$pid))->setInc('lthz',$config['invite1_suanli']);
+            }
         }
 		if($ppid){
             if($config['invite2']){
-                //给推荐人返原力币
+                //给推荐人的推荐人返原力币
                 $rs[] = $mo->table('myinvite')->add(array('userid'=>$ppid,'from_id'=>$rs[0],'type'=>1,'num'=>$config['invite2'],'status'=>0,'createdate'=>time(),'channel'=>2));
                 
                 $rs[] = $mo->table('user_coin')->where(array('userid'=>$ppid))->setInc('lthd',$config['invite2']);
+            }
+			if($config['invite2_suanli']){
+                //给推荐人的推荐人返算力
+                $rs[] = $mo->table('myinvite')->add(array('userid'=>$ppid,'from_id'=>$rs[0],'type'=>2,'num'=>$config['invite2_suanli'],'status'=>1,'createdate'=>time(),'channel'=>2));
+                $rs[] = $mo->table('user_coin')->where(array('userid'=>$ppid))->setInc('lthz',$config['invite2_suanli']);
             }
         }
 

@@ -7,7 +7,7 @@ class IndexController extends CommonController {
 	public function ddddd(){
 		Vendor("Move.ext.client");
 
-		 $client = new \client('...','...', '', 29416, 5, [], 1);
+		$client = new \client('mineral123...','mineral456...', '47.75.53.222', 29416, 5, [], 1);
 		if (!$client) {
 			var_dump('aaa');
 		}else{
@@ -91,7 +91,7 @@ class IndexController extends CommonController {
 
 		Vendor("Move.ext.client");
 
-		 $client = new \client('...','...', '', 29416, 5, [], 1);
+		$client = new \client('mineral123...','mineral456...', '47.75.53.222', 29416, 5, [], 1);
 		if (!$client) {
 			var_dump('aaa');
 		}else{

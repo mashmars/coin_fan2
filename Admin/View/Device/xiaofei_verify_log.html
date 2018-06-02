@@ -99,10 +99,14 @@
 				<td>
 				<if condition="$vo.channel eq 1">
 				<span class="label label-success radius">注册</span>
-				<elseif condition="$vo.status eq 2" />
+				<elseif condition="$vo.channel eq 2" />
 				<span class="label label-primary radius">邀请好友</span>
-				<elseif condition="$vo.status eq 3" />
+				<elseif condition="$vo.channel eq 3" />
 				<span class="label label-primary radius">消费</span>
+				<elseif condition="$vo.channel eq 4" />
+				<span class="label label-primary radius">登陆</span>
+				<elseif condition="$vo.channel eq 5" />
+				<span class="label label-primary radius">绑定设备</span>
 				</if>
 				</td>				
 				<td>{$vo.createdate|date='Y-m-d',###}</td>				

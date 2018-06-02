@@ -32,7 +32,7 @@
 					<span>购买数量：</span>
 					<div class="buy">
 						<input class="min" name="" type="button" value="-" /> 
-						<input class="text_box" name="" type="text" readonly="readonly"value="1" /> 
+						<input class="text_box" name="" type="text" readonly unselectable="on" onfocus="this.blur()"value="1" /> 
 						<input class="add" name="" type="button" value="+" /> 
 					</div>
 				</div>
@@ -66,19 +66,19 @@
 			<div class="alipayBox">
 				<img src="{$Think.const.PUB_IMG}alipay.png" />
 			</div>
-			<p class="tc">点击图片保存到手机相册</p>
-			<p class="tc red">打开支付宝扫二维码付款，备注自己手机号</p>
+			<p class="tc alipayTxt">点击图片保存到手机相册</p>
+			<p class="tc red alipayTxt">打开支付宝扫二维码付款，备注自己手机号</p>
 			</if>
 			<if condition="I('get.type') eq 1">
 			<!--pos机说明-->
-			<p>注：一旦点击领取后，我们将在3天内安排给您发货请注意查收</p>
+			<p class="alipayTxt">注：一旦点击领取后，我们将在3天内安排给您发货请注意查收</p>
 			<!--pos机说明-->
 			</if>
 			<if condition="I('get.type') eq 2">
 			<!--路由器说明-->
-			<p>注：付款成功后，我们将在5周安排给您发货请注意查收</p>
+			<p class="alipayTxt">注：付款成功后，我们将在5周安排给您发货请注意查收</p>
 			<!--路由器说明-->
-			<p class="alipayAgre"><i></i><input type="text"class="dn" id='p'>我已付款</p>
+			<p class="alipayAgre alipayTxt"><i></i><input type="text"class="dn" id='p'>我已付款</p>
 			</if>
 			<div class="btn"><span onclick="javascript:history.go(-1)">取消</span><span onclick="lingqu()">确定领取</span></div>
 		</div>
@@ -11597,6 +11597,9 @@ var mobileSelect5 = new MobileSelect({
 			}); 
 			$(".total em").text(s.toFixed(2)); 
 		}
+		$('.text_box').on('focus', function() {
+			$(this).trigger('blur');
+		});
 </script>
 	</body>
 </html>

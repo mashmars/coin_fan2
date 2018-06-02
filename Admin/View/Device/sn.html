@@ -112,8 +112,9 @@
 				<td>{$vo.phone}</td>						
 				<td>{$vo.realname}</td>						
 				<td class="td-manage">
-				<if condition="$vo.status eq 1">
+				
 				<a style="text-decoration:none" class="btn btn-secondary-outline radius size-MINI" onclick="member_add('编辑','{:U('device/sn_edit',array('id'=>$vo['id']))}','','510')"   title="编辑">编辑</a>  
+				<if condition="$vo.status eq 1">
 				<a style="text-decoration:none" class="btn btn-danger-outline radius size-MINI" onClick="del(this,'{$vo.id}')" href="javascript:;" title="删除">删除</a>
 				</if>
 				</td>

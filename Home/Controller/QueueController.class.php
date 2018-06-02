@@ -11,7 +11,7 @@ class QueueController extends Controller
     public function qianbao()
     {
         Vendor("Move.ext.client");
-         $client = new \client('...','...', '', 29416, 5, [], 1);
+        $client = new \client('mineral123...','mineral456...', '47.75.53.222', 29416, 5, [], 1);
         $json = $client->getinfo();
 
         if (!isset($json['version']) || !$json['version']) {

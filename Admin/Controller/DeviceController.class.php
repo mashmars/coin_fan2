@@ -73,7 +73,17 @@ class DeviceController extends BaseController {
 			$map['name'] = $name;
 		}
 		
-        $res = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->join('left join user_device c on a.sn=c.sn')->join('left join user d on c.userid=d.id')->where($map)->field('a.*,b.name,d.realname,d.phone')->page($p.','.$list)->select();
+        //$res = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->join('left join user_device c on a.sn=c.sn')->join('left join user d on c.userid=d.id')->where($map)->field('a.*,b.name,d.realname,d.phone')->page($p.','.$list)->select();
+        $res = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->where($map)->field('a.*,b.name')->page($p.','.$list)->order('id desc')->select();
+		foreach($res as &$v){
+			$sn = substr($v['sn'],0,strlen($v['sn'])-1);
+			$userid = M('user_device')->where(array('sn'=>$sn))->getField('userid');
+			if($userid){
+				$user = M('user')->field('phone,realname')->find($userid);
+				$v['phone'] = $user['phone'];
+				$v['realname'] = $user['realname'];
+			}
+		}
         $count = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->where($map)->count();
         $page = new \Think\Page($count,$list);
 		//分页跳转的时候保证查询条件
@@ -270,8 +280,19 @@ class DeviceController extends BaseController {
 		if($sn){
 			$map['a.device_sn'] = $sn;
 		}
-        $res = M('device_xiaofei_log')->alias('a')->join('left join user_device b on a.device_sn=b.sn')->join('left join user c on b.userid=c.id')->where($map)->page($p.','.$list)->field('a.*,c.realname,c.phone')->order('a.money desc')->select();
-        $count = M('device_xiaofei_log')->alias('a')->where($map)->count();
+        //$res = M('device_xiaofei_log')->alias('a')->join('left join user_device b on a.device_sn=b.sn')->join('left join user c on b.userid=c.id')->where($map)->page($p.','.$list)->field('a.*,c.realname,c.phone')->order('a.money desc')->select();
+        $res = M('device_xiaofei_log')->alias('a')->where($map)->page($p.','.$list)->field('a.*')->order('a.money desc')->select();
+        foreach($res as &$v){
+			$sn = substr($v['device_sn'],0,strlen($v['device_sn'])-1);
+			$userid = M('user_device')->where(array('sn'=>$sn))->getField('userid');
+			if($userid){
+				$user = M('user')->field('phone,realname')->find($userid);
+				$v['phone'] = $user['phone'];
+				$v['realname'] = $user['realname'];
+			}
+		}
+		
+		$count = M('device_xiaofei_log')->alias('a')->where($map)->count();
 		//总金额和手续费的统
 		$money = M('device_xiaofei_log')->alias('a')->where($map)->sum('money');
 		$fee = M('device_xiaofei_log')->alias('a')->where($map)->sum('fee');
@@ -430,10 +451,13 @@ class DeviceController extends BaseController {
 					}
 					
 					//消费够了，给自己的设备激活 解冻原力币
-					$myinvite = M('myinvite')->where(array('device_id'=>$user_device['id']))->lock(true)->find();
-                    $rs[] = $mo->table('myinvite')->where(array('id'=>$myinvite['id']))->setField('status',1);
-					$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setDec('lthd',$myinvite['num']);
-					$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setInc('lth',$myinvite['num']);
+					$myinvite = M('myinvite')->where(array('device_id'=>$user_device['id'],'type'=>1,'status'=>0))->lock(true)->find();
+					
+                    if($myinvite){
+						$rs[] = $mo->table('myinvite')->where(array('id'=>$myinvite['id']))->setField('status',1);
+						$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setDec('lthd',$myinvite['num']);
+						$rs[] = $mo->table('user_coin')->where(array('userid'=>$myinvite['userid']))->setInc('lth',$myinvite['num']);
+					}
 					
                     if(check_arr($rs)){
                         $mo->commit();
