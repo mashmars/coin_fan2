@@ -112,5 +112,7 @@
 .buy .min,.buy .add{width:25px!important;height:25px!important;}
 .buy .text_box{width:35px!important;height:25px!important;text-align: center;}
 .dn{display: none!important;}
-.total{font-size: 18px;color:red;}
-;}
+.total{width:auto!important;height:auto!important;}
+.total em{font-size: .36rem;color:red;}
+.addAddress{padding-bottom: .4rem;}
+.alipayTxt{font-size: .24rem!important;}

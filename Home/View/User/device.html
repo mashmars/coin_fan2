@@ -30,6 +30,9 @@
 								<h4>SN码：{$vo.sn}</h4>
 							</div>
 							<span class="tag"><if condition="$vo.status eq 1">已激活<else />未激活</if></span>
+							<if condition="$vo.device_id eq 2">
+							<span class="tag <if condition='$vo.online eq 1'> <else />noline</if> "><if condition="$vo.online eq 1">在线<else />不在线</if></span>
+							</if>
 						</div>
 						<p class="tr"></p>
 					</li>

@@ -81,6 +81,7 @@
 				<th width="100">原力币(自动激活直接送)</th>	
 				<th width="100">算力(仅自动激活送)</th>								
 				<th width="100">最低消费(0为自动激活)</th>								
+				<th width="100">兑换比例(多少个手续费对应1个算力)</th>								
 				<th width="100">状态</th>								
 				<th width="170">操作</th>
 			</tr>
@@ -95,6 +96,7 @@
 				<td>{$vo.yuanlibi}</td>
 				<td>{$vo.suanli}</td>				
 				<td>{$vo.charge}</td>				
+				<td>{$vo.charge_bl}</td>				
 				<td>
 				<if condition="$vo.status eq 1">
 				<span class="label label-success radius">启用</span>

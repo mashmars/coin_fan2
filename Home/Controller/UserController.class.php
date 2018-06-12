@@ -241,11 +241,27 @@ class UserController extends CommonController {
     {
         $userid = session('userid');
         $mydevice = M('user_device')->alias('a')->join('left join device b on a.device_id=b.id')->field('a.*,b.name')->where(array('userid'=>$userid))->select();
-        $this->assign('mydevice',$mydevice);
+        $remote = M('console_log','tfc_','mysql://console_tfc_kim:FiAdXkHEFxByNMcD@47.91.242.68/console_tfc_kim#utf8');
+		//最近半个小时时间戳
+		$end = time();
+		$start = $end - 30*60;
+		foreach($mydevice as &$d){
+			//判断是否在线
+			if($d['device_id'] == 2){
+				$is_on = $remote->where(array('sn'=>$d['sn'],'addtime'=>array('between',array($start,$end))))->find();
+				if($is_on){
+					$d['online'] = 1;
+				}else{
+					$d['online'] = 0;
+				}
+			}
+		}
+		$this->assign('mydevice',$mydevice);
 		$is_cert = M('user')->where(array('id'=>$userid))->getField('is_cert');
         $device = M('device')->select();
         $res = array();
-        foreach($device as $v){ //{id:'1',value:'POS机'}
+		
+        foreach($device as $v){ //{id:'1',value:'POS机'}			
             $res[] = array('id'=>$v['id'],'value'=>$v['name']);
         }
         $this->assign('res',json_encode($res));
@@ -300,10 +316,20 @@ class UserController extends CommonController {
         if(!$device['status']){
             echo ajax_return(0,'暂未开放,不能绑定');exit;
         }
-		if(strlen($sn) < 15){
+		if(strlen($sn) != 15 && strlen($sn) != 10){ //16位的sn和10位的sn
 			echo ajax_return(0,'SN码格式不正确');exit;
 		}
-        $device_sn = M('device_sn')->where(array('device_id'=>$id,'sn'=>array('like',$sn.'%'),'mima'=>$mima))->find();
+		$map['device_id'] = $id;
+		if(strlen($sn) == 15){
+			$map['sn'] = array('like',$sn.'%');
+		}elseif(strlen($sn) == 10){
+			$map['sn'] = $sn;
+		}
+		if($mima){
+			$map['mima'] = $mima;
+		}
+        $device_sn = M('device_sn')->where($map)->find();
+		//var_dump($id);var_dump($sn);var_dump($mima);var_dump($device_sn);
         if(!$device_sn){
             echo ajax_return(0,'SN码或密码不正确');exit;
         }
@@ -373,7 +399,9 @@ class UserController extends CommonController {
     public function invite()
     {
         $phone = session('phone');
+		$info = M('user')->find(session('userid'));
         $this->assign('phone',$phone);
+        $this->assign('info',$info);
         $this->display();
     }
 
@@ -398,13 +426,17 @@ class UserController extends CommonController {
         $userid = session('userid');
         $info = M('user_certification')->where(array('userid'=>$userid))->find();
 
-        if($info && $info['status']){
+        if($info && $info['status'] == 1){
             $is_cert = true;
             $notice = '恭喜您已通过实名认证';
-        }elseif($info){
+        }elseif($info && $info['status'] == 2){
             $is_cert = true;
+            $notice = '您已提交实名认证未通过审核，请重新提交';
+        }elseif($info && $info['status'] == 0){
+			$is_cert = true;
             $notice = '您已提交实名认证，请耐心等待后台审核';
-        }
+		}
+		
         $this->assign('is_cert',$is_cert);
         $this->assign('info',$info);
         $this->assign('notice',$notice);
@@ -414,10 +446,10 @@ class UserController extends CommonController {
     {
         $userid = session('userid');
         //先判断是否已经提交或审核通过
-        $info = M('user_certification')->where(array('userid'=>$userid))->find();
-        if($info && $info['status']){
+        $info = M('user_certification')->where(array('userid'=>$userid))->order('id desc')->find();
+        if($info && $info['status'] == 1){
             echo ajax_return(0,'您已通过实名认证，无需再次提交');exit;
-        }elseif($info){
+        }elseif($info && $info['status'] == 0){
             echo ajax_return(0,'您已提交实名认证，请耐心等待后台审核');exit;
         }
         $realname = I('post.realname');
@@ -426,9 +458,9 @@ class UserController extends CommonController {
         $fanmian = upload_file(UP_USER,$_FILES['file2']);
         $shouchi = upload_file(UP_USER,$_FILES['file3']);
 		//验证身份证号唯一
-		$d = M('user_certification')->where(array('idcard'=>$idcard,'status'=>1))->find();
+		$d = M('user_certification')->where(array('idcard'=>$idcard))->find();
 		if($d){
-			echo ajax_return(0,'此身份证号已通过实名认证，不能重复提交');exit;
+			echo ajax_return(0,'此身份证号已提交实名认证，不能重复提交');exit;
 		}
         $id = M('user_certification')->add(array('userid'=>$userid,'zheng'=>$zhengmian,'fan'=>$fanmian,'shou'=>$shouchi,
                 'realname'=>$realname,'idcard'=>$idcard,'createdate'=>time()
@@ -439,7 +471,20 @@ class UserController extends CommonController {
             echo ajax_return(0,'提交失败');
         }
     }
-
+	public function ajax_re_cert()
+	{
+		$userid = session('userid');
+        $info = M('user_certification')->where(array('userid'=>$userid,'status'=>2))->order('id desc')->find();
+		if(!$info){
+			echo ajax_return(0,'请求有误');exit;
+		}
+		$res = M('user_certification')->delete($info['id']);
+		if($res){
+			echo ajax_return(1,'');exit;
+		}else{
+			echo ajax_return(0,'操作失败');exit;
+		}
+	}
 
     /**
      * 邀请记录
@@ -545,6 +590,15 @@ class UserController extends CommonController {
 		if($shenqing){
 			$this->assign('y','y');
 		}
+		$this->display();
+	}
+	
+	/*订单查询*/
+	public function order()
+	{
+		$userid =session('userid');
+		$res = M('user_shenqing')->alias('a')->join('left join device b on a.type=b.id')->where(array('userid'=>$userid))->order('a.id desc')->field('a.*,b.name')->select();
+		$this->assign('res',$res);
 		$this->display();
 	}
 

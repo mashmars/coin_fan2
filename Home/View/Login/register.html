@@ -26,7 +26,7 @@
 						<input type="text"placeholder="验证码" id='sms'>
 						<span class="flex-1 code">获取验证码</span>
 					</li>
-					<li><i class="icname"></i><input type="text"placeholder="用户名" id='realname'></li>
+					<li><i class="icname"></i><input type="text"placeholder="真实姓名" id='realname'></li>
 					<li class="active">
 						<i class="icpay"></i><input type="password" placeholder="登录密码" id='password'>
 						<!--<i class="hided"></i>-->
@@ -209,6 +209,11 @@ $(function(){
 		}
 		if(phone == ''){
 			layer.msg('手机号不能为空',{time:2000,icon:5});
+			obj.prop('disabled',false);
+			return false;
+		}
+		if(realname == ''){
+			layer.msg('姓名不能为空',{time:2000,icon:5});
 			obj.prop('disabled',false);
 			return false;
 		}

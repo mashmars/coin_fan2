@@ -32,7 +32,7 @@
 					<span>购买数量：</span>
 					<div class="buy">
 						<input class="min" name="" type="button" value="-" /> 
-						<input class="text_box" name="" type="text" readonly unselectable="on" onfocus="this.blur()"value="1" /> 
+						<input class="text_box" name="num" id='num' type="text" readonly unselectable="on" onfocus="this.blur()"value="1" /> 
 						<input class="add" name="" type="button" value="+" /> 
 					</div>
 				</div>
@@ -97,9 +97,12 @@ $(function(){
 })
 </script>
 		<script>
-			var y = "{$y}"
+			var y = "{$y}",type = "{:I('param.type')}";
+			console.log(y);
 			if(y){
+				
 				shadow();
+
 			}
 			function shadow(){
 				$('.shadow').show();
@@ -140,16 +143,24 @@ $(function(){
 				}
 				if(type == 2){
 					var p = $('#p').val();
+					
 					if(p ==0){
 						layer.msg('请先确认已付款',{time:2000,icon:5});
 						flag = true;
 						return false;
 					}
 				}
-				$.post("{:U('index/ajax_add_shenqing')}",{xm:xm,lxfs:lxfs,address:address,area:area,type:type},function(data){
+				var num = $('#num').val();
+				$.post("{:U('index/ajax_add_shenqing')}",{xm:xm,lxfs:lxfs,address:address,area:area,type:type,num:num},function(data){
 					if(data.info == 'success'){
 						layer.msg(data.msg,{time:2000,icon:1},function(){
 							location.reload();
+							//if(type == 1){
+								//var href = "{:U('user/index')}";
+							//}else if(type ==2){
+								//var href = "{:U('user/getrouter')}";
+							//}
+							location.href = "{:U('user/index')}";
 						})
 					}else{
 						layer.msg(data.msg,{time:2000,icon:5});

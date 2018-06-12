@@ -66,17 +66,25 @@ class DeviceController extends BaseController {
         $list = 10;
 		$status = I('param.status');
 		$name = I('param.name');
+		$keyword = I('param.keyword');
 		if($status !==''){
 			$map['a.status'] = $status;
 		}
 		if($name !==''){
 			$map['name'] = $name;
 		}
-		
+		if($keyword !==''){
+			$map['a.sn'] = $keyword;
+		}
         //$res = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->join('left join user_device c on a.sn=c.sn')->join('left join user d on c.userid=d.id')->where($map)->field('a.*,b.name,d.realname,d.phone')->page($p.','.$list)->select();
         $res = M('device_sn')->alias('a')->join('left join device b on a.device_id=b.id')->where($map)->field('a.*,b.name')->page($p.','.$list)->order('id desc')->select();
 		foreach($res as &$v){
-			$sn = substr($v['sn'],0,strlen($v['sn'])-1);
+			if(strlen($v['sn']) == 10){
+				$sn = $v['sn'];
+			}else{
+				$sn = substr($v['sn'],0,strlen($v['sn'])-1); //15位
+			}
+			
 			$userid = M('user_device')->where(array('sn'=>$sn))->getField('userid');
 			if($userid){
 				$user = M('user')->field('phone,realname')->find($userid);
@@ -95,6 +103,7 @@ class DeviceController extends BaseController {
         $this->assign('count',$count);
         $this->assign('page',$show);
         $this->assign('status',$status);
+        $this->assign('keyword',$keyword);
         $this->assign('name',$name);
         $this->display();
     }
@@ -276,14 +285,19 @@ class DeviceController extends BaseController {
     public function device_log(){
         $p = I('param.p',1);
         $list = 10;
-		$sn = I('post.sn');
-		if($sn){
-			$map['a.device_sn'] = $sn;
+		$sn1 = I('post.sn');
+		if($sn1){
+			$map['a.device_sn'] = $sn1;
 		}
         //$res = M('device_xiaofei_log')->alias('a')->join('left join user_device b on a.device_sn=b.sn')->join('left join user c on b.userid=c.id')->where($map)->page($p.','.$list)->field('a.*,c.realname,c.phone')->order('a.money desc')->select();
-        $res = M('device_xiaofei_log')->alias('a')->where($map)->page($p.','.$list)->field('a.*')->order('a.money desc')->select();
+        $res = M('device_xiaofei_log')->alias('a')->where($map)->page($p.','.$list)->field('a.*')->order('a.id desc')->select();
         foreach($res as &$v){
-			$sn = substr($v['device_sn'],0,strlen($v['device_sn'])-1);
+			
+			if(strlen($v['device_sn']) == 10){
+				$sn = $v['device_sn'];
+			}else{
+				$sn = substr($v['device_sn'],0,strlen($v['device_sn'])-1);
+			}
 			$userid = M('user_device')->where(array('sn'=>$sn))->getField('userid');
 			if($userid){
 				$user = M('user')->field('phone,realname')->find($userid);
@@ -301,7 +315,7 @@ class DeviceController extends BaseController {
         $this->assign('res',$res);
         $this->assign('count',$count);
         $this->assign('page',$show);
-        $this->assign('sn',$sn);
+        $this->assign('sn',$sn1);
         $this->assign('money',$money);
         $this->assign('fee',$fee);
         $this->display();
@@ -341,15 +355,15 @@ class DeviceController extends BaseController {
         $sheet = $objPHPExcel->getSheet(0);
         $columns = $sheet->getHighestColumn(); //获取最大列数
 
-        if($columns != 'O'){
+        if($columns != 'N'){
             $this->error('excel表格式列数不正确!','',1);
         }
         $rows = $sheet->getHighestRow();             //获取最大行数
 
         //要导入的字段名
-        $fields = array('jgmc','device_sn','zdpc','jylx','order_sn','day','time','money','fee','yhkh','sjhm','khxm','sfzh','sxfl','gdsxf');
+        $fields = array('jgmc','device_sn','zdpc','jylx','order_sn','day','time','money','fee','yhkh','sjhm','khxm','sxfl','gdsxf');
 
-        $column =array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O');
+        $column =array('A','B','C','D','E','F','G','H','I','J','K','L','M','N');
 
         for($i=2;$i<=$rows;$i++){
 
@@ -396,7 +410,12 @@ class DeviceController extends BaseController {
             // 如果激活只给自己返算力 没激活则判断激活条件 达到后给上级的冻结原力币去掉进可用 同时给你返算力
 			//因pos机导出的比实际多出最后一位 所以最后一位不验证
 			$len = strlen($v['device_sn']);
-			$sn_tmp = substr($v['device_sn'],0,$len-1);
+			if($len == 16){
+				$sn_tmp = substr($v['device_sn'],0,$len-1);
+			}elseif($len == 10){
+				$sn_tmp = $v['device_sn'];
+			}
+			
             $user_device = M('user_device')->where(array('sn'=>$sn_tmp))->find();
             if(!$user_device){
                 M('device_xiaofei_log')->where(array('device_sn'=>$v['device_sn']))->setField('status',2);//无效状态
@@ -405,7 +424,7 @@ class DeviceController extends BaseController {
 
             //已激活
             if($user_device['status'] == 1){
-                $suanli = $v['fee'];
+                $suanli = $v['fee']/$device['charge_bl'];
 				$suanli = intval($suanli);
                 if($suanli>0){
 					$mo = M();
@@ -426,7 +445,7 @@ class DeviceController extends BaseController {
                 //没哟激活
                 if($v['fee'] >= $device['charge']){ 
                     //给上级返原力币 解冻 给自己返算力
-                    $suanli = $v['fee'] - $device['charge'];
+                    $suanli = ($v['fee'] - $device['charge'])/$device['charge_bl'];
 					$suanli = intval($suanli);
                     $myself = M('user_coin')->where(array('userid'=>$user_device['userid']))->lock(true)->find();
 

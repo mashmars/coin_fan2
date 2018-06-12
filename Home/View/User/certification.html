@@ -66,7 +66,8 @@
 					<li class="flex-box">
 						<div class="flex-1 item">
 							<img class="addImg" onclick="clickImg(this);" src="{$Think.const.PUB_IMG}add.png">
-							<h4 class="tc">上面手持身份证及ID照片</h4>
+							<h4 class="tc">手持身份证照片</h4>
+							<h4 class="tc">(手写用户名和日期)</h4>
 							<input name="file3" type="file" class="upload_input" onchange="change(this)">
 							<div class="preBlock">
 								<img class="preview" id="preview" alt="" name="pic">
@@ -170,13 +171,19 @@
 	<script>
 	function shadow(){
 		$('.shadow').show();
-		$('header').html('<h3 class="tc lhbg"><i class="go"></i>已实名认证</h3>')
 		$('header').addClass('fixheader');
-
 		$('.main').addClass('fixmain');
 	}
 	var is_cert = "{$is_cert}";
+	var status = "{$info['status']}";
 	if(is_cert){
+		if(status == 1){
+		$('header').html('<h3 class="tc lhbg"><i class="go"></i>已实名认证</h3>');
+		}else if(status == 2){
+			$('.shadow-txt').append('<p class="tc"><a class="lhbg mod-btn recert">重新实名认证</a></p>');
+		}else if(status == 0){
+		
+		}
 		$('#notice').text("{$notice}");
 		shadow();
 	}
@@ -236,6 +243,15 @@
 			}
 			$('#myform').ajaxSubmit(options);
 			return false;//非常重要，如果是false，则表明是不跳转
+		})
+		$('.recert').click(function(){
+			$.get("{:U('user/ajax_re_cert')}",'',function(data){
+				if(data.info == 'success'){
+					location.reload();
+				}else{
+					layer.msg(data.msg,{time:2000,icon:5});
+				}
+			},'json')
 		})
 	})
 	</script>

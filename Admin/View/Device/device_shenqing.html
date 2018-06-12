@@ -67,6 +67,7 @@
 				<th width="25"><input type="checkbox" name="" value=""></th>
 				<th width="80">ID</th>
 				<th width="100">设备类型</th>								
+				<th width="100">数量</th>								
 				<th width="100">收货人</th>								
 				<th width="100">联系方式</th>	
 				<th width="100">地区</th>								
@@ -84,6 +85,7 @@
 				<td><input type="checkbox" value="{$vo.id}" name=""></td>
 				<td>{$vo.id}</td>
 				<td><if condition="$vo['type'] eq 1">Pos机<else />路由器</if></td>				
+				<td>{$vo.num}</td>	
 				<td>{$vo.shr}</td>	
 				<td>{$vo.lxfs}</td>				
 				<td>{$vo.area}</td>				

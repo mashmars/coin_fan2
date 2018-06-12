@@ -444,6 +444,24 @@ class UserController extends BaseController
             echo ajax_return(0,'审核失败');exit;
         }
     }
+	public function ajax_member_certification_nopass()
+    {
+        $id = I('post.id');
+        $info = M('user_certification')->where(array('id'=>$id))->find();
+        if(!$info){
+            echo ajax_return(0,'请求有误');exit;
+        }
+        if($info['status'] ==1){
+            echo ajax_return(0,'此认证已通过审核，无需重复审核');exit;
+        }
+        $res = M('user_certification')->where(array('id'=>$id))->setField('status',2);
+
+        if($res){
+            echo ajax_return(1,'操作成功');            
+        }else{
+            echo ajax_return(0,'操作失败');exit;
+        }
+    }
     /**
      * 删除 同时删除相关图片
      */

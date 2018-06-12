@@ -96,12 +96,15 @@
 				<td>{$vo.createdate|date='Y-m-d',###}</td>	
 				<td><if condition="$vo.status eq 1">
 				<span class="label label-success radius">审核通过</span>
+				<elseif condition="$vo.status eq 2" />
+				<span class="label label-danger radius">未通过</span>
 				<else />
-				<span class="label label-danger radius">未审核</span>
+				<span class="label label-primary radius">未审核</span>
 				</if></td>					
 				<td class="td-manage">
 				<if condition="$vo.status eq 0">				
 				<a style="text-decoration:none" class="btn btn-secondary-outline radius size-MINI" onclick="shenhe('{$vo.id}')"   title="审核通过">审核通过</a>  
+				<a style="text-decoration:none" class="btn btn-secondary-outline radius size-MINI" onclick="shenhe_('{$vo.id}')"   title="审核通过">审核不通过</a>  
 				<a style="text-decoration:none" class="btn btn-danger-outline radius size-MINI" onClick="del(this,'{$vo.id}')" href="javascript:;" title="删除">删除</a>
 				</if>
 				</td>
@@ -261,6 +264,25 @@ function shenhe(id){
 	layer.confirm('是否确认审核通过',function(){
 		$.ajax({
 			url:"{:U('user/ajax_member_certification_shenhe')}",
+			data:{id:id},
+			type:"post",
+			dataType:"json",
+			success:function(data){
+				if(data.info =='success'){
+					layer.msg(data.msg,{time:2000,icon:6},function(){
+						window.location.reload();
+					})
+				}else{
+					layer.msg(data.msg,{time:2000,icon:5})
+				}
+			}
+		})
+	})
+}
+function shenhe_(id){
+	layer.confirm('是否确认审核不通过',function(){
+		$.ajax({
+			url:"{:U('user/ajax_member_certification_nopass')}",
 			data:{id:id},
 			type:"post",
 			dataType:"json",

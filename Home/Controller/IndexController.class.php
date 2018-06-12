@@ -5,24 +5,8 @@ use Home\Controller\CommonController;
 
 class IndexController extends CommonController {
 	public function ddddd(){
-		Vendor("Move.ext.client");
-
-		$client = new \client('mineral123...','mineral456...', '47.75.53.222', 29416, 5, [], 1);
-		if (!$client) {
-			var_dump('aaa');
-		}else{
-			echo '<pre>';
-			var_dump($client);
-			
-			//var_dump($client);
-			//$res = $client->execute("listtransactions", ["*", 20, 0]);
-			//$res = $client->execute("getinfo");
-			//$res = $client->getnewaddress('15890143123');//生成新地址			
-			//var_dump($res);
-			$res = $client->getaddressesbyaccount('15890143123');//获取新地址
-				var_dump($res);
-		}
-		var_dump('dd');exit;
+		$ad = cookie('ad');
+      var_dump($ad);
 	}
 	//检查是否实名认证
 	private function check_certification(){
@@ -63,8 +47,7 @@ class IndexController extends CommonController {
 		$this->assign('suanli',$suanli);
 		$this->assign('paihang',$paihang);
 		
-		//新增每天首次登录返算力
-		
+		//新增每天首次登录返算力		
 		$start = mktime(0,0,0,date('m'),date('d'),date('Y'));
 		$end = mktime(23,59,59,date('m'),date('d'),date('Y'));
 		$is = M('myinvite')->where(array('userid'=>$userid,'createdate'=>array('between',array($start,$end)),'channel'=>4))->find();
@@ -85,13 +68,30 @@ class IndexController extends CommonController {
 			}
 		}
 		
+		//查找不在线的路由器
+		$mydevice = M('user_device')->where(array('userid'=>$userid,'device_id'=>2))->select(); //2是路由器
+		$jianqu = 0; //需要减去的算力
+		if($mydevice){
+			$device = M('device')->find(2);//路由器设置
+			$remote = M('console_log','tfc_','mysql://console_tfc_kim:FiAdXkHEFxByNMcD@47.91.242.68/console_tfc_kim#utf8');
+			//最近半个小时时间戳
+			$end = time();
+			$start = $end - 30*60;			
+			foreach($mydevice as $d){				
+				$is_on = $remote->where(array('sn'=>$d['sn'],'addtime'=>array('between',array($start,$end))))->find();
+				if(!$is_on){
+					$jianqu += $device['suanli'];
+				}			
+			}
+		}
+		$this->assign('jianqu',$jianqu);
 		
 		$this->display();
 		exit;
 
 		Vendor("Move.ext.client");
 
-		$client = new \client('mineral123...','mineral456...', '47.75.53.222', 29416, 5, [], 1);
+		$client = new \client('...','...', '..', 29416, 5, [], 1);
 		if (!$client) {
 			var_dump('aaa');
 		}else{
@@ -142,6 +142,7 @@ class IndexController extends CommonController {
 		$address = I('post.address');
 		$area = I('post.area');
 		$type = I('post.type');
+		$num = I('post.num');
 		if(!$this->check_certification()){
 			echo ajax_return(0,'请先进行实名认证');exit;
 		}
@@ -152,11 +153,14 @@ class IndexController extends CommonController {
 			echo ajax_return(0,'请求参数不正确');exit;
 		}
 		//
-		$info = M('user_shenqing')->where(array('userid'=>$userid,'status'=>2,'type'=>$type))->find();
-		if($info){
-			echo ajax_return(0,'已经提交申请，无需重复申请，请等待管理人员与您联系');exit;
+		if($type == 1){
+			$info = M('user_shenqing')->where(array('userid'=>$userid,'type'=>$type))->find();
+			if($info){
+				echo ajax_return(0,'已经提交申请，无需重复申请，请等待管理人员与您联系');exit;
+			}
 		}
-		$res = M('user_shenqing')->add(array('userid'=>$userid,'shr'=>$shr,'lxfs'=>$lxfs,'address'=>$address,'area'=>$area,'type'=>$type,'createdate'=>time()));
+		$num = $num ? $num :1;
+		$res = M('user_shenqing')->add(array('userid'=>$userid,'shr'=>$shr,'lxfs'=>$lxfs,'address'=>$address,'area'=>$area,'type'=>$type,'num'=>$num,'createdate'=>time()));
 		if($res){
 			echo ajax_return(1,'申请提交成功，请耐心等待管理人员与您联系');
 		}else{

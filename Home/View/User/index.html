@@ -36,7 +36,7 @@
 						</div>
 						<div class="flex-1">
 							<p>参考市值</p>
-							<h4>≈￥{$usercoin['lth']*$config['price']+$usercoin['lthd']*$config['price']}</h4>
+							<h4>≈￥{$usercoin['lth']*$config['price']+$usercoin['lthd']*$config['price']|round=###,2}</h4>
 						</div>
 						<div class="flex-1">
 							<p>TFC</p>
@@ -75,6 +75,12 @@
 					<li>
 						<a href="{:U('user/promote')}">
 							<i class="promote"></i>提升算力
+							<span class="go"></span>
+						</a>
+					</li>
+					<li>
+						<a href="{:U('user/order')}">
+							<i class="order"></i>订单查询
 							<span class="go"></span>
 						</a>
 					</li>
